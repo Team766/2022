@@ -1,1 +1,31 @@
 Add to do here:
+Mechanisms:
+    Drive
+    Climber:
+        Elevator
+        Rotator
+    Shooter/Dumper:
+        Limelight
+        Shooter
+    Intake
+    Storage
+Procedures:
+    ShootBall
+    Climb Routines:
+        TBD
+    Aiming
+    Intake Routines:
+        TBD
+    Storage Routines:
+        TBD
+Special projects:
+    Autonomous
+    Drive with PID and trajectory
+    Limelight
+    OI.java and connecting procedures to button
+    Prepare drive board
+    Take over CAD
+
+
+###################################################################
+
