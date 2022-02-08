@@ -19,7 +19,7 @@ public class Robot extends MyRobot {
 	// Declare mechanisms here
 	
 	
-	public static OI m_oi;
+	private static OI m_oi;
 	public static Drive drive;
 	public static Limelight limelight;
 	
