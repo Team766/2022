@@ -29,7 +29,7 @@ public class OI extends Procedure {
 		while (true) {
 			// Add driver controls here - make sure to take/release ownership
 			// of mechanisms when appropriate.
-			
+			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick1.getAxis(0));
 
 			context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 		}
