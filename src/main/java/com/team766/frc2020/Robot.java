@@ -18,6 +18,10 @@ import com.team766.web.WebServer;
 public class Robot extends MyRobot {
 	// Declare mechanisms here
 	public static Drive drive;
+	public static Launcher launcher;
+	public static IntakeArm intakeArm;
+	public static IntakeWheels intakeWheels;
+	public static LineSensors lineSensors;
 	
 	private static OI m_oi;
 	
@@ -44,6 +48,10 @@ public class Robot extends MyRobot {
 	public void robotInit() {
 		// Initialize mechanisms here
 		drive = new Drive();
+		launcher = new Launcher();
+		intakeArm = new IntakeArm();
+		intakeWheels = new IntakeWheels();
+		lineSensors = new LineSensors();
 		
 		m_oi = new OI();
 	}
