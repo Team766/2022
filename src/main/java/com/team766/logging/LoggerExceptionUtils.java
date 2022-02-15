@@ -7,7 +7,7 @@ public class LoggerExceptionUtils {
 	public static String logException(Throwable e) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
-		pw.print("Uncaught exception: ");
+		pw.print("Uncaught exception (1): ");
 		e.printStackTrace(pw);
 		pw.flush();
 		String str = sw.toString();
