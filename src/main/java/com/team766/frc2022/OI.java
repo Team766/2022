@@ -32,7 +32,6 @@ public class OI extends Procedure {
 		while (true) {
 			// Add driver controls here - make sure to take/release ownership
 			// of mechanisms when appropriate.
-			log("" + Robot.elevator.getElevatorPosition());
 			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick0.getAxis(0));
 			if (Math.abs(m_joystick1.getAxis(1)) + Math.abs(m_joystick1.getAxis(0))> 0.3) {
 				context.takeOwnership(Robot.elevator);

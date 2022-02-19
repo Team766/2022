@@ -3,11 +3,15 @@ package com.team766.frc2022.procedures;
 import com.team766.framework.Context;
 import com.team766.framework.Procedure;
 import com.team766.frc2022.Robot;
+import com.team766.logging.Category;
 
 public class DoubleRung extends Procedure {
+	
+
 	public void run (Context context) {
 
 		context.takeOwnership(Robot.elevator);
+		loggerCategory = Category.DRIVE;
 		double lastAngle = -180;
 
 		for (int i = 0; i < 2; i++) {
@@ -35,7 +39,7 @@ public class DoubleRung extends Procedure {
 			}
 
 			//Extension of Elevator
-			context.waitForSeconds(0.2);
+			context.waitForSeconds(0.4);
 			Robot.elevator.setElevatorPower(1.0);
 			Robot.elevator.setArmsPower(1.0);
 			//context.waitForSeconds(1.5);
@@ -56,10 +60,21 @@ public class DoubleRung extends Procedure {
 			}*/
 			
 			//Retraction of Arms in Order for Elevator to Grab Bar
-			Robot.elevator.setArmsPower(1.0);
-			context.waitForSeconds(0.3);
 			Robot.elevator.setArmsPower(-1.0);
+			lastAngle = Robot.gyro.getGyroPitch();
+			context.waitForSeconds(0.4);
+			log("Potential Sticking Point");
+			log ("" + Math.abs(Robot.gyro.getGyroPitch() - lastAngle));
+			while (Math.abs(Robot.gyro.getGyroPitch() - lastAngle) < 2) {
+				Robot.elevator.setArmsPower(1.0);
+				context.waitForSeconds(0.3);
+				Robot.elevator.setArmsPower(-1.0);
+				context.waitForSeconds(0.3);
+				lastAngle = Robot.gyro.getGyroPitch();
+				context.waitForSeconds(0.2);
+			}
 			context.waitForSeconds(1.0);
+			
 		}
 	}
 }
