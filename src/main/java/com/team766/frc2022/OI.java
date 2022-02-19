@@ -58,6 +58,15 @@ public class OI extends Procedure {
 				context.startAsync(new DoubleRung());
 			}
 
+			if (m_joystick0.getButtonPressed(3)) {
+				int currentSlowMode = Robot.elevator.getSlowMode();
+				currentSlowMode = currentSlowMode > 4 ? 0 : currentSlowMode + 1;
+				context.takeOwnership(Robot.elevator);
+				Robot.elevator.setSlowMode(currentSlowMode);
+				log("Current Slow Mode: " + Robot.elevator.getSlowMode());
+				context.releaseOwnership(Robot.elevator);
+			}
+
 			context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 		}
 	}

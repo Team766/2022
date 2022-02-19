@@ -13,18 +13,19 @@ public class DoubleRung extends Procedure {
 		context.takeOwnership(Robot.elevator);
 		loggerCategory = Category.DRIVE;
 		double lastAngle = -180;
+		int speedMode = Robot.elevator.getSlowMode(); //0 is fastest
 
 		for (int i = 0; i < 2; i++) {
 			// Initial Arms Up
-			Robot.elevator.setArmsPower(-1.0);
+			Robot.elevator.setArmsPower(-1.0 / (speedMode + 1));
 
 			// Pull the Robot Up
-			Robot.elevator.setElevatorPower(-1.0);
+			Robot.elevator.setElevatorPower(-1.0 / (speedMode + 1));
 			context.waitFor(() -> Robot.elevator.getElevatorPosition() < Robot.elevator.getElevatorBottom() + 10);
-			context.waitForSeconds(0.5);
+			context.waitForSeconds(0.5 + speedMode);
 
 			//Arms Grab Bar
-			Robot.elevator.setArmsPower(1.0);
+			Robot.elevator.setArmsPower(1.0 / (speedMode + 1));
 			
 
 			//Initial Extension of Elevator to Combat Wonky Physics
@@ -33,6 +34,7 @@ public class DoubleRung extends Procedure {
 			Robot.elevator.setElevatorPower(-0.5);
 			context.waitForSeconds(0.5);
 			lastAngle = Robot.gyro.getGyroPitch();
+			context.waitForSeconds(speedMode);
 			while (Robot.gyro.getGyroPitch() <= lastAngle) {
 				lastAngle = Robot.gyro.getGyroPitch();
 				context.yield();
@@ -40,8 +42,8 @@ public class DoubleRung extends Procedure {
 
 			//Extension of Elevator
 			context.waitForSeconds(0.4);
-			Robot.elevator.setElevatorPower(1.0);
-			Robot.elevator.setArmsPower(1.0);
+			Robot.elevator.setElevatorPower(1.0 / (speedMode + 1));
+			Robot.elevator.setArmsPower(1.0 / (speedMode + 1));
 			//context.waitForSeconds(1.5);
 			context.waitFor(() -> Robot.elevator.getElevatorPosition() > Robot.elevator.getElevatorTop() - 10);
 			lastAngle = Robot.gyro.getGyroPitch();
@@ -60,26 +62,27 @@ public class DoubleRung extends Procedure {
 			}*/
 			
 			//Retraction of Arms in Order for Elevator to Grab Bar
-			Robot.elevator.setArmsPower(-1.0);
+			Robot.elevator.setArmsPower(-1.0 / (speedMode + 1));
+			context.waitForSeconds(speedMode);
 			lastAngle = Robot.gyro.getGyroPitch();
 			context.waitForSeconds(0.4);
 			log("Potential Sticking Point");
 			log ("" + Math.abs(Robot.gyro.getGyroPitch() - lastAngle));
 			while (Math.abs(Robot.gyro.getGyroPitch() - lastAngle) < 2) {
-				Robot.elevator.setArmsPower(1.0);
+				Robot.elevator.setArmsPower(1.0 / (speedMode + 1));
 				context.waitForSeconds(0.3);
-				Robot.elevator.setArmsPower(-1.0);
+				Robot.elevator.setArmsPower(-1.0 / (speedMode + 1));
 				context.waitForSeconds(0.3);
 				lastAngle = Robot.gyro.getGyroPitch();
 				context.waitForSeconds(0.2);
 			}
 			if (i == 0) {
-				context.waitForSeconds(1.0);
+				context.waitForSeconds(1.0 + speedMode);
 			} else {
 				//RON
 				context.waitForSeconds(0.6);
 				//Robot.elevator.setElevatorPower(-1.0);
-				Robot.elevator.setArmsPower(1.0);
+				Robot.elevator.setArmsPower(1.0 / (speedMode + 1));
 			}
 		}
 	}

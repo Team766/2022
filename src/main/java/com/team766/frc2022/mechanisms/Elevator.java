@@ -13,14 +13,16 @@ public class Elevator extends Mechanism {
     private int elevatorTop;
     private int elevatorBottom;
     private int elevatorLeniency;
+    private int slowMode;
 
     public Elevator() {
         // Initializations
 		m_elevator = RobotProvider.instance.getTalonCANMotor("climber.elevator");
         m_arms = RobotProvider.instance.getSolenoid("climber.arms");
-        elevatorTop = 670;
-        elevatorBottom = 0;
+        elevatorTop = 670; //WILL BE DIFFERENT ON THE ACTUAL ROBOT!!
+        elevatorBottom = 0; //WILL BE DIFFERENT ON THE ACTUAL ROBOT!!
         elevatorLeniency = 5;
+        slowMode = 0;
     }
 
     
@@ -52,5 +54,13 @@ public class Elevator extends Mechanism {
 
     public int getElevatorTop() {
         return elevatorTop;
+    }
+
+    public int getSlowMode() {
+        return slowMode;
+    }
+
+    public void setSlowMode(int setter) {
+        slowMode = setter;
     }
 }
