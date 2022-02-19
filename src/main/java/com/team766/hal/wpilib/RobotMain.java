@@ -39,7 +39,7 @@ public class RobotMain extends TimedRobot {
 	@Override
 	public void robotInit() {
 		try {
-			ConfigFileReader.instance = new ConfigFileReader("/home/lvuser/robotConfig.txt");
+			ConfigFileReader.instance = new ConfigFileReader("/home/lvuser/robotConfig.json");
 			RobotProvider.instance = new WPIRobotProvider();
 			robot = EntryPoint.createRobot();
 			

@@ -40,4 +40,6 @@ public interface GyroReader {
 	   * @return the current rate in degrees per second
 	   */
 	  public double getRate();
+
+	  public boolean isConnected();
 }

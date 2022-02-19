@@ -6,4 +6,8 @@ public class AnalogGyro extends edu.wpi.first.wpilibj.AnalogGyro implements Gyro
 	public AnalogGyro(int channel) {
 		super(channel);
 	}
+
+	public boolean isConnected() {
+		return true;
+	}
 }

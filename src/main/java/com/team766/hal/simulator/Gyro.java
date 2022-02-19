@@ -21,4 +21,7 @@ public class Gyro implements GyroReader{
 		return ProgramInterface.gyro.rate;
 	}
 
+	public boolean isConnected() {
+		return true;
+	}
 }

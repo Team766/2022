@@ -31,4 +31,7 @@ public class Gyro implements GyroReader{
 		rate = rat;
 	}
 
+	public boolean isConnected() {
+		return true;
+	}
 }
