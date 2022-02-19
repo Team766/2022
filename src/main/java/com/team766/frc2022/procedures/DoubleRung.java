@@ -81,6 +81,8 @@ public class DoubleRung extends Procedure {
 			} else {
 				//RON
 				context.waitForSeconds(0.6);
+				loggerCategory = Category.JAVA_EXCEPTION;
+				log("RON");
 				//Robot.elevator.setElevatorPower(-1.0);
 				Robot.elevator.setArmsPower(1.0);
 			}
