@@ -21,7 +21,6 @@ public class DoubleRung extends Procedure {
 
 			//Arms Grab Bar
 			Robot.elevator.setArmsPower(1.0);
-			context.waitForSeconds(0.5);
 			
 
 			//Initial Extension of Elevator to Combat Wonky Physics
@@ -36,24 +35,30 @@ public class DoubleRung extends Procedure {
 			}
 
 			//Extension of Elevator
+			context.waitForSeconds(0.5);
 			Robot.elevator.setElevatorPower(1.0);
 			Robot.elevator.setArmsPower(1.0);
-			context.waitForSeconds(1.5);
+			//context.waitForSeconds(1.5);
 			lastAngle = -180;
+			while (Robot.gyro.getGyroPitch() > lastAngle) {
+				lastAngle = Robot.gyro.getGyroPitch();
+				context.yield();
+			}
+			context.waitForSeconds(0.5);
+			/*while (Robot.gyro.getGyroPitch() <= lastAngle) {
+				lastAngle = Robot.gyro.getGyroPitch();
+				context.yield();
+			}
 			while (Robot.gyro.getGyroPitch() >= lastAngle) {
 				lastAngle = Robot.gyro.getGyroPitch();
 				context.yield();
-			}
-			while (Robot.gyro.getGyroPitch() <= lastAngle) {
-				lastAngle = Robot.gyro.getGyroPitch();
-				context.yield();
-			}
-			while (Robot.gyro.getGyroPitch() >= lastAngle) {
-				lastAngle = Robot.gyro.getGyroPitch();
-				context.yield();
-			}
+			}*/
 			
 			//Retraction of Arms in Order for Elevator to Grab Bar
+			Robot.elevator.setArmsPower(-1.0);
+			context.waitForSeconds(0.1);
+			Robot.elevator.setArmsPower(1.0);
+			context.waitForSeconds(0.1);
 			Robot.elevator.setArmsPower(-1.0);
 			context.waitForSeconds(1.0);
 		}
