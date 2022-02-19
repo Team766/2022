@@ -73,8 +73,14 @@ public class DoubleRung extends Procedure {
 				lastAngle = Robot.gyro.getGyroPitch();
 				context.waitForSeconds(0.2);
 			}
-			context.waitForSeconds(1.0);
-			
+			if (i == 0) {
+				context.waitForSeconds(1.0);
+			} else {
+				//RON
+				context.waitForSeconds(0.6);
+				//Robot.elevator.setElevatorPower(-1.0);
+				Robot.elevator.setArmsPower(1.0);
+			}
 		}
 	}
 }
