@@ -20,7 +20,7 @@ public class DoubleRung extends Procedure {
 
 			// Pull the Robot Up
 			Robot.elevator.setElevatorPower(-1.0);
-			context.waitFor(() -> Robot.elevator.getElevatorPosition() < 10);
+			context.waitFor(() -> Robot.elevator.getElevatorPosition() < Robot.elevator.getElevatorBottom() + 10);
 			context.waitForSeconds(0.5);
 
 			//Arms Grab Bar
@@ -43,7 +43,7 @@ public class DoubleRung extends Procedure {
 			Robot.elevator.setElevatorPower(1.0);
 			Robot.elevator.setArmsPower(1.0);
 			//context.waitForSeconds(1.5);
-			context.waitFor(() -> Robot.elevator.getElevatorPosition() > 660);
+			context.waitFor(() -> Robot.elevator.getElevatorPosition() > Robot.elevator.getElevatorTop() - 10);
 			lastAngle = Robot.gyro.getGyroPitch();
 			while (Robot.gyro.getGyroPitch() >= lastAngle) {
 				lastAngle = Robot.gyro.getGyroPitch();
