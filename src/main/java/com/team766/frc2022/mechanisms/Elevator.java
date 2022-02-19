@@ -2,13 +2,13 @@ package com.team766.frc2022.mechanisms;
 
 import com.team766.framework.Mechanism;
 import com.team766.hal.RobotProvider;
-import com.team766.hal.SpeedController;
+import com.team766.hal.CANSpeedController;
 import com.team766.hal.SolenoidController;
 import com.team766.logging.Category;
 
 public class Elevator extends Mechanism {
     // Declaration of Mechanisms
-	private SpeedController m_elevator;
+	private CANSpeedController m_elevator;
 	private SolenoidController m_arms;
 
     public Elevator() {
@@ -21,8 +21,11 @@ public class Elevator extends Mechanism {
     public void setElevatorPower(double power) {
         loggerCategory = Category.DRIVE;
 		checkContextOwnership();
-
         m_elevator.set(power);
+    }
+    
+    public double getElevatorPosition() {
+        return m_elevator.getSensorPosition();
 	}
 	
 	public void setArmsPower(double power) {

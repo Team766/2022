@@ -19,6 +19,7 @@ public class Robot extends MyRobot {
 	// Declare mechanisms here
 	public static Drive drive;
 	public static Elevator elevator;
+	public static Gyro gyro;
 	
 	private static OI m_oi;
 	
@@ -47,6 +48,7 @@ public class Robot extends MyRobot {
 		
 		drive = new Drive();
 		elevator = new Elevator();
+		gyro = new Gyro();
 		m_oi = new OI();
 	}
 	

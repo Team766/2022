@@ -32,6 +32,7 @@ public class OI extends Procedure {
 		while (true) {
 			// Add driver controls here - make sure to take/release ownership
 			// of mechanisms when appropriate.
+			log("" + Robot.gyro.getGyroPitch());
 			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick0.getAxis(0));
 			if (Math.abs(m_joystick1.getAxis(1)) + Math.abs(m_joystick1.getAxis(0))> 0.3) {
 				context.takeOwnership(Robot.elevator);
@@ -46,13 +47,16 @@ public class OI extends Procedure {
 				Robot.elevator.setArmsPower(0);
 				context.releaseOwnership(Robot.elevator);
 			}
-
 			//if (climbingContext != null && !climbingContext.isDone())
 
 			if (m_joystick0.getButtonPressed(1)) {
 				log("Climbing!");
 				/*climbingContext = */
 				context.startAsync(new ClimbRung());
+			} else if (m_joystick0.getButtonPressed(2)) {
+				log("DoubleClimbing!");
+				/*climbingContext = */
+				context.startAsync(new DoubleRung());
 			}
 
 			context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
