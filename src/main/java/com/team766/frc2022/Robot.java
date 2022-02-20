@@ -18,7 +18,6 @@ import com.team766.web.WebServer;
 public class Robot extends MyRobot {
 	// Declare mechanisms here
 	
-	
 	private static OI m_oi;
 	public static Drive drive;
 	public static Limelight limelight;
@@ -45,7 +44,6 @@ public class Robot extends MyRobot {
 	@Override
 	public void robotInit() {
 		// Initialize mechanisms here
-		
 		
 		m_oi = new OI();
 		limelight = new Limelight();
