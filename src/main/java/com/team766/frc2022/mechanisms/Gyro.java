@@ -30,4 +30,14 @@ public class Gyro extends Mechanism {
 		double angle = m_gyro.getPitch();
 		return angle;
 	}
+
+	public double getGyroYaw() {
+		double angle = m_gyro.getYaw();
+		return angle;
+	}
+
+	public double getGyroRoll() {
+		double angle = m_gyro.getRoll();
+		return angle;
+	}
 }

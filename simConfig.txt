@@ -26,7 +26,8 @@
 		"elevator": {
 			"deviceId": 10
 		},
-		"arms": {"port": 0}
+		"arms": {"port": 0},
+		"slowMode": 10
 	},
 	"lineSensorLeft": {
 		"port": 2

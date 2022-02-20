@@ -32,11 +32,17 @@ public class OI extends Procedure {
 		while (true) {
 			// Add driver controls here - make sure to take/release ownership
 			// of mechanisms when appropriate.
+			loggerCategory = Category.DRIVE;
+			log("Elevator: " + Robot.elevator.getElevatorPosition() + " Arms: " + Robot.elevator.getArmsPower());
+			log("Pitch: " + Robot.gyro.getGyroPitch() + " Yaw: " + Robot.gyro.getGyroYaw() + " Roll: " + Robot.gyro.getGyroRoll());
+			loggerCategory = Category.OPERATOR_INTERFACE;
+
+
 			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick0.getAxis(0));
 			if (Math.abs(m_joystick1.getAxis(1)) + Math.abs(m_joystick1.getAxis(0))> 0.3) {
 				context.takeOwnership(Robot.elevator);
-				Robot.elevator.setElevatorPower(m_joystick1.getAxis(1));
-				Robot.elevator.setArmsPower(m_joystick1.getAxis(0));
+				Robot.elevator.setElevatorPower(m_joystick1.getAxis(1) + (m_joystick0.getButtonPressed(3)? 1 : 0) + (m_joystick0.getButtonPressed(4)? -1 : 0));
+				Robot.elevator.setArmsPower(m_joystick1.getAxis(0) + (m_joystick0.getButtonPressed(5)? 1 : 0) + (m_joystick0.getButtonPressed(6)? -1 : 0));
 				context.releaseOwnership(Robot.elevator);
 				joystickControl = true;
 			} else if (joystickControl) {
@@ -57,32 +63,6 @@ public class OI extends Procedure {
 				log("DoubleClimbing!");
 				/*climbingContext = */
 				context.startAsync(new DoubleRung());
-			}
-
-			if (m_joystick0.getButtonPressed(3)) {
-				int currentSlowMode = Robot.elevator.getSlowMode();
-				currentSlowMode = currentSlowMode < 1 ? 5 : currentSlowMode - 1;
-				context.takeOwnership(Robot.elevator);
-				Robot.elevator.setSlowMode(currentSlowMode);
-				log("Current Slow Mode: " + Robot.elevator.getSlowMode());
-				context.releaseOwnership(Robot.elevator);
-			}
-
-			if (m_joystick0.getButtonPressed(4)) {
-				int currentSlowMode = Robot.elevator.getSlowMode();
-				currentSlowMode = currentSlowMode > 4 ? 0 : currentSlowMode + 1;
-				context.takeOwnership(Robot.elevator);
-				Robot.elevator.setSlowMode(currentSlowMode);
-				log("Current Slow Mode: " + Robot.elevator.getSlowMode());
-				context.releaseOwnership(Robot.elevator);
-			}
-
-			if (m_joystick0.getButtonPressed(5)) {
-
-			}
-
-			if (m_joystick0.getButtonPressed(6)) {
-
 			}
 
 			if (m_joystick0.getButtonPressed(7)) {
