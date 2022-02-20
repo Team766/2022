@@ -1,9 +1,11 @@
 package com.team766.frc2022.mechanisms;
 
+import com.team766.config.ConfigFileReader;
 import com.team766.framework.Mechanism;
 import com.team766.hal.CANSpeedController;
 import com.team766.hal.RobotProvider;
 import com.team766.hal.SpeedController;
+import com.team766.library.ValueProvider;
 import com.team766.logging.Category;
 
 public class Drive extends Mechanism {
@@ -12,8 +14,9 @@ public class Drive extends Mechanism {
     private CANSpeedController m_leftVictor2;
     private CANSpeedController m_rightVictor1;
     private CANSpeedController m_rightVictor2;
-    private  CANSpeedController m_leftTalon;
-    private  CANSpeedController m_rightTalon;
+    private CANSpeedController m_leftTalon;
+    private CANSpeedController m_rightTalon;
+    private ValueProvider<Double> drivePower;
 
     public Drive() {
         // Initializations
@@ -27,12 +30,15 @@ public class Drive extends Mechanism {
         m_rightVictor2.follow(m_rightTalon);
         m_leftVictor1.follow(m_leftTalon);
         m_leftVictor2.follow(m_leftTalon);
+        drivePower = ConfigFileReader.getInstance().getDouble("drive.drivePower"); //1
     }
 
     public void setDrivePower(double leftPower, double rightPower) {
         loggerCategory = Category.DRIVE;
 		checkContextOwnership();
 
+        leftPower *= drivePower.get();
+        rightPower *= drivePower.get();
         m_leftTalon.set(leftPower);
         m_rightTalon.set(rightPower);
     }
