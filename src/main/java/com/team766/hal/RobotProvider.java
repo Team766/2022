@@ -74,7 +74,12 @@ public abstract class RobotProvider {
 	public CANSpeedController getVictorCANMotor(String configName) {
 		try {
 			Integer port = ConfigFileReader.getInstance().getInt(configName + ".deviceId").get();
-			return getVictorCANMotor(port);
+			CANSpeedController victor = getVictorCANMotor(port);
+			ValueProvider<Boolean> isInverted = ConfigFileReader.getInstance().getBoolean(configName + ".inverted");
+			if (isInverted.hasValue()) {
+				victor.setInverted(isInverted.get());
+			}
+			return victor;
 		} catch (IllegalArgumentException ex) {
 			Logger.get(Category.CONFIGURATION).logData(Severity.ERROR, "Victor CAN Motor %s not found in config file, using mock victor instead", configName);
 			return new Talon(0);

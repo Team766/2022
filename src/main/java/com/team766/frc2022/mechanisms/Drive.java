@@ -22,6 +22,8 @@ public class Drive extends Mechanism {
         m_leftMotor2 = RobotProvider.instance.getVictorCANMotor("drive.leftMotor2");
 		m_rightMotor2 = RobotProvider.instance.getVictorCANMotor("drive.rightMotor2");
 		m_gyro = RobotProvider.instance.getGyro("drive.gyro");
+		m_rightMotor1.setInverted(true);
+		m_rightMotor2.setInverted(true);
 	}
 
 	public double getEncoderDistance() {
