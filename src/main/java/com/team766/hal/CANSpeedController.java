@@ -47,6 +47,9 @@ public interface CANSpeedController extends SpeedController {
 	 */
 	void set(ControlMode mode, double value);
 
+
+	void setVoltage(double voltage);
+
 	/**
 	 * Common interface for inverting direction of a speed controller.
 	 *

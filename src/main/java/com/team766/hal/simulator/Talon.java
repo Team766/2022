@@ -67,7 +67,10 @@ public class Talon implements CANSpeedController {
 		channel.command.controlMode = 
 				ProgramInterface.CANSpeedControllerCommand.ControlMode.valueOf(mode.name());
 	}
-	
+	@Override
+	public void setVoltage(double value) {
+		set(value/12);
+	}
 	public ControlMode getControlMode() {
 		return ControlMode.valueOf(channel.command.controlMode.name());
 	}
