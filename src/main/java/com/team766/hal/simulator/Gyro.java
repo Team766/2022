@@ -24,4 +24,12 @@ public class Gyro implements GyroReader{
 	public boolean isConnected() {
 		return true;
 	}
+	public double getPitch() {
+		return ProgramInterface.gyro.pitch;
+	}
+
+	public double getRoll() {
+		return ProgramInterface.gyro.roll;
+	}
+
 }

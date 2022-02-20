@@ -1,10 +1,11 @@
 package com.team766.frc2022.mechanisms;
+import edu.wpi.first.wpilibj.I2C.Port;
 
 import com.team766.framework.Mechanism;
 import com.team766.hal.CANSpeedController;
 import com.team766.hal.RobotProvider;
 import com.team766.hal.GyroReader;
-
+import com.kauailabs.navx.frc.*;
 public class Drive extends Mechanism {
     // Some other test change
     private CANSpeedController m_leftVictor1;
@@ -13,7 +14,7 @@ public class Drive extends Mechanism {
     private CANSpeedController m_rightVictor2;
     private  CANSpeedController m_leftTalon;
     private  CANSpeedController m_rightTalon;
-    private GyroReader m_gyro;
+    private AHRS m_gyro;
 
     public Drive() {
         // Initialize victors
@@ -34,8 +35,10 @@ public class Drive extends Mechanism {
         m_rightTalon = RobotProvider.instance.getTalonCANMotor("drive.rightTalon");
         
         // Initialize gyro
-        m_gyro = RobotProvider.instance.getGyro("drive.gyro");
-        //m_gyroDirection = ConfigFileReader.getInstance().getDouble("drive.gyroDirection").get();
+       // m_gyro = RobotProvider.instance.getGyro("drive.gyro");
+       m_gyro = new AHRS(Port.kOnboard);
+ 
+       //m_gyroDirection = ConfigFileReader.getInstance().getDouble("drive.gyroDirection").get();
     }
     public double getGyroAngle() {
         return((m_gyro.getAngle() % 360) );
