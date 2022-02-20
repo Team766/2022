@@ -49,10 +49,11 @@ public class OI extends Procedure {
 			//if (climbingContext != null && !climbingContext.isDone())
 
 			if (m_joystick0.getButtonPressed(1)) {
-				log("Climbing!");
-				/*climbingContext = */
-				context.startAsync(new ClimbRung());
-			} else if (m_joystick0.getButtonPressed(2)) {
+				log("Reset Elevator Position!");
+				Robot.elevator.resetElevatorPosition();
+			} 
+			
+			if (m_joystick0.getButtonPressed(2)) {
 				log("DoubleClimbing!");
 				/*climbingContext = */
 				context.startAsync(new DoubleRung());
@@ -60,11 +61,33 @@ public class OI extends Procedure {
 
 			if (m_joystick0.getButtonPressed(3)) {
 				int currentSlowMode = Robot.elevator.getSlowMode();
+				currentSlowMode = currentSlowMode > 1 ? 5 : currentSlowMode - 1;
+				context.takeOwnership(Robot.elevator);
+				Robot.elevator.setSlowMode(currentSlowMode);
+				log("Current Slow Mode: " + Robot.elevator.getSlowMode());
+				context.releaseOwnership(Robot.elevator);
+			}
+
+			if (m_joystick0.getButtonPressed(4)) {
+				int currentSlowMode = Robot.elevator.getSlowMode();
 				currentSlowMode = currentSlowMode > 4 ? 0 : currentSlowMode + 1;
 				context.takeOwnership(Robot.elevator);
 				Robot.elevator.setSlowMode(currentSlowMode);
 				log("Current Slow Mode: " + Robot.elevator.getSlowMode());
 				context.releaseOwnership(Robot.elevator);
+			}
+
+			if (m_joystick0.getButtonPressed(5)) {
+
+			}
+
+			if (m_joystick0.getButtonPressed(6)) {
+
+			}
+
+			if (m_joystick0.getButtonPressed(7)) {
+				log("Reset Elevator Position!");
+				Robot.gyro.resetGyro();
 			}
 
 			context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());

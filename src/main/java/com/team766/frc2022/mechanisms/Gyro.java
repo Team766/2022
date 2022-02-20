@@ -1,4 +1,5 @@
 package com.team766.frc2022.mechanisms;
+import edu.wpi.first.wpilibj.I2C.Port;
 
 import com.team766.framework.Mechanism;
 import com.team766.hal.EncoderReader;
@@ -6,15 +7,17 @@ import com.team766.hal.RobotProvider;
 import com.team766.hal.SpeedController;
 import com.team766.hal.CANSpeedController;
 import com.team766.logging.Category;
+//import edu.wpi.first.wpilibj.I2C.Port;
 import com.team766.hal.GyroReader;
+import com.kauailabs.navx.frc.*;
 
 public class Gyro extends Mechanism {
-	private GyroReader m_gyro;
+	private AHRS m_gyro;
 
 	public Gyro() {
 		loggerCategory = Category.DRIVE;
 
-		m_gyro = RobotProvider.instance.getGyro("drive.gyro");
+		m_gyro = new AHRS(Port.kOnboard);
 	}
 
 	public void resetGyro() {

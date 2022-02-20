@@ -41,6 +41,9 @@ public class Elevator extends Mechanism {
     public double getElevatorPosition() {
         return m_elevator.getSensorPosition();
 	}
+    public void resetElevatorPosition() {
+        m_elevator.setPosition(0);
+	}
 	
 	public void setArmsPower(double power) {
         loggerCategory = Category.DRIVE;
