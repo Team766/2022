@@ -61,7 +61,7 @@ public class OI extends Procedure {
 
 			if (m_joystick0.getButtonPressed(3)) {
 				int currentSlowMode = Robot.elevator.getSlowMode();
-				currentSlowMode = currentSlowMode > 1 ? 5 : currentSlowMode - 1;
+				currentSlowMode = currentSlowMode < 1 ? 5 : currentSlowMode - 1;
 				context.takeOwnership(Robot.elevator);
 				Robot.elevator.setSlowMode(currentSlowMode);
 				log("Current Slow Mode: " + Robot.elevator.getSlowMode());
@@ -86,7 +86,7 @@ public class OI extends Procedure {
 			}
 
 			if (m_joystick0.getButtonPressed(7)) {
-				log("Reset Elevator Position!");
+				log("Reset Gyro!");
 				Robot.gyro.resetGyro();
 			}
 
