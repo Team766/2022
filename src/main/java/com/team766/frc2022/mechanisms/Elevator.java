@@ -20,6 +20,7 @@ public class Elevator extends Mechanism {
     private ValueProvider<Integer> elevatorLeniency;
     private ValueProvider<Double> elevatorPower;
     private ValueProvider<Integer> slowMode;
+    
 
     public Elevator() {
         // Initializations
@@ -30,8 +31,8 @@ public class Elevator extends Mechanism {
 
         elevatorTop = ConfigFileReader.getInstance().getInt("climber.elevatorTop"); //670
         elevatorBottom = ConfigFileReader.getInstance().getInt("climber.elevatorBottom"); //0
-        elevatorLeniency = ConfigFileReader.getInstance().getInt("climber.elevatorLeniency"); //5
-        elevatorPower = ConfigFileReader.getInstance().getDouble("climber.elevatorPower"); //1
+        elevatorLeniency = ConfigFileReader.getInstance().getInt("climber.elevatorHeightLeniency"); //5
+        elevatorPower = ConfigFileReader.getInstance().getDouble("climber.elevatorScaledPower"); //1
         slowMode = ConfigFileReader.getInstance().getInt("climber.slowMode"); //0
     }
 
