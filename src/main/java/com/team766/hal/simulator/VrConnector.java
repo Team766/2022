@@ -61,7 +61,9 @@ public class VrConnector implements Runnable {
 	private static final List<CANPortMapping> CAN_MOTOR_CHANNELS = Arrays.asList(
 		new CANPortMapping(6, 10, 10),  // Left motor
 		new CANPortMapping(4, 11, 11),  // Right motor
-		new CANPortMapping(10, 12, 13)  // Intake
+		new CANPortMapping(10, 12, 13), // Intake
+		new CANPortMapping(12, 14, 0),  // Aux/center motor
+		new CANPortMapping(14, 16, 0)   // Aux2 motor
 	);
 
 	/// Feedback indexes
