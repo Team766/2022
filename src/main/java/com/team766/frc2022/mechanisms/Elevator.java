@@ -34,11 +34,12 @@ public class Elevator extends Mechanism {
         elevatorLeniency = ConfigFileReader.getInstance().getInt("climber.elevatorHeightLeniency"); //5
         elevatorPower = ConfigFileReader.getInstance().getDouble("climber.elevatorScaledPower"); //1
         slowMode = ConfigFileReader.getInstance().getInt("climber.slowMode"); //0
+
+        loggerCategory = Category.ELEVATOR;
     }
 
     
     public void setElevatorPower(double power) {
-        loggerCategory = Category.DRIVE;
         power *= elevatorPower.get();
         checkContextOwnership();
         if (power < 0 && getElevatorPosition() - getElevatorBottom() >= getElevatorLeniency() && !m_bottom.get()) {
@@ -58,7 +59,6 @@ public class Elevator extends Mechanism {
 	}
 	
 	public void setArmsPower(double power) {
-        loggerCategory = Category.DRIVE;
 		checkContextOwnership();
         m_arms.set(power == 0? m_arms.get() : power > 0);
     }

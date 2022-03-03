@@ -11,7 +11,7 @@ public class DoubleRung extends Procedure {
 	public void run (Context context) {
 
 		context.takeOwnership(Robot.elevator);
-		loggerCategory = Category.DRIVE;
+		loggerCategory = Category.ELEVATOR;
 		double lastAngle = -180;
 		int speedMode = Robot.elevator.getSlowMode(); //0 is fastest
 
