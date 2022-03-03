@@ -26,10 +26,10 @@ public class Drive extends Mechanism {
         m_rightVictor2 = RobotProvider.instance.getVictorCANMotor("drive.rightVictor2");
         m_leftTalon = RobotProvider.instance.getTalonCANMotor("drive.leftTalon");
         m_rightTalon = RobotProvider.instance.getTalonCANMotor("drive.rightTalon");
-        m_rightVictor1.follow(m_rightTalon);
-        m_rightVictor2.follow(m_rightTalon);
-        m_leftVictor1.follow(m_leftTalon);
-        m_leftVictor2.follow(m_leftTalon);
+        //m_rightVictor1.follow(m_rightTalon);
+        //m_rightVictor2.follow(m_rightTalon);
+        //m_leftVictor1.follow(m_leftTalon);
+        //m_leftVictor2.follow(m_leftTalon);
         drivePower = ConfigFileReader.getInstance().getDouble("drive.drivePower"); //1
     }
 

@@ -34,15 +34,16 @@ public class OI extends Procedure {
 			// of mechanisms when appropriate.
 			loggerCategory = Category.DRIVE;
 			log("Elevator: " + Robot.elevator.getElevatorPosition() + " Arms: " + Robot.elevator.getArmsPower());
-			log("Pitch: " + Robot.gyro.getGyroPitch() + " Yaw: " + Robot.gyro.getGyroYaw() + " Roll: " + Robot.gyro.getGyroRoll());
+			//log("Pitch: " + Robot.gyro.getGyroPitch() + " Yaw: " + Robot.gyro.getGyroYaw() + " Roll: " + Robot.gyro.getGyroRoll());
+			log("Top: " + Robot.elevator.getElevatorTop() + " Bottom: " + Robot.elevator.getElevatorBottom());
 			loggerCategory = Category.OPERATOR_INTERFACE;
 
 
 			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick0.getAxis(0));
-			if (Math.abs(m_joystick1.getAxis(1)) + Math.abs(m_joystick1.getAxis(0))> 0.3) {
+			if (m_joystick0.getButtonPressed(3) || m_joystick0.getButtonPressed(4) || m_joystick0.getButtonPressed(5) || m_joystick0.getButtonPressed(6)) {
 				context.takeOwnership(Robot.elevator);
-				Robot.elevator.setElevatorPower(m_joystick1.getAxis(1) + (m_joystick0.getButtonPressed(3)? 1 : 0) + (m_joystick0.getButtonPressed(4)? -1 : 0));
-				Robot.elevator.setArmsPower(m_joystick1.getAxis(0) + (m_joystick0.getButtonPressed(5)? 1 : 0) + (m_joystick0.getButtonPressed(6)? -1 : 0));
+				Robot.elevator.setElevatorPower(/*m_joystick1.getAxis(1) + */(m_joystick0.getButtonPressed(3)? 1 : 0) + (m_joystick0.getButtonPressed(4)? -1 : 0));
+				Robot.elevator.setArmsPower(/*m_joystick1.getAxis(0) + */(m_joystick0.getButtonPressed(5)? 1 : 0) + (m_joystick0.getButtonPressed(6)? -1 : 0));
 				context.releaseOwnership(Robot.elevator);
 				joystickControl = true;
 			} else if (joystickControl) {
@@ -67,6 +68,7 @@ public class OI extends Procedure {
 
 			if (m_joystick0.getButtonPressed(7)) {
 				log("Reset Gyro!");
+				context.takeOwnership(Robot.gyro);
 				Robot.gyro.resetGyro();
 			}
 

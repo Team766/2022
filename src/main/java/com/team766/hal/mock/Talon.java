@@ -78,7 +78,7 @@ public class Talon implements CANSpeedController {
 
 	@Override
 	public void follow(CANSpeedController leader) {
-		throw new UnsupportedOperationException();
+		//throw new UnsupportedOperationException();
 	}
 
 	@Override

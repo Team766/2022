@@ -4,6 +4,7 @@ import com.team766.framework.Mechanism;
 import com.team766.hal.RobotProvider;
 import com.team766.hal.CANSpeedController;
 import com.team766.hal.DigitalInputReader;
+import com.team766.hal.DoubleSolenoid;
 import com.team766.hal.SolenoidController;
 import com.team766.library.ValueProvider;
 import com.team766.logging.Category;
@@ -11,7 +12,7 @@ import com.team766.logging.Category;
 public class Elevator extends Mechanism {
     // Declaration of Mechanisms
 	private CANSpeedController m_elevator;
-    private SolenoidController m_arms;
+    private DoubleSolenoid m_arms;
     private DigitalInputReader m_bottom;
     private DigitalInputReader m_top;
 
@@ -25,9 +26,9 @@ public class Elevator extends Mechanism {
     public Elevator() {
         // Initializations
 		m_elevator = RobotProvider.instance.getTalonCANMotor("climber.elevator");
-        m_arms = RobotProvider.instance.getSolenoid("climber.arms");
+        m_arms = new DoubleSolenoid(RobotProvider.instance.getSolenoid("climber.armsFront"), RobotProvider.instance.getSolenoid("climber.armsBack"));
         m_bottom = RobotProvider.instance.getDigitalInput("climber.bottomDigitalInput");
-        m_top = RobotProvider.instance.getDigitalInput("climber.bottomDigitalInput");
+        m_top = RobotProvider.instance.getDigitalInput("climber.topDigitalInput");
 
         elevatorTop = ConfigFileReader.getInstance().getInt("climber.elevatorTop"); //670
         elevatorBottom = ConfigFileReader.getInstance().getInt("climber.elevatorBottom"); //0
@@ -60,7 +61,15 @@ public class Elevator extends Mechanism {
 	
 	public void setArmsPower(double power) {
 		checkContextOwnership();
-        m_arms.set(power == 0? m_arms.get() : power > 0);
+        DoubleSolenoid.State armsState;
+        if (power > 0) {
+            armsState = DoubleSolenoid.State.Forward;
+        } else if (power < 0) {
+            armsState = DoubleSolenoid.State.Backward;
+        } else {
+            armsState = DoubleSolenoid.State.Neutral;
+        }
+        m_arms.set(armsState);
     }
 
     public boolean getArmsPower() {
