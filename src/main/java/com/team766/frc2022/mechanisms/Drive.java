@@ -14,6 +14,9 @@ public class Drive extends Mechanism {
     private CANSpeedController m_rightMotor1;
 	private CANSpeedController m_rightMotor2;
 	private GyroReader m_gyro;
+	final double Drive_P = 1;
+	final double Drive_I = 1;
+	final double Drive_D = 1;
 
 	public Drive() {
 		loggerCategory = Category.DRIVE;
