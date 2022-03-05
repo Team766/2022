@@ -34,16 +34,26 @@ public class OI extends Procedure {
 			// of mechanisms when appropriate.
 			loggerCategory = Category.DRIVE;
 			log("Elevator: " + Robot.elevator.getElevatorPosition() + " Arms: " + Robot.elevator.getArmsPower());
-			//log("Pitch: " + Robot.gyro.getGyroPitch() + " Yaw: " + Robot.gyro.getGyroYaw() + " Roll: " + Robot.gyro.getGyroRoll());
+			log("Pitch: " + Robot.gyro.getGyroPitch() + " Yaw: " + Robot.gyro.getGyroYaw() + " Roll: " + Robot.gyro.getGyroRoll());
 			log("Top: " + Robot.elevator.getElevatorTop() + " Bottom: " + Robot.elevator.getElevatorBottom());
 			loggerCategory = Category.OPERATOR_INTERFACE;
 
 
-			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick0.getAxis(0));
-			if (m_joystick0.getButtonPressed(3) || m_joystick0.getButtonPressed(4) || m_joystick0.getButtonPressed(5) || m_joystick0.getButtonPressed(6)) {
+			//Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick0.getAxis(0));
+			Robot.elevator.setElevatorPower(-1 * m_joystick0.getAxis(1));
+			if (m_joystick0.getButtonPressed(1)) {
+				if (m_joystick0.getButtonPressed(7)) {
+					Robot.elevator.setArmsPower(0);
+				} else {
+					Robot.elevator.setArmsPower(1);
+				}
+			} else if (m_joystick0.getButtonPressed(7)) {
+				Robot.elevator.setArmsPower(-1);
+			}
+			/*if (m_joystick0.getButtonPressed(3) || m_joystick0.getButtonPressed(4) || m_joystick0.getButtonPressed(5) || m_joystick0.getButtonPressed(6)) {
 				context.takeOwnership(Robot.elevator);
-				Robot.elevator.setElevatorPower(/*m_joystick1.getAxis(1) + */(m_joystick0.getButtonPressed(3)? 1 : 0) + (m_joystick0.getButtonPressed(4)? -1 : 0));
-				Robot.elevator.setArmsPower(/*m_joystick1.getAxis(0) + */(m_joystick0.getButtonPressed(5)? 1 : 0) + (m_joystick0.getButtonPressed(6)? -1 : 0));
+				Robot.elevator.setElevatorPower(/*m_joystick1.getAxis(1) + (m_joystick0.getButtonPressed(3)? 1 : 0) + (m_joystick0.getButtonPressed(4)? -1 : 0));
+				Robot.elevator.setArmsPower(/*m_joystick1.getAxis(0) + (m_joystick0.getButtonPressed(5)? 1 : 0) + (m_joystick0.getButtonPressed(6)? -1 : 0));
 				context.releaseOwnership(Robot.elevator);
 				joystickControl = true;
 			} else if (joystickControl) {
@@ -52,9 +62,9 @@ public class OI extends Procedure {
 				Robot.elevator.setElevatorPower(0);
 				Robot.elevator.setArmsPower(0);
 				context.releaseOwnership(Robot.elevator);
-			}
+			}*/
 			//if (climbingContext != null && !climbingContext.isDone())
-
+			/*
 			if (m_joystick0.getButtonPressed(1)) {
 				log("Reset Elevator Position!");
 				Robot.elevator.resetElevatorPosition();
@@ -62,7 +72,7 @@ public class OI extends Procedure {
 			
 			if (m_joystick0.getButtonPressed(2)) {
 				log("DoubleClimbing!");
-				/*climbingContext = */
+				/*climbingContext = 
 				context.startAsync(new DoubleRung());
 			}
 
@@ -70,7 +80,7 @@ public class OI extends Procedure {
 				log("Reset Gyro!");
 				context.takeOwnership(Robot.gyro);
 				Robot.gyro.resetGyro();
-			}
+			}*/
 
 			context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 		}

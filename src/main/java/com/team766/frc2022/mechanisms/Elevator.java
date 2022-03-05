@@ -43,9 +43,9 @@ public class Elevator extends Mechanism {
     public void setElevatorPower(double power) {
         power *= elevatorPower.get();
         checkContextOwnership();
-        if (power < 0 && getElevatorPosition() - getElevatorBottom() >= getElevatorLeniency() && !m_bottom.get()) {
+        if (power < 0 /*&& getElevatorPosition() - getElevatorBottom() >= getElevatorLeniency() && !m_bottom.get()*/) {
             m_elevator.set(power);
-        } else if (power > 0 && getElevatorTop() - getElevatorPosition() >= getElevatorLeniency() && !m_top.get()) {
+        } else if (power > 0 /*&& getElevatorTop() - getElevatorPosition() >= getElevatorLeniency() && !m_top.get()*/) {
             m_elevator.set(power);
         } else {
             m_elevator.set(0);
