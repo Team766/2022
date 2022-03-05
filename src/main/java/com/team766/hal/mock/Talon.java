@@ -167,4 +167,10 @@ public class Talon implements CANSpeedController {
 		motionCruiseAcceleration = sensorUnitsPer100msPerSec;
 		return ErrorCode.OK;
 	}
+
+	@Override
+	public void setVoltage(double voltage) {
+		// TODO Auto-generated method stub
+		
+	}
 }

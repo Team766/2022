@@ -9,11 +9,11 @@
 		},
 		"leftEncoder": {
 			"ports": [0, 1],
-			"distancePerPulse": -0.0524
+			"distancePerPulse": -0.001870229376
 		},
 		"rightEncoder": {
 			"ports": [2, 3],
-			"distancePerPulse": -0.0524
+			"distancePerPulse": -0.001870229376
 		},
 		"gyro": {
 			"port": 12

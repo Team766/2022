@@ -1,21 +1,14 @@
 package com.team766.frc2022.mechanisms;
-import edu.wpi.first.wpilibj.I2C.Port;
-
+import com.kauailabs.navx.frc.*;
 import com.team766.framework.Mechanism;
 import com.team766.hal.CANSpeedController;
 import com.team766.hal.EncoderReader;
 import com.team766.hal.RobotProvider;
-import com.team766.hal.GyroReader;
-import com.kauailabs.navx.frc.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.I2C.Port;
 
 public class Drive extends Mechanism {
     // Some other test change
@@ -29,11 +22,19 @@ public class Drive extends Mechanism {
     private EncoderReader m_rightEncoder;
     private AHRS m_gyro;
     private final DifferentialDriveOdometry m_odometry;
-
+    private double offSetR = 0.0; // pulses
+    private double offSetL = 0.0; // pulses
+    private int counter = 0;
+    private double distancePerPulse = -0.001870229376/4.0 ; // in meters
     public Drive() {
         // Initialize victors
         m_leftVictor1 = RobotProvider.instance.getVictorCANMotor("drive.leftVictor1"); 
+
         m_rightVictor1 = RobotProvider.instance.getVictorCANMotor("drive.rightVictor1");
+        
+        m_leftVictor2 = RobotProvider.instance.getVictorCANMotor("drive.leftVictor2"); 
+        
+        m_rightVictor2 = RobotProvider.instance.getVictorCANMotor("drive.rightVictor2");
 
         // Initialize second victors if they exist
         // if (ConfigFileReader.getInstance().getInt("drive.leftVictor2").get() >= 0) {
@@ -47,17 +48,16 @@ public class Drive extends Mechanism {
         // Initializes talons
         m_leftTalon = RobotProvider.instance.getTalonCANMotor("drive.leftTalon");
         m_rightTalon = RobotProvider.instance.getTalonCANMotor("drive.rightTalon");
+        // Initialize encoders
         m_rightEncoder = RobotProvider.instance.getEncoder("drive.rightEncoder");
         m_leftEncoder = RobotProvider.instance.getEncoder("drive.leftEncoder");
-        m_rightVictor1.follow(m_rightTalon);
-        m_rightVictor2.follow(m_rightTalon);
-        m_leftVictor1.follow(m_leftTalon);
-        m_leftVictor2.follow(m_leftTalon);
+      
         // Initialize gyro
-       // m_gyro = RobotProvider.instance.getGyro("drive.gyro");
-       m_gyro = new AHRS(Port.kOnboard);
+        // m_gyro = RobotProvider.instance.getGyro("drive.gyro");
+        // DON'T WORRY ABOUT THE ERRORS, the robots should still be using the external gyro fine
+        m_gyro = new AHRS(Port.kOnboard);
  
-       resetEncoders();
+       resetEncoders();                     
        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
        //m_gyroDirection = ConfigFileReader.getInstance().getDouble("drive.gyroDirection").get();
     }
@@ -66,15 +66,28 @@ public class Drive extends Mechanism {
     }
     @Override
     public void run(){
-        System.out.println("Gyro: " + getGyroAngle() + " Connected? " + m_gyro.isConnected());
         m_odometry.update(
-            m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
+            m_gyro.getRotation2d(), getLeftDistance(), getRightDistance());
+    if(counter%100 == 1){
+      //System.out.println(getPose()); 
+      log("left %f  right %f", getLeftDistance(), getRightDistance());       
     }
+    counter++;
+  }
     public void setDrivePower(double leftPower, double rightPower){
       checkContextOwnership();
-      m_rightTalon.set(leftPower);
-      m_leftTalon.set(leftPower);
-      
+     // m_rightTalon.set(rightPower);
+     // m_leftTalon.set(leftPower);
+     // m_leftVictor1.set(leftPower);
+     // m_leftVictor2.set(leftPower);
+     // m_rightVictor1.set(rightPower);
+     // m_rightVictor2.set(rightPower);
+    }
+    public double getLeftDistance(){
+      return(m_leftTalon.getSensorPosition() - offSetL)*distancePerPulse;
+    }
+    public double getRightDistance(){
+      return(m_rightTalon.getSensorPosition() - offSetR)*distancePerPulse;
     }
 
   /**
@@ -92,7 +105,7 @@ public class Drive extends Mechanism {
    * @return The current wheel speeds.
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(m_leftEncoder.getRate(), m_rightEncoder.getRate());
+    return new DifferentialDriveWheelSpeeds(m_leftTalon.getSensorVelocity(), m_rightTalon.getSensorVelocity());
   }
 
   /**
@@ -101,6 +114,7 @@ public class Drive extends Mechanism {
    * @param pose The pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
+    zeroHeading();
     resetEncoders();
     m_odometry.resetPosition(pose, m_gyro.getRotation2d());
   }
@@ -125,15 +139,25 @@ public class Drive extends Mechanism {
    */
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     checkContextOwnership();
-    m_rightTalon.setVoltage(leftVolts);
-    m_leftTalon.setVoltage(rightVolts);
+    if(leftVolts <= 0 ){leftVolts = Math.max(leftVolts, -6.0);} else {leftVolts = Math.min(leftVolts, 6.0);}
+    if(rightVolts <= 0 ){rightVolts = Math.max(rightVolts, -6.0);} else {rightVolts = Math.min(rightVolts, 6.0);}
+    System.out.println("Left voltage: " + leftVolts + " | right voltage: " + rightVolts);
+    m_rightTalon.setVoltage(rightVolts);
+    m_leftTalon.setVoltage(leftVolts);
+    m_rightVictor1.setVoltage(rightVolts);
+    m_leftVictor1.setVoltage(leftVolts);
+    m_rightVictor2.setVoltage(rightVolts);
+    m_leftVictor2.setVoltage(leftVolts);
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
   public void resetEncoders() {
     checkContextOwnership();
-    m_leftEncoder.reset();
-    m_rightEncoder.reset();
+    offSetL += m_leftTalon.getSensorPosition();
+    offSetR += m_rightTalon.getSensorPosition();
+    
+    //m_leftEncoder.reset();
+    //m_rightEncoder.reset();
   }
 
   /**
@@ -142,7 +166,7 @@ public class Drive extends Mechanism {
    * @return the average of the two encoder readings
    */
   public double getAverageEncoderDistance() {
-    return (m_leftEncoder.getDistance() + m_rightEncoder.getDistance()) / 2.0;
+    return (getLeftDistance()) + getRightDistance() / 2.0;
   }
   
   /**

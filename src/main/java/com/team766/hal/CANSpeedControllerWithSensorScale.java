@@ -174,4 +174,10 @@ public class CANSpeedControllerWithSensorScale implements CANSpeedController {
     public void set(double speed) {
         delegate.set(speed);
     }
+
+    @Override
+    public void setVoltage(double voltage) {
+        // TODO Auto-generated method stub
+        
+    }
 }
