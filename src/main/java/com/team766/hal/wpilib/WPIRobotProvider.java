@@ -20,9 +20,14 @@ import com.team766.logging.Logger;
 import com.team766.logging.Severity;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SPI;
 
 public class WPIRobotProvider extends RobotProvider {
+
+	private CANSpeedController[] talonCanMotors = new CANSpeedController[64];
+	private CANSpeedController[] victorCanMotors = new CANSpeedController[64];
+	private CANSpeedController[] sparkMaxMotors = new CANSpeedController[64];
 
 	@Override
 	public SpeedController getMotor(int index) {
@@ -34,21 +39,25 @@ public class WPIRobotProvider extends RobotProvider {
 	}
 
 	@Override
-	public CANSpeedController getTalonCANMotor(int index) {
-		if (talonCanMotors[index] == null) {
-			talonCanMotors[index] = new CANTalonSpeedController(index);
+	public CANSpeedController getCANMotor(int index, CANSpeedController.Type type) {
+		switch (type) {
+			case SparkMax:
+				if (sparkMaxMotors[index] == null) {
+					sparkMaxMotors[index] = new CANTalonSpeedController(index);
+				}
+				return sparkMaxMotors[index];
+			case TalonSRX:
+				if (talonCanMotors[index] == null) {
+					talonCanMotors[index] = new CANTalonSpeedController(index);
+				}
+				return talonCanMotors[index];
+			case VictorSPX:
+				if (victorCanMotors[index] == null) {
+					victorCanMotors[index] = new CANVictorSpeedController(index);
+				}
+				return victorCanMotors[index];
 		}
-
-		return talonCanMotors[index];
-	}
-
-	@Override
-	public CANSpeedController getVictorCANMotor(int index) {
-		if (victorCanMotors[index] == null) {
-			victorCanMotors[index] = new CANVictorSpeedController(index);
-		}
-
-		return victorCanMotors[index];
+		throw new IllegalArgumentException("Unsupported CAN motor type " + type);
 	}
 
 	@Override
@@ -71,6 +80,8 @@ public class WPIRobotProvider extends RobotProvider {
 	// 	0+ 	= Analog Gyro on port index
 	public GyroReader getGyro(int index) {
 		if(gyros[index + 1] == null){
+			if(index == -2)
+				gyros[index + 1] = new NavXGyro(I2C.Port.kOnboard);
 			if(index == -1)
 				gyros[index + 1] = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
 			else
