@@ -11,7 +11,8 @@ public enum Category {
 	AUTONOMOUS,
 	CONFIGURATION,
 	PROCEDURES,
-	OPERATOR_INTERFACE;
+	OPERATOR_INTERFACE,
+	CLIMBER;
 	
 	private static final Category[] VALUES = Category.values();
 	public static Category fromInteger(byte x) {

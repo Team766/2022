@@ -29,7 +29,23 @@ public class OI extends Procedure {
 		while (true) {
 			// Add driver controls here - make sure to take/release ownership
 			// of mechanisms when appropriate.
-			
+			context.takeOwnership(Robot.drive);
+			context.takeOwnership(Robot.climber);
+			context.takeOwnership(Robot.climberEx);
+			log("J0 A0: " + m_joystick0.getAxis(0) +
+			    "  J0 A1: " + m_joystick0.getAxis(1) +
+			    "  J1 A0: " + m_joystick1.getAxis(0) +
+			    "  J1 A1: " + m_joystick1.getAxis(1) +
+			    "  J0 B1: " + m_joystick0.getButton(1) +
+			    "  J0 B2: " + m_joystick0.getButton(2) +
+				"  J0 B3: " + m_joystick0.getButton(3) +
+				"  J1 B1: " + m_joystick1.getButton(1) +
+				"  J1 B2: " + m_joystick1.getButton(2) +
+				"  J1 B3: " + m_joystick1.getButton(3));
+				
+			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick0.getAxis(0));
+			Robot.climber.setElevatorMotor(m_joystick1.getAxis(1));
+			Robot.climberEx.setArmsPusher(m_joystick1.getButton(2));
 
 			context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 		}

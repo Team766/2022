@@ -17,6 +17,9 @@ import com.team766.web.WebServer;
 
 public class Robot extends MyRobot {
 	// Declare mechanisms here
+	public static Drive drive;
+	public static Climber climber;
+	public static ClimberEx climberEx;
 	
 	
 	private static OI m_oi;
@@ -43,7 +46,9 @@ public class Robot extends MyRobot {
 	@Override
 	public void robotInit() {
 		// Initialize mechanisms here
-		
+		drive = new Drive();
+		climber = new Climber();
+		climberEx = new ClimberEx();
 		
 		m_oi = new OI();
 	}
