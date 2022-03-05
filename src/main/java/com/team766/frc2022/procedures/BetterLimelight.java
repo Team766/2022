@@ -11,15 +11,57 @@ import com.team766.config.ConfigFileReader;
 import com.team766.framework.Context;
 import com.team766.logging.Category;
 import com.team766.controllers.PIDController;
+import java.util.*;
 
 public class BetterLimelight extends Procedure{
     PIDController controller;
+    double stopdist = 2; //distance in front of reflective tape we want to be
 
     public BetterLimelight(){
 		loggerCategory = Category.AUTONOMOUS; //Delcare here since we aren't creating it, just changing its value
 	}
 
     public void run(Context context){
-        //controller = new PIDController()
+        context.takeOwnership(Robot.limelight);
+        ArrayList<Double> list = new ArrayList<Double>();
+        double prev_time = RobotProvider.instance.getClock().getTime();
+        double turnangle = 0; //actual angle that we filter out
+        double distance = 0;
+
+        while (true){ //filters out x offset
+            double cur_time = RobotProvider.instance.getClock().getTime();
+            double angle = Robot.limelight.horizontalOffset();
+            if (angle != 0){
+                list.add(angle);
+            }
+            if (cur_time-prev_time >= 0.3){
+                if (list.isEmpty()){
+                    log("Stop trolling. There is no target in this direction.");
+                } else {
+                    turnangle = list.get(list.size()/2);
+                }
+                break;
+            }
+        }
+
+        new PreciseTurn(turnangle).run(context);
+        
+        while (true){ //filters out distance
+            double cur_time = RobotProvider.instance.getClock().getTime();
+            double dist = Robot.limelight.distanceFromTarget();
+            if (dist != 0){
+                list.add(dist);
+            }
+            if (cur_time-prev_time >= 0.3){
+                if (list.isEmpty()){
+                    log("Stop trolling. There is no target in this direction.");
+                } else {
+                    distance = list.get(list.size()/2);
+                }
+                break;
+            }
+        }
+        
+        new PreciseDrive(distance-stopdist).run(context);
     }
 }

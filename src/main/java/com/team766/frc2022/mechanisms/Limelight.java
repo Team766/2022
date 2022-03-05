@@ -53,6 +53,9 @@ public class Limelight extends Mechanism{
 	public double distanceFromTarget(){
 		double angle = Math.abs(Math.toRadians(mountAngle+verticalOffset()));
 		double height = Math.abs(targetHeightfromGround-mountHeightfromGround);
+		if (angle == 0){
+			return 0;
+		}
 		return height/Math.tan(angle);
 	}
 }
