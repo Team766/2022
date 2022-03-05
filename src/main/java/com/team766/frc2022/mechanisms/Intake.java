@@ -12,10 +12,10 @@ public class Intake extends Mechanism {
 	private CANSpeedController m_middleIntakeWheel;
 	
 	public Intake() {
-		m_frontIntakeWheel = RobotProvider.instance.getVictorCANMotor("Intake.upperWheel");
-		m_middleIntakeWheel = RobotProvider.instance.getVictorCANMotor("Intake.upperWheel");
-		m_intakeArm1 = RobotProvider.instance.getSolenoid("Intake.intakeArm");
-		m_intakeArm2 = RobotProvider.instance.getSolenoid("Intake.intakeArm");
+		m_frontIntakeWheel = RobotProvider.instance.getVictorCANMotor("Intake.upperWheel1");
+		m_middleIntakeWheel = RobotProvider.instance.getVictorCANMotor("Intake.upperWheel2");
+		m_intakeArm1 = RobotProvider.instance.getSolenoid("Intake.intakeArm1");
+		m_intakeArm2 = RobotProvider.instance.getSolenoid("Intake.intakeArm2");
 	}
 
 	public void startIntake() {

@@ -27,7 +27,7 @@ public class OI extends Procedure {
 	
 	public void run(Context context) {
 		while (true) {
-			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick1.getAxis(0));
+			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick0.getAxis(0));
 			
 			if (m_joystick0.getButtonPressed(1)) {
 				context.startAsync(new StartIntake());
