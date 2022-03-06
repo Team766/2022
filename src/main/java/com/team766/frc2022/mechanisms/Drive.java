@@ -11,10 +11,10 @@ public class Drive extends Mechanism {
     private CANSpeedController m_rightMotor2;
 
     public Drive() {
-        m_leftMotor1 = RobotProvider.instance.getTalonCANMotor("drive.leftMotor1");
-        m_rightMotor1 = RobotProvider.instance.getTalonCANMotor("drive.rightMotor1");
-        m_leftMotor2 = RobotProvider.instance.getVictorCANMotor("drive.leftMotor2");
-        m_rightMotor2 = RobotProvider.instance.getVictorCANMotor("drive.rightMotor2");
+        m_leftMotor1 = RobotProvider.instance.getCANMotor("drive.leftMotor1");
+        m_rightMotor1 = RobotProvider.instance.getCANMotor("drive.rightMotor1");
+        m_leftMotor2 = RobotProvider.instance.getCANMotor("drive.leftMotor2");
+        m_rightMotor2 = RobotProvider.instance.getCANMotor("drive.rightMotor2");
     }
 
     public void setDrivePower(double leftPower, double rightPower) {

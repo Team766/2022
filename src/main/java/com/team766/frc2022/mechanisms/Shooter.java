@@ -7,7 +7,7 @@ public class Shooter {
 	private CANSpeedController shooter;
 
 	public Shooter() {
-		shooter = RobotProvider.instance.getVictorCANMotor("shooter");
+		shooter = RobotProvider.instance.getCANMotor("shooter");
 	}
 
 	public void startShoot(){

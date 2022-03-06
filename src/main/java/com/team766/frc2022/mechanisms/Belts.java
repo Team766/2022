@@ -9,8 +9,8 @@ public class Belts extends Mechanism {
 	private CANSpeedController m_rightStorageBelt;
 	
 	public Belts() {
-		m_leftStorageBelt = RobotProvider.instance.getVictorCANMotor("belt.right");
-		m_leftStorageBelt = RobotProvider.instance.getVictorCANMotor("belt.left");
+		m_leftStorageBelt = RobotProvider.instance.getCANMotor("belt.left");
+		m_rightStorageBelt = RobotProvider.instance.getCANMotor("belt.right");
 	}
 
 	public void startBelts() {
