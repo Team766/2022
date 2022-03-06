@@ -43,18 +43,19 @@ public class Elevator extends Mechanism {
     public void setElevatorPower(double power) {
         power *= elevatorPower.get();
         checkContextOwnership();
-        if (power < 0 /*&& getElevatorPosition() - getElevatorBottom() >= getElevatorLeniency() && !m_bottom.get()*/) {
+        if (power < 0 && getElevatorBottom() - getElevatorPosition() >= getElevatorLeniency() && !m_bottom.get()) {
             m_elevator.set(power);
-        } else if (power > 0 /*&& getElevatorTop() - getElevatorPosition() >= getElevatorLeniency() && !m_top.get()*/) {
+        } else if (power > 0 && getElevatorPosition() - getElevatorTop() >= getElevatorLeniency() && !m_top.get()) {
             m_elevator.set(power);
         } else {
             m_elevator.set(0);
-        }
+        } 
     }
     
     public double getElevatorPosition() {
         return m_elevator.getSensorPosition();
 	}
+    
     public void resetElevatorPosition() {
         m_elevator.setPosition(0);
 	}
@@ -63,10 +64,13 @@ public class Elevator extends Mechanism {
 		checkContextOwnership();
         DoubleSolenoid.State armsState;
         if (power > 0) {
+            log("Forward!");
             armsState = DoubleSolenoid.State.Forward;
         } else if (power < 0) {
+            log("Backward!");
             armsState = DoubleSolenoid.State.Backward;
         } else {
+            log("Neutral!");
             armsState = DoubleSolenoid.State.Neutral;
         }
         m_arms.set(armsState);
@@ -74,6 +78,14 @@ public class Elevator extends Mechanism {
 
     public boolean getArmsPower() {
         return m_arms.get();
+    }
+
+    public boolean getLimitSwitchBottom() {
+        return m_bottom.get();
+    }
+
+    public boolean getLimitSwitchTop() {
+        return m_top.get();
     }
 
     public int getElevatorBottom() {
