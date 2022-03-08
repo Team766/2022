@@ -35,13 +35,16 @@ public class BetterLimelight extends Procedure{
                 list.add(angle);
             }
             if (cur_time-prev_time >= 0.3){
+                Collections.sort(list);
                 if (list.isEmpty()){
                     log("Stop trolling. There is no target in this direction.");
                 } else {
                     turnangle = list.get(list.size()/2);
+                    list.clear();
                 }
                 break;
             }
+            context.yield();
         }
 
         new PreciseTurn(turnangle).run(context);
@@ -53,6 +56,7 @@ public class BetterLimelight extends Procedure{
                 list.add(dist);
             }
             if (cur_time-prev_time >= 0.3){
+                Collections.sort(list);
                 if (list.isEmpty()){
                     log("Stop trolling. There is no target in this direction.");
                 } else {
@@ -60,8 +64,13 @@ public class BetterLimelight extends Procedure{
                 }
                 break;
             }
+            context.yield();
         }
         
         new PreciseDrive(distance-stopdist).run(context);
     }
+    /* 1. Drive and Turn at the same time.
+       2. Better filtering algorithm.
+       3. Make a helper method.
+       */
 }

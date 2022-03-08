@@ -28,7 +28,7 @@ public class PreciseDrive extends Procedure {
         double dist = 0; //previous distance
         double temptime = 0; //time now
         double time = RobotProvider.instance.getClock().getTime(); //previous time
-        while (Math.abs(tempdist-final_distance) <= 0.5){
+        while (Math.abs(tempdist-final_distance) <= 0.1){
             temptime = RobotProvider.instance.getClock().getTime();
             tempdist = Robot.drive.getEncoderDistance();
             if (temptime-time >= 0.1){
@@ -42,10 +42,14 @@ public class PreciseDrive extends Procedure {
                 time = temptime;
                 controller.setSetpoint(targetvelocity);
                 controller.calculate(tempvelocity,true);
-                double turn = controller.getOutput();
-                Robot.drive.setArcadeDrivePower(0, turn);
+                double forward = controller.getOutput();
+                Robot.drive.setArcadeDrivePower(forward, 0);
             }
+            context.yield();
         }
         Robot.drive.setArcadeDrivePower(0, 0);
     }
+    /*
+
+    */
 }

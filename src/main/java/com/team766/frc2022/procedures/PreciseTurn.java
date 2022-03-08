@@ -24,6 +24,7 @@ public class PreciseTurn extends Procedure {
             controller.calculate(Robot.drive.getGyroAngle(),true);
             double turn = controller.getOutput();
             Robot.drive.setArcadeDrivePower(0,turn);
+            context.yield();
         }
         Robot.drive.setArcadeDrivePower(0, 0);
     }
