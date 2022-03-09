@@ -15,8 +15,10 @@ import com.team766.hal.RobotProvider;
 import com.team766.hal.SolenoidController;
 import com.team766.hal.SpeedController;
 import com.team766.hal.mock.PositionSensor;
+import com.team766.hal.mock.Talon;
 import com.team766.logging.Category;
 import com.team766.logging.Logger;
+import com.team766.logging.LoggerExceptionUtils;
 import com.team766.logging.Severity;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -28,6 +30,7 @@ public class WPIRobotProvider extends RobotProvider {
 	private CANSpeedController[] talonCanMotors = new CANSpeedController[64];
 	private CANSpeedController[] victorCanMotors = new CANSpeedController[64];
 	private CANSpeedController[] sparkMaxMotors = new CANSpeedController[64];
+	private CANSpeedController[] talonFxCanMotors = new CANSpeedController[64];
 
 	@Override
 	public SpeedController getMotor(int index) {
@@ -43,7 +46,12 @@ public class WPIRobotProvider extends RobotProvider {
 		switch (type) {
 			case SparkMax:
 				if (sparkMaxMotors[index] == null) {
-					sparkMaxMotors[index] = new CANTalonSpeedController(index);
+					try {
+						sparkMaxMotors[index] = new CANSparkMaxSpeedController(index);
+					} catch (Exception ex) {
+						LoggerExceptionUtils.logException(ex);
+						sparkMaxMotors[index] = new Talon(index);
+					}
 				}
 				return sparkMaxMotors[index];
 			case TalonSRX:
@@ -56,8 +64,14 @@ public class WPIRobotProvider extends RobotProvider {
 					victorCanMotors[index] = new CANVictorSpeedController(index);
 				}
 				return victorCanMotors[index];
+			case TalonFX:
+				if (talonFxCanMotors[index] == null) {
+					talonFxCanMotors[index] = new CANTalonFxSpeedController(index);
+				}
+				return talonFxCanMotors[index];
 		}
-		throw new IllegalArgumentException("Unsupported CAN motor type " + type);
+		LoggerExceptionUtils.logException(new IllegalArgumentException("Unsupported CAN motor type " + type));
+		return new Talon(index);
 	}
 
 	@Override

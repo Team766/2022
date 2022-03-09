@@ -4,20 +4,20 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.IMotorController;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team766.hal.CANSpeedController;
 import com.team766.logging.Category;
 import com.team766.logging.Logger;
 import com.team766.logging.LoggerExceptionUtils;
 import com.team766.logging.Severity;
 
-public class CANTalonSpeedController extends BaseCTRESpeedController implements CANSpeedController {
+public class CANTalonFxSpeedController extends BaseCTRESpeedController implements CANSpeedController {
 
-	private WPI_TalonSRX m_device;
+	private WPI_TalonFX m_device;
 	private double m_feedForward = 0.0;
 
-	public CANTalonSpeedController(int deviceNumber) {
-		m_device = new WPI_TalonSRX(deviceNumber);
+	public CANTalonFxSpeedController(int deviceNumber) {
+		m_device = new WPI_TalonFX(deviceNumber);
 	}
 
 	@Override
