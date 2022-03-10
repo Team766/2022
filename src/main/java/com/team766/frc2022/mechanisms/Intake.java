@@ -16,13 +16,14 @@ public class Intake extends Mechanism {
 		m_middleIntakeWheel = RobotProvider.instance.getCANMotor("Intake.topWheel");
 		m_intakeArm1 = RobotProvider.instance.getSolenoid("Intake.intakeArm1");
 		m_intakeArm2 = RobotProvider.instance.getSolenoid("Intake.intakeArm2");
+		m_frontIntakeWheel.setInverted(true);
 	}
 
 	public void startIntake() {
 		checkContextOwnership();
 
 		m_intakeArm1.set(true);
-		m_intakeArm2.set(true);
+		m_intakeArm2.set(false);
 		m_frontIntakeWheel.set(1.0);
 		m_middleIntakeWheel.set(1.0);
 	}
@@ -33,6 +34,6 @@ public class Intake extends Mechanism {
 		m_middleIntakeWheel.set(0.0);
 		m_frontIntakeWheel.set(0.0);
 		m_intakeArm1.set(false);
-		m_intakeArm2.set(false);
+		m_intakeArm2.set(true);
 	}
 }

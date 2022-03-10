@@ -27,25 +27,33 @@ public class OI extends Procedure {
 	
 	public void run(Context context) {
 		context.takeOwnership(Robot.drive);
+		boolean b1 = true;
 		while (true) {
 			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick0.getAxis(0));
 			
 			if (m_joystick0.getButtonPressed(1)) {
 				context.startAsync(new StartIntake());
-			}
-
-			if (m_joystick0.getButtonPressed(2)) {
+			} else if (m_joystick0.getButtonReleased(1)){
 				context.startAsync(new StopIntake());
 			}
 
+			if (b1){
+				if (m_joystick0.getButtonPressed(2)) {
+					context.startAsync(new StartBelts());
+				} else if (m_joystick0.getButtonReleased(2)){
+					context.startAsync(new StopBelts());
+				}
+			}
+
 			if (m_joystick0.getButtonPressed(3)) {
-				context.startAsync(new StartBelts());
+				context.startAsync(new StartShooter());
+			} else if (m_joystick0.getButtonReleased(3)){
+				context.startAsync(new StopShooter());
 			}
 
-			if (m_joystick0.getButtonPressed(4)) {
-				context.startAsync(new StopBelts());
+			if (m_joystick0.getButtonPressed(4)){
+				b1 = false;
 			}
-
 			context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 		}
 	}

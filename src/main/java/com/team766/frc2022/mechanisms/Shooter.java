@@ -1,9 +1,10 @@
 package com.team766.frc2022.mechanisms;
 
+import com.team766.framework.Mechanism;
 import com.team766.hal.CANSpeedController;
 import com.team766.hal.RobotProvider;
 
-public class Shooter {
+public class Shooter extends Mechanism{
 	private CANSpeedController shooter;
 
 	public Shooter() {

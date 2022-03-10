@@ -21,7 +21,7 @@ public class Robot extends MyRobot {
 	public static Drive drive;
 	public static Intake intake;
 	public static Belts belts;
-	
+	public static Shooter shooter;
 	private static OI m_oi;
 	
 	private WebServer m_webServer;
@@ -50,7 +50,7 @@ public class Robot extends MyRobot {
 		drive = new Drive();
 		intake = new Intake();
 		belts = new Belts();
-		
+		shooter = new Shooter();
 		
 		m_oi = new OI();
 	}
