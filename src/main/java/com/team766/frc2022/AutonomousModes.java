@@ -4,5 +4,5 @@ import com.team766.framework.AutonomousProcedure;
 import com.team766.frc2022.procedures.*;
 
 public enum AutonomousModes {
-
+	@AutonomousProcedure(procedureClass = ClimbRung.class) ClimbRung,
 }

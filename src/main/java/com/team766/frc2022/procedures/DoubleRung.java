@@ -6,19 +6,18 @@ import com.team766.frc2022.Robot;
 import com.team766.logging.Category;
 
 public class DoubleRung extends Procedure {
-	
-
 	public void run (Context context) {
-
 		context.takeOwnership(Robot.elevator);
 		loggerCategory = Category.ELEVATOR;
 		double lastAngle = -180;
 		int speedMode = Robot.elevator.getSlowMode(); //0 is fastest
-
-		for (int i = 0; i < 2; i++) {
+		Robot.elevator.setArmsPower(-1.0);
+		
+		for (int i = 0; i < 1; i++) {
 			// Initial Arms Up
 			Robot.elevator.setArmsPower(-1.0);
-
+			log("Arms Up initialize");
+			context.waitForSeconds(0.5);
 			// Pull the Robot Up
 			Robot.elevator.setElevatorPower(-1.0 / (speedMode + 1));
 			context.waitFor(() -> Robot.elevator.getElevatorPosition() < Robot.elevator.getElevatorBottom() + 10);

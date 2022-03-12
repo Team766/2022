@@ -64,13 +64,13 @@ public class Elevator extends Mechanism {
 		checkContextOwnership();
         DoubleSolenoid.State armsState;
         if (power > 0) {
-            log("Forward!");
+            //log("Forward!");
             armsState = DoubleSolenoid.State.Forward;
         } else if (power < 0) {
-            log("Backward!");
+           // log("Backward!");
             armsState = DoubleSolenoid.State.Backward;
         } else {
-            log("Neutral!");
+            //log("Neutral!");
             armsState = DoubleSolenoid.State.Neutral;
         }
         m_arms.set(armsState);
