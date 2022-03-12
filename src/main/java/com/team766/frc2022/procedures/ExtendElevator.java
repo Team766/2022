@@ -5,8 +5,8 @@ import com.team766.framework.Procedure;
 import com.team766.frc2022.Robot;
 
 public class ExtendElevator extends Procedure{
-	//bot = 0
-	//top = 670
+	//bot = -1500
+	//top = -17000
 
 	public void run(Context context){
 		context.takeOwnership(Robot.climber);

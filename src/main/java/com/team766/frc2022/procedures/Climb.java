@@ -18,9 +18,8 @@ public class Climb extends Procedure{
 
 		new RetractElevator().run(context);
 		Robot.climberEx.setArmsPusher(true);
-//Rung 1
 		context.waitForSeconds(0.2);
-
+//Rung 1
 		LaunchedContext extendElevatorCall = context.startAsync(new ExtendElevator());
 		
 		context.waitFor(extendElevatorCall);
@@ -29,9 +28,8 @@ public class Climb extends Procedure{
 		new RetractElevator().run(context);
 
 		Robot.climberEx.setArmsPusher(true);
-//Rung 2
 		context.waitForSeconds(0.2);
-
+//Rung 2
 		extendElevatorCall = context.startAsync(new ExtendElevator());
 
 		context.waitFor(extendElevatorCall);
