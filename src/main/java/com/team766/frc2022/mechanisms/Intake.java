@@ -21,9 +21,8 @@ public class Intake extends Mechanism {
 
 	public void startIntake() {
 		checkContextOwnership();
-
-		m_intakeArm1.set(true);
-		m_intakeArm2.set(false);
+		
+		startArms();
 		m_frontIntakeWheel.set(1.0);
 		m_middleIntakeWheel.set(1.0);
 	}
@@ -33,7 +32,29 @@ public class Intake extends Mechanism {
 
 		m_middleIntakeWheel.set(0.0);
 		m_frontIntakeWheel.set(0.0);
+		stopArms();
+	}
+
+	public void startArms(){
+		checkContextOwnership();
+
+		m_intakeArm1.set(true);
+		m_intakeArm2.set(false);
+	}
+
+	public void stopArms(){
+		checkContextOwnership();
+
 		m_intakeArm1.set(false);
 		m_intakeArm2.set(true);
+	}
+
+	public void reverseIntake(){
+		checkContextOwnership();
+
+		m_frontIntakeWheel.set(-1.0);
+		m_middleIntakeWheel.set(-1.0);
+
+		startArms();
 	}
 }
