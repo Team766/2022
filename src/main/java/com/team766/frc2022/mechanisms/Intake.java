@@ -22,11 +22,11 @@ public class Intake extends Mechanism {
 
 	public void startIntake() {
 		checkContextOwnership();
-		//double power = ConfigFileReader.getInstance().getDouble("intake.power").get();
+		double power = ConfigFileReader.getInstance().getDouble("Intake.intakePower").get();
 		
 		startArms();
-		m_frontIntakeWheel.set(1.0/*power*/);
-		m_middleIntakeWheel.set(1.0/*power*/);
+		m_frontIntakeWheel.set(power);
+		m_middleIntakeWheel.set(power);
 	}
 
 	public void stopIntake() {

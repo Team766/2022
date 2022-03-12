@@ -25,6 +25,7 @@ public class Shooter extends Mechanism{
 		double power = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
 		setVelocity(power);
 	}
+	
 
 	public void stopShoot(){
 		shooter.set(0.0);
