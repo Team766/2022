@@ -9,25 +9,32 @@ import com.team766.logging.Category;
 
 public class PIDElevator extends Procedure{
 	private int goal;
-	private double pValue;
-	private double leniency;
 
 	private ValueProvider<Double> elevatorP;
 	private ValueProvider<Double> elevatorPIDLeniency;
 
 	public PIDElevator(int target) {
 		goal = target;
-		pValue = ConfigFileReader.getInstance().getDouble("PIDclimber.elevatorP").get(); //1
-		leniency = ConfigFileReader.getInstance().getDouble("PIDclimber.elevatorPIDLeniency").get(); //5
+		elevatorP = ConfigFileReader.getInstance().getDouble("PIDclimber.elevatorP"); //1
+		elevatorPIDLeniency = ConfigFileReader.getInstance().getDouble("PIDclimber.elevatorPIDLeniency"); //5
 	}
 
 	public void run (Context context) {
 		context.takeOwnership(Robot.elevator);
 		loggerCategory = Category.DRIVE;
 		double startPos = Robot.elevator.getElevatorPosition();
+		boolean running = true;
+		double pos = startPos;
 		if (goal != startPos){
-			while (Math.abs(Robot.elevator.getElevatorPosition() - goal) > leniency) {
-				Robot.elevator.setElevatorPower(pValue / (goal - startPos) * (goal - Robot.elevator.getElevatorPosition()));
+			while (Math.abs(pos - goal) > elevatorPIDLeniency.get() && running) {
+				pos = Robot.elevator.getElevatorPosition();
+				if (pos - goal < 0 && (Robot.elevator.getElevatorBottom() - pos < Robot.elevator.getElevatorLeniency() || Robot.elevator.getLimitSwitchBottom())) {
+					running = false;
+				}
+				if (pos - goal > 0 && (pos - Robot.elevator.getElevatorTop() < Robot.elevator.getElevatorLeniency() || Robot.elevator.getLimitSwitchTop())) {
+					running = false;
+				}
+				Robot.elevator.setElevatorPower(elevatorP.get() / Math.abs(goal - startPos) * (pos - goal));
 				context.yield();
 			}
 		}
