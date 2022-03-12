@@ -28,4 +28,11 @@ public class Belts extends Mechanism {
 		m_leftStorageBelt.set(0.0);
 		m_rightStorageBelt.set(0.0);
 	}
+
+	public void reverseBelts(){
+		checkContextOwnership();
+
+		m_leftStorageBelt.set(-1.0);
+		m_rightStorageBelt.set(-1.0);
+	}
 }

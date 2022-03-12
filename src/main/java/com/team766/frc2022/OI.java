@@ -29,7 +29,6 @@ public class OI extends Procedure {
 	public void run(Context context) {
 		context.takeOwnership(Robot.drive);
 		context.takeOwnership(Robot.shooter);
-		boolean b1 = true;
 		while (true) {
 			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick0.getAxis(0));
 
@@ -41,30 +40,41 @@ public class OI extends Procedure {
 
 			log(""+m_joystick2.getAxis(3));
 			
-			if (m_joystick0.getButtonPressed(1)) {
+			if (m_joystick2.getButtonPressed(2)) {
 				context.startAsync(new StartIntake());
-			} else if (m_joystick0.getButtonReleased(1)){
+			} else if (m_joystick2.getButtonReleased(2)){
 				context.startAsync(new StopIntake());
 			}
 
-			if (b1){
-				if (m_joystick0.getButtonPressed(2)) {
-					context.startAsync(new StartBelts());
-				} else if (m_joystick0.getButtonReleased(2)){
-					context.startAsync(new StopBelts());
-				}
+			if(m_joystick2.getButtonPressed(1)){
+				context.startAsync(new StartArms());
+			}else if(m_joystick2.getButtonReleased(1)){
+				context.startAsync(new StopArms());
 			}
-			log(""+Robot.shooter.getVelocity());
 
+			
+			if (m_joystick2.getButtonPressed(3)) {
+				context.startAsync(new StartBelts());
+			} else if (m_joystick2.getButtonReleased(3)){
+				context.startAsync(new StopBelts());
+			}
+
+			if(m_joystick2.getButtonPressed(14)){
+				context.startAsync(new SpitBall());
+			}else if(m_joystick2.getButtonReleased(14)){
+				context.startAsync(new StopBelts());
+				context.startAsync(new StopIntake());
+				context.startAsync(new StopArms());
+			}
+			
+			log(""+Robot.shooter.getVelocity());
+/*
 			if (m_joystick0.getButtonPressed(3)) {
 				context.startAsync(new activateShooter());
 			} else if (m_joystick0.getButtonReleased(3)){
 				context.startAsync(new StopShooter());
-			}
+			}*/
 
-			if (m_joystick0.getButtonPressed(4)){
-				b1 = false;
-			}
 			context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 		}
 	}
