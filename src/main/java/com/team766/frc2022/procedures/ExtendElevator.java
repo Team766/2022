@@ -9,11 +9,11 @@ public class ExtendElevator extends Procedure{
 	//top = -17000
 
 	public void run(Context context){
-		context.takeOwnership(Robot.climber);
+		context.takeOwnership(Robot.elevator);
 
-		Robot.climber.setElevatorMotor(0.5);
-		context.waitFor(() -> Robot.climber.getEncoderDistance() <= -15000);
-		Robot.climber.setElevatorMotor(0.0);
+		Robot.elevator.setElevatorPower(0.5);
+		context.waitFor(() -> Robot.elevator.getElevatorPosition() <= -15000);
+		Robot.elevator.setElevatorPower(0.0);
 
 /*
 		try{

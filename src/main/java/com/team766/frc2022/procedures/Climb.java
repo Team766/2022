@@ -9,35 +9,34 @@ import com.team766.frc2022.Robot;
 public class Climb extends Procedure{
 
 	public void run(Context context){
-		context.takeOwnership(Robot.drive);
-		context.takeOwnership(Robot.climberEx);
+		context.takeOwnership(Robot.elevator);
 
-		context.takeOwnership(Robot.climber);
-		Robot.climber.resetGyro();
-		context.releaseOwnership(Robot.climber);
+		context.takeOwnership(Robot.gyro);
+		Robot.gyro.resetGyro();
+		context.releaseOwnership(Robot.gyro);
 
 		new RetractElevator().run(context);
-		Robot.climberEx.setArmsPusher(true);
+		new ArmsControl(true).run(context);
 		context.waitForSeconds(0.2);
 //Rung 1
 		LaunchedContext extendElevatorCall = context.startAsync(new ExtendElevator());
 		
 		context.waitFor(extendElevatorCall);
-		Robot.climberEx.setArmsPusher(false);
+		new ArmsControl(false).run(context);
 		context.waitForSeconds(0.2);
 		new RetractElevator().run(context);
 
-		Robot.climberEx.setArmsPusher(true);
+		new ArmsControl(true).run(context);
 		context.waitForSeconds(0.2);
 //Rung 2
 		extendElevatorCall = context.startAsync(new ExtendElevator());
 
 		context.waitFor(extendElevatorCall);
-		Robot.climberEx.setArmsPusher(false);
+		new ArmsControl(false).run(context);
 		context.waitForSeconds(0.2);
 		new RetractElevator().run(context);
 
-		Robot.climberEx.setArmsPusher(true);
+		new ArmsControl(true).run(context);
 //Rung 3
 	}
 }

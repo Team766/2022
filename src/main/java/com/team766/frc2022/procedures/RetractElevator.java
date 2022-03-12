@@ -6,11 +6,11 @@ import com.team766.frc2022.Robot;
 
 public class RetractElevator extends Procedure{
 	public void run(Context context){
-		context.takeOwnership(Robot.climber);
+		context.takeOwnership(Robot.elevator);
 
-		Robot.climber.setElevatorMotor(-0.5);
-		context.waitFor(() -> Robot.climber.getEncoderDistance() >= -2000);
-		Robot.climber.setElevatorMotor(0.0);
+		Robot.elevator.setElevatorPower(-0.5);
+		context.waitFor(() -> Robot.elevator.getElevatorPosition() >= -2000);
+		Robot.elevator.setElevatorPower(0.0);
 
 /*
 		try{
