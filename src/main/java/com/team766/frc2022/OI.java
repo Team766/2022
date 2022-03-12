@@ -1,6 +1,7 @@
 package com.team766.frc2022;
 
 import com.team766.framework.Procedure;
+import com.team766.config.ConfigFileReader;
 import com.team766.framework.Context;
 import com.team766.frc2022.Robot;
 import com.team766.frc2022.procedures.*;
@@ -27,9 +28,18 @@ public class OI extends Procedure {
 	
 	public void run(Context context) {
 		context.takeOwnership(Robot.drive);
+		context.takeOwnership(Robot.shooter);
 		boolean b1 = true;
 		while (true) {
 			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick0.getAxis(0));
+
+			double shooterPower = m_joystick2.getAxis(3);
+			if (shooterPower >= 0.68){
+				double power = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
+				Robot.shooter.setVelocity(shooterPower*power);
+			}
+
+			log(""+m_joystick2.getAxis(3));
 			
 			if (m_joystick0.getButtonPressed(1)) {
 				context.startAsync(new StartIntake());
@@ -47,7 +57,7 @@ public class OI extends Procedure {
 			log(""+Robot.shooter.getVelocity());
 
 			if (m_joystick0.getButtonPressed(3)) {
-				context.startAsync(new StartShooter());
+				context.startAsync(new activateShooter());
 			} else if (m_joystick0.getButtonReleased(3)){
 				context.startAsync(new StopShooter());
 			}

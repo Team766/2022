@@ -15,11 +15,15 @@ public class Shooter extends Mechanism{
 		loggerCategory = Category.PROCEDURES;
 	}
 
-	public void startShoot(){
+	public void setVelocity(double power){
 		checkContextOwnership();
-		double power = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
 		log("Power is: "+power);
 		shooter.set(ControlMode.Velocity, power);
+	}
+
+	public void basicShoot(){
+		double power = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
+		setVelocity(power);
 	}
 
 	public void stopShoot(){
