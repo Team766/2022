@@ -37,8 +37,8 @@ public class Drive extends Mechanism {
 	public double max_turn = 0.3;
 
 	//Encoder Value (CHANGE THESE VALUES LATER)
-	public double ppr = 1024; //pulses per revolution
-	public double radius = 10; //radius of the wheel
+	public double ppr = 256; //pulses per revolution
+	public double radius = 0.075; //radius of the wheel in m
 
 
     public Drive() {

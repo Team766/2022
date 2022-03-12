@@ -1,5 +1,6 @@
 package com.team766.frc2022.mechanisms;
 
+import com.team766.config.ConfigFileReader;
 import com.team766.framework.Mechanism;
 import com.team766.hal.CANSpeedController;
 import com.team766.hal.RobotProvider;
@@ -17,9 +18,10 @@ public class Belts extends Mechanism {
 
 	public void startBelts() {
 		checkContextOwnership();
-		log("setting them 1.0");
-		m_leftStorageBelt.set(1.0);
-		m_rightStorageBelt.set(1.0);
+		double power = ConfigFileReader.getInstance().getDouble("belt.beltPower").get();
+		log("setting them to config value");
+		m_leftStorageBelt.set(power);
+		m_rightStorageBelt.set(power);
 	}
 
 	public void stopBelts() {
