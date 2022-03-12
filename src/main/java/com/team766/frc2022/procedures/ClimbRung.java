@@ -36,15 +36,21 @@ public class ClimbRung extends Procedure {
 
 			//Extension of Elevator
 			log("Extend elevator");
-			Robot.elevator.setElevatorPower(0.3);
-			context.waitForSeconds(8.0);
+			Robot.elevator.setElevatorPower(0.4);
+			while(Math.abs(Robot.elevator.getElevatorPosition()) < 17500 ){
+				if(Robot.elevator.getLimitSwitchTop()) break;
+				context.waitForSeconds(0.2);
+			};
 			Robot.elevator.setElevatorPower(0);
 			log("Extend arms");
 			Robot.elevator.setArmsPower(-1.0);
 			context.waitForSeconds(1.5);
 			log("Retract elevator");
-			Robot.elevator.setElevatorPower(-0.90);
-			context.waitForSeconds(8.0);
+			Robot.elevator.setElevatorPower(-1);
+			while(Math.abs(Robot.elevator.getElevatorPosition()) > 1300 ){
+				if(Robot.elevator.getLimitSwitchBottom()) break;
+				context.waitForSeconds(0.2);
+			};
 			Robot.elevator.setElevatorPower(0);
 			log("Retract arms");
 			Robot.elevator.setArmsPower(1.0);
