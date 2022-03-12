@@ -40,6 +40,7 @@ public class OI extends Procedure {
 				Robot.shooter.setVelocity(power);
 				log("shooter power:" + power);
 			} else if (m_joystick2.getButtonReleased(1)) {
+
 				Robot.shooter.stopShoot();
 			}
 
