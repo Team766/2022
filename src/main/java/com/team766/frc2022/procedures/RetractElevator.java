@@ -7,6 +7,12 @@ import com.team766.frc2022.Robot;
 public class RetractElevator extends Procedure{
 	public void run(Context context){
 		context.takeOwnership(Robot.climber);
+
+		Robot.climber.setElevatorMotor(-0.5);
+		context.waitFor(() -> Robot.climber.getEncoderDistance() >= -2000);
+		Robot.climber.setElevatorMotor(0.0);
+
+/*
 		try{
 			Robot.climber.setElevatorMotor(-1.0);
 			context.waitFor(() -> Robot.climber.getEncoderDistance() <= 60);
@@ -24,8 +30,6 @@ public class RetractElevator extends Procedure{
 		}finally{
 			Robot.climber.setElevatorMotor(0.0);
 		}
-		
-
-
+*/
 	}
 }
