@@ -29,7 +29,7 @@ public class OI extends Procedure {
 		context.takeOwnership(Robot.drive);
 		boolean b1 = true;
 		while (true) {
-			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick0.getAxis(0));
+			Robot.drive.setArcadeDrivePower(-1*m_joystick0.getAxis(1), m_joystick0.getAxis(0));
 			
 			if (m_joystick0.getButtonPressed(1)) {
 				context.startAsync(new StartIntake());
