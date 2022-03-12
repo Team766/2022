@@ -1,5 +1,6 @@
 package com.team766.frc2022.mechanisms;
 
+import com.team766.config.ConfigFileReader;
 import com.team766.framework.Mechanism;
 import com.team766.hal.SolenoidController;
 import com.team766.hal.CANSpeedController;
@@ -21,15 +22,16 @@ public class Intake extends Mechanism {
 
 	public void startIntake() {
 		checkContextOwnership();
+		//double power = ConfigFileReader.getInstance().getDouble("intake.power").get();
 		
 		startArms();
-		m_frontIntakeWheel.set(1.0);
-		m_middleIntakeWheel.set(1.0);
+		m_frontIntakeWheel.set(1.0/*power*/);
+		m_middleIntakeWheel.set(1.0/*power*/);
 	}
 
 	public void stopIntake() {
 		checkContextOwnership();
-
+		
 		m_middleIntakeWheel.set(0.0);
 		m_frontIntakeWheel.set(0.0);
 		stopArms();

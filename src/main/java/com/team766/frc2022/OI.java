@@ -29,13 +29,16 @@ public class OI extends Procedure {
 	public void run(Context context) {
 		context.takeOwnership(Robot.drive);
 		context.takeOwnership(Robot.shooter);
+		Robot.shooter.setPIDValues();
 		while (true) {
-			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick0.getAxis(0));
+			Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick1.getAxis(0));
 
 			double shooterPower = m_joystick2.getAxis(3);
 			if (shooterPower >= 0.68){
 				double power = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
 				Robot.shooter.setVelocity(shooterPower*power);
+			} else {
+				Robot.shooter.stopShoot();
 			}
 
 			log(""+m_joystick2.getAxis(3));
@@ -68,12 +71,12 @@ public class OI extends Procedure {
 			}
 			
 			log(""+Robot.shooter.getVelocity());
-/*
+
 			if (m_joystick0.getButtonPressed(3)) {
 				context.startAsync(new activateShooter());
 			} else if (m_joystick0.getButtonReleased(3)){
 				context.startAsync(new StopShooter());
-			}*/
+			}
 
 			context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 		}
