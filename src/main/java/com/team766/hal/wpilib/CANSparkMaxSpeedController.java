@@ -154,7 +154,7 @@ public class CANSparkMaxSpeedController extends CANSparkMax implements CANSpeedC
 				LoggerExceptionUtils.logException(new IllegalArgumentException("SparkMax does not support CTRE Mag Encoder"));
 			case IntegratedSensor: {
 				RelativeEncoder encoder = getEncoder();
-				revErrorToException(ExceptionTarget.LOG, encoder.setInverted(sensorInverted));
+				//revErrorToException(ExceptionTarget.LOG, encoder.setInverted(sensorInverted));
 				sensorPositionSupplier = encoder::getPosition;
 				sensorVelocitySupplier = encoder::getVelocity;
 				sensorPositionSetter = encoder::setPosition;
@@ -197,7 +197,7 @@ public class CANSparkMaxSpeedController extends CANSparkMax implements CANSpeedC
 	@Override
 	public void setSensorInverted(boolean inverted) {
 		sensorInverted = inverted;
-		revErrorToException(ExceptionTarget.LOG, sensorInvertedSetter.apply(inverted));
+		//revErrorToException(ExceptionTarget.LOG, sensorInvertedSetter.apply(inverted));
 	}
 
 	@Override

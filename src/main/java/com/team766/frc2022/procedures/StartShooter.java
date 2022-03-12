@@ -8,6 +8,7 @@ public class StartShooter extends Procedure {
 	public void run(Context context) {
 		context.takeOwnership(Robot.shooter);
 
+		Robot.shooter.setPIDValues();
 		Robot.shooter.startShoot();
 	}
 }

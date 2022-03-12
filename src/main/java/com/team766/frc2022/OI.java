@@ -44,6 +44,7 @@ public class OI extends Procedure {
 					context.startAsync(new StopBelts());
 				}
 			}
+			log(""+Robot.shooter.getVelocity());
 
 			if (m_joystick0.getButtonPressed(3)) {
 				context.startAsync(new StartShooter());
