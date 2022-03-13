@@ -33,4 +33,5 @@ public final class InputConstants {
 	public static final int CONTROL_PANEL_ELEVATOR_DOWN_BUTTON = 16;
 	public static final int CONTROL_PANEL_ELEVATOR_TOP_BUTTON = 17;
 	public static final int CONTROL_PANEL_ELEVATOR_BOTTOM_BUTTON = 18;
+	public static final int JOYSTICK_TRIGGER = 1;
 }

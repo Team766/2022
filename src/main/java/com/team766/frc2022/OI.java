@@ -46,41 +46,32 @@ public class OI extends Procedure {
 			log("Pitch: " + Robot.gyro.getGyroPitch() + " Yaw: " + Robot.gyro.getGyroYaw() + " Roll: " + Robot.gyro.getGyroRoll());
 			log("Top: " + Robot.elevator.getLimitSwitchTop() + " Bottom: " + Robot.elevator.getLimitSwitchBottom());
 
-			//Robot.drive.setArcadeDrivePower(m_leftJoystick.getAxis(1), m_leftJoystick.getAxis(0));
-			Robot.elevator.setElevatorPower(-1 * m_leftJoystick.getAxis(1));
+			if (m_controlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
+				Robot.elevator.setElevatorPower(-1);
+			} else if (m_controlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ELEVATOR_DOWN_BUTTON)) {
+				Robot.elevator.setElevatorPower(1);
+			} else {
+				Robot.elevator.setElevatorPower(0);
+			}
 
 			// TODO: change dis
 			if (m_controlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ARMS_SWITCH)) {
-				if (m_leftJoystick.getButtonPressed()) {
-					Robot.elevator.setArmsPower(0);
-					log("Setting Power to 0 (1 and 7 both pressed)");
-				} else {
-					Robot.elevator.setArmsPower(1);
-					log("Setting Power to 1 (1 Pressed)");
-				}
-			} else if (m_leftJoystick.getButtonPressed(7)) {
+				Robot.elevator.setArmsPower(1);
+			} else if (m_controlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ARMS_SWITCH)) {
 				Robot.elevator.setArmsPower(-1);
-				log("Setting Power to -1 (7 Pressed)");
 			}
 
-			if (m_leftJoystick.getButtonPressed(2)) {
+			if (m_controlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_BOTTOM_BUTTON)) {
 				Robot.elevator.resetElevatorPosition();
 			}
 
-			double shooterPower = m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL);
-
-			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)){
-				double power = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
-				Robot.shooter.setVelocity(shooterPower*power);
-			} else if(m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)) {
-
-			double dialPower = m_joystick2.getAxis(3);
-			if (m_joystick2.getButton(1)){
+			double dialPower = m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL);
+			if (m_controlPanel.getButton(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)){
 				double configPower = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
 				double power = ((dialPower - 0.6456)*3.734)*configPower;
 				Robot.shooter.setVelocity(power);
 				log("shooter power:" + power);
-			} else if (m_joystick2.getButtonReleased(1)) {
+			} else if (m_controlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)) {
 				Robot.shooter.stopShoot();
 			}
 
@@ -91,23 +82,10 @@ public class OI extends Procedure {
 			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)){
 				context.startAsync(new StopIntake());
 			}
-
-<<<<<<< HEAD
-			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)) {
-				context.startAsync(new StartBelts());
-			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)){
-=======
-			/*if(m_joystick2.getButtonPressed(1)){
-				context.startAsync(new StartArms());
-			}else if(m_joystick2.getButtonReleased(1)){
-				context.startAsync(new StopArms());
-			}*/
-
 			
-			if (m_joystick1.getButtonPressed(1)) {
+			if (m_rightJoystick.getButtonPressed(InputConstants.JOYSTICK_TRIGGER)) {
 				context.startAsync(new StartBelts());
-			} else if (m_joystick1.getButtonReleased(1)){
->>>>>>> ShooterControls
+			} else if (m_rightJoystick.getButtonReleased(InputConstants.JOYSTICK_TRIGGER)){
 				context.startAsync(new StopBelts());
 			}
 
