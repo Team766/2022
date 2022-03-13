@@ -51,8 +51,15 @@ public class Elevator extends Mechanism {
             m_elevator.set(0);
         } 
     }
+
+    public void setElevatorPowerUnrestricted(double power){
+        power *= elevatorPower.get();
+        checkContextOwnership();
+        m_elevator.set(-power);
+    }
     
     public double getElevatorPosition() {
+        
         return m_elevator.getSensorPosition();
 	}
     
@@ -102,5 +109,10 @@ public class Elevator extends Mechanism {
 
     public int getSlowMode() {
         return slowMode.get();
+    }
+
+    @Override
+    public void run() {
+        log("Elevator Encoder: " + getElevatorPosition());
     }
 }
