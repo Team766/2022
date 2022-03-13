@@ -23,6 +23,9 @@ public class Robot extends MyRobot {
 	public static Belts belts;
 	public static Shooter shooter;
 	public static Limelight limelight;
+	public static Elevator elevator;
+	public static Gyro gyro;
+	
 	private static OI m_oi;
 	
 	private WebServer m_webServer;
@@ -53,7 +56,9 @@ public class Robot extends MyRobot {
 		belts = new Belts();
 		shooter = new Shooter();
 		limelight = new Limelight();
-
+		drive = new Drive();
+		elevator = new Elevator();
+		gyro = new Gyro();
 		m_oi = new OI();
 	}
 	

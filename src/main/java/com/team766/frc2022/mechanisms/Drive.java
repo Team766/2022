@@ -8,14 +8,20 @@ import com.team766.hal.EncoderReader;
 import com.team766.hal.RobotProvider;
 import com.team766.hal.SpeedController;
 import com.team766.hal.CANSpeedController;
+import com.team766.library.ValueProvider;
 import com.team766.logging.Category;
 import com.team766.hal.GyroReader;
 
 public class Drive extends Mechanism {
-    private CANSpeedController m_leftMotor1;
-    private CANSpeedController m_rightMotor1;
-    private CANSpeedController m_leftMotor2;
-    private CANSpeedController m_rightMotor2;
+
+    // Declaration of Mechanisms
+    private CANSpeedController m_leftVictor1;
+    private CANSpeedController m_leftVictor2;
+    private CANSpeedController m_rightVictor1;
+    private CANSpeedController m_rightVictor2;
+    private CANSpeedController m_leftTalon;
+    private CANSpeedController m_rightTalon;
+    private ValueProvider<Double> drivePower;
 
     //	private GyroReader m_gyro;
 	private AHRS m_gyro;
@@ -40,21 +46,29 @@ public class Drive extends Mechanism {
 	public double ppr = 1024; //pulses per revolution
 	public double radius = 10; //radius of the wheel
 
-
     public Drive() {
+        // Initializations
+        m_leftVictor1 = RobotProvider.instance.getVictorCANMotor("drive.leftVictor1"); 
+        m_rightVictor1 = RobotProvider.instance.getVictorCANMotor("drive.rightVictor1");
+        m_leftVictor2 = RobotProvider.instance.getVictorCANMotor("drive.leftVictor2");
+        m_rightVictor2 = RobotProvider.instance.getVictorCANMotor("drive.rightVictor2");
+        m_leftTalon = RobotProvider.instance.getTalonCANMotor("drive.leftTalon");
+        m_rightTalon = RobotProvider.instance.getTalonCANMotor("drive.rightTalon");
+        drivePower = ConfigFileReader.getInstance().getDouble("drive.drivePower"); //1
+
+        //m_rightVictor1.follow(m_rightTalon);
+        //m_rightVictor2.follow(m_rightTalon);
+        //m_leftVictor1.follow(m_leftTalon);
+        //m_leftVictor2.follow(m_leftTalon);
+
         loggerCategory = Category.DRIVE;
-        m_leftMotor1 = RobotProvider.instance.getCANMotor("drive.leftMotor1");
-        m_rightMotor1 = RobotProvider.instance.getCANMotor("drive.rightMotor1");
-        m_leftMotor2 = RobotProvider.instance.getCANMotor("drive.leftMotor2");
-        m_rightMotor2 = RobotProvider.instance.getCANMotor("drive.rightMotor2");
         m_gyro = new AHRS(Port.kOnboard);
-        m_rightMotor1.setInverted(true);
-        m_rightMotor2.setInverted(true);
     }
 
     public double getEncoderDistance() {
-		double leftValue = m_leftMotor1.getSensorPosition();
-		double rightValue = m_rightMotor1.getSensorPosition();
+        // TODO: check if this should be reading from a Talon or from a Victor
+		double leftValue = m_leftVictor1.getSensorPosition();
+		double rightValue = m_rightVictor1.getSensorPosition();
 		log("Encoder Distance: " + Double.toString(0.5 * (leftValue + rightValue)));
 		double rev = 0.5 * (leftValue + rightValue)/ppr;
 		double distance = rev*2*Math.PI*radius;
@@ -64,8 +78,8 @@ public class Drive extends Mechanism {
 	public void resetEncoders() {
 		checkContextOwnership();
 
-		m_leftMotor1.setPosition(0);;
-		m_rightMotor1.setPosition(0);
+		m_leftVictor1.setPosition(0);;
+		m_rightVictor1.setPosition(0);
 	}
 
 	public void resetGyro() {
@@ -77,16 +91,17 @@ public class Drive extends Mechanism {
         return((m_gyro.getAngle() % 360) );
     }
 
-	public void setDrivePower(double leftPower, double rightPower) {
+    public void setDrivePower(double leftPower, double rightPower) {
+        loggerCategory = Category.DRIVE;
 		checkContextOwnership();
 
-		m_leftMotor1.set(leftPower);
-		m_rightMotor1.set(rightPower);
-        m_leftMotor2.set(leftPower);
-		m_rightMotor2.set(rightPower);
-	}
+        leftPower *= drivePower.get();
+        rightPower *= drivePower.get();
+        m_leftTalon.set(leftPower);
+        m_rightTalon.set(rightPower);
+    }
 
 	public void setArcadeDrivePower(double forward, double turn) {
 		setDrivePower(turn + forward, -turn + forward);
-	}
+	} 
 }
