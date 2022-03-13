@@ -12,7 +12,7 @@ public class ExtendElevator extends Procedure{
 		context.takeOwnership(Robot.elevator);
 
 		Robot.elevator.setElevatorPower(0.5);
-		context.waitFor(() -> Robot.elevator.getElevatorPosition() <= -16500);
+		context.waitFor(() -> Robot.elevator.getElevatorPosition() <= -16800);
 		Robot.elevator.setElevatorPower(0.0);
 
 /*
