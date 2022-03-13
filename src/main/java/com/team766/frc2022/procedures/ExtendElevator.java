@@ -7,12 +7,21 @@ import com.team766.frc2022.Robot;
 public class ExtendElevator extends Procedure{
 	//bot = -1500
 	//top = -17000
+	private int distance;
+	
+	public ExtendElevator(){
+		distance = 400;
+	}
+
+	public ExtendElevator(int disIN){
+		distance = disIN;
+	}
 
 	public void run(Context context){
 		context.takeOwnership(Robot.elevator);
 
-		Robot.elevator.setElevatorPower(0.5);
-		context.waitFor(() -> Robot.elevator.getElevatorPosition() <= -16800);
+		Robot.elevator.setElevatorPower(1.0);
+		context.waitFor(() -> Robot.elevator.getElevatorPosition() <= distance);
 		Robot.elevator.setElevatorPower(0.0);
 
 /*

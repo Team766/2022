@@ -181,6 +181,7 @@ public final class Context implements Runnable, LaunchedContext {
 	}
 
 	public void stop() {
+		Logger.get(Category.PROCEDURES).logRaw(Severity.WARNING, "Stopping requested of " + getContextName());
 		synchronized (m_threadSync) {
 			if (m_state != State.DONE) {
 				m_state = State.CANCELED;
