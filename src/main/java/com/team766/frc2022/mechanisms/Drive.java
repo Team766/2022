@@ -10,6 +10,7 @@ import com.team766.hal.SpeedController;
 import com.team766.hal.CANSpeedController;
 import com.team766.logging.Category;
 import com.team766.hal.GyroReader;
+import com.team766.config.ConfigFileReader;
 
 public class Drive extends Mechanism {
     private CANSpeedController m_leftMotor1;
@@ -21,20 +22,23 @@ public class Drive extends Mechanism {
 	private AHRS m_gyro;
 
 	// Values for PID Driving Straight
-	public double P_drive = 1;
-	public double I_drive = 1;
-	public double D_drive = 1;
-	public double threshold_drive = 0.1;
-	public double min_drive = 0.5;
-	public double max_drive = 0.1;
+	public double P_drive = ConfigFileReader.getInstance().getDouble("drive.drive.P").get();
+	public double I_drive = ConfigFileReader.getInstance().getDouble("drive.drive.I").get();
+	public double D_drive = ConfigFileReader.getInstance().getDouble("drive.drive.D").get();
+	public double FF_drive = ConfigFileReader.getInstance().getDouble("drive.drive.FF").get();
+	public double threshold_drive = ConfigFileReader.getInstance().getDouble("drive.drive.threshold").get();
+	public double minpower_drive = ConfigFileReader.getInstance().getDouble("drive.drive.minpower").get();
+	public double min_drive = -1;
+	public double max_drive = 1;
 
 	// Values for PID turning
-	public double P_turn = 1;
-	public double I_turn = 1;
-	public double D_turn = 1;
-	public double threshold_turn = 0.5;
-	public double min_turn = 0.1;
-	public double max_turn = 0.3;
+	public double P_turn = ConfigFileReader.getInstance().getDouble("drive.turn.P").get();
+	public double I_turn = ConfigFileReader.getInstance().getDouble("drive.turn.I").get();
+	public double D_turn = ConfigFileReader.getInstance().getDouble("drive.turn.D").get();
+	public double threshold_turn = ConfigFileReader.getInstance().getDouble("drive.turn.thereshold").get();
+	public double minpower_turn = ConfigFileReader.getInstance().getDouble("drive.turn.minpower").get();
+	public double min_turn = -1;
+	public double max_turn = 1;
 
 	//Encoder Value (CHANGE THESE VALUES LATER)
 	public double ppr = 256; //pulses per revolution
