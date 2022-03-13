@@ -33,12 +33,13 @@ public class OI extends Procedure {
 		while (true) {
 			Robot.drive.setArcadeDrivePower(-m_joystick0.getAxis(1), m_joystick1.getAxis(0));
 
-			double shooterPower = m_joystick2.getAxis(3);
-			if (m_joystick2.getButtonPressed(1)){
-				double power = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
-				double powerPercent = (power - 0.6456)*3.734;
-				Robot.shooter.setVelocity(shooterPower*powerPercent);
-			} else if(m_joystick2.getButtonReleased(1)) {
+			double dialPower = m_joystick2.getAxis(3);
+			if (m_joystick2.getButton(1)){
+				double configPower = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
+				double power = ((dialPower - 0.6456)*3.734)*configPower;
+				Robot.shooter.setVelocity(power);
+				log("shooter power:" + power);
+			} else if (m_joystick2.getButtonReleased(1)) {
 				Robot.shooter.stopShoot();
 			}
 
