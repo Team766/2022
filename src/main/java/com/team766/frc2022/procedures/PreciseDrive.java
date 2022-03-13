@@ -21,16 +21,17 @@ public class PreciseDrive extends Procedure {
     public void run(Context context){
         context.takeOwnership(Robot.drive);
         Robot.drive.resetEncoders();
-        controller = new PIDController(Robot.drive.P_drive,Robot.drive.I_drive,Robot.drive.D_drive, Robot.drive.min_drive, Robot.drive.max_drive, Robot.drive.threshold_drive);
+        controller = new PIDController(Robot.drive.P_drive,Robot.drive.I_drive,Robot.drive.D_drive, Robot.drive.FF_drive, Robot.drive.min_drive, Robot.drive.max_drive, Robot.drive.threshold_drive);
         double targetvelocity = 0; //setpoint velocity
         double tempvelocity = 0; //current velocity
         double tempdist = 0; //distance now
         double dist = 0; //previous distance
         double temptime = 0; //time now
         double time = RobotProvider.instance.getClock().getTime(); //previous time
-        while (Math.abs(tempdist-final_distance) <= 0.1){
+        while (true){ //Math.abs(tempdist-final_distance) <= 0.1
             temptime = RobotProvider.instance.getClock().getTime();
             tempdist = Robot.drive.getEncoderDistance();
+            log(""+tempdist);
             if (temptime-time >= 0.1){
                 tempvelocity = (tempdist-dist)/(temptime-time);
                 if (tempdist <= final_distance/2){
@@ -43,11 +44,18 @@ public class PreciseDrive extends Procedure {
                 controller.setSetpoint(targetvelocity);
                 controller.calculate(tempvelocity,true);
                 double forward = controller.getOutput();
+                if (Math.abs(forward) < Robot.drive.minpower_drive){
+                    if (forward>0){
+                        forward = Robot.drive.minpower_drive;
+                    } else {
+                        forward = -Robot.drive.minpower_drive;
+                    }
+                }
                 Robot.drive.setArcadeDrivePower(forward, 0);
             }
             context.yield();
         }
-        Robot.drive.setArcadeDrivePower(0, 0);
+        // Robot.drive.setArcadeDrivePower(0, 0);
     }
     /*
     */

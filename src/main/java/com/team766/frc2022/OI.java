@@ -73,6 +73,14 @@ public class OI extends Procedure {
 				double power = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
 				Robot.shooter.setVelocity(shooterPower*power);
 			} else if(m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)) {
+
+			double dialPower = m_joystick2.getAxis(3);
+			if (m_joystick2.getButton(1)){
+				double configPower = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
+				double power = ((dialPower - 0.6456)*3.734)*configPower;
+				Robot.shooter.setVelocity(power);
+				log("shooter power:" + power);
+			} else if (m_joystick2.getButtonReleased(1)) {
 				Robot.shooter.stopShoot();
 			}
 
@@ -84,9 +92,22 @@ public class OI extends Procedure {
 				context.startAsync(new StopIntake());
 			}
 
+<<<<<<< HEAD
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)) {
 				context.startAsync(new StartBelts());
 			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)){
+=======
+			/*if(m_joystick2.getButtonPressed(1)){
+				context.startAsync(new StartArms());
+			}else if(m_joystick2.getButtonReleased(1)){
+				context.startAsync(new StopArms());
+			}*/
+
+			
+			if (m_joystick1.getButtonPressed(1)) {
+				context.startAsync(new StartBelts());
+			} else if (m_joystick1.getButtonReleased(1)){
+>>>>>>> ShooterControls
 				context.startAsync(new StopBelts());
 			}
 

@@ -35,6 +35,7 @@ public class PIDController {
 	private ValueProvider<Double> Kp;
 	private ValueProvider<Double> Ki;
 	private ValueProvider<Double> Kd;
+	private ValueProvider<Double> Kff;
 	private ValueProvider<Double> maxoutput_low = new MissingValue<Double>();
 	private ValueProvider<Double> maxoutput_high = new MissingValue<Double>();
 	private ValueProvider<Double> endthreshold;
@@ -55,12 +56,13 @@ public class PIDController {
 			configPrefix += ".";
 		}
 		return new PIDController(
-				ConfigFileReader.getInstance().getDouble(configPrefix + "pGain"),
-				ConfigFileReader.getInstance().getDouble(configPrefix + "iGain"),
-				ConfigFileReader.getInstance().getDouble(configPrefix + "dGain"),
-				ConfigFileReader.getInstance().getDouble(configPrefix + "outputMaxLow"),
-				ConfigFileReader.getInstance().getDouble(configPrefix + "outputMaxHigh"),
-				ConfigFileReader.getInstance().getDouble(configPrefix + "threshold"));
+			ConfigFileReader.getInstance().getDouble(configPrefix + "pGain"),
+			ConfigFileReader.getInstance().getDouble(configPrefix + "iGain"),
+			ConfigFileReader.getInstance().getDouble(configPrefix + "dGain"),
+			ConfigFileReader.getInstance().getDouble(configPrefix + "ffGain"),
+			ConfigFileReader.getInstance().getDouble(configPrefix + "outputMaxLow"),
+			ConfigFileReader.getInstance().getDouble(configPrefix + "outputMaxHigh"),
+			ConfigFileReader.getInstance().getDouble(configPrefix + "threshold"));
 	}
 	
 	/**
@@ -83,10 +85,17 @@ public class PIDController {
 		Kp = new ConstantValueProvider<Double>(P);
 		Ki = new ConstantValueProvider<Double>(I);
 		Kd = new ConstantValueProvider<Double>(D);
+		Kff = new MissingValue<Double>();
 		maxoutput_low = new ConstantValueProvider<Double>(outputmax_low);
 		maxoutput_high = new ConstantValueProvider<Double>(outputmax_high);
 		endthreshold = new ConstantValueProvider<Double>(threshold);
 		setTimeProvider(RobotProvider.getTimeProvider(), timeProvider.get());
+	}
+
+	public PIDController(double P, double I, double D, double FF, double outputmax_low,
+	                     double outputmax_high, double threshold) {
+		this(P,I,D,outputmax_low,outputmax_high,threshold);
+		Kff = new ConstantValueProvider<Double>(FF);
 	}
 
 	private void setTimeProvider(TimeProviderI timeProvider, double v) {
@@ -94,16 +103,34 @@ public class PIDController {
 		lastTime = v;
 	}
 
+	// public PIDController(
+	// 		ValueProvider<Double> P,
+	// 		ValueProvider<Double> I,
+	// 		ValueProvider<Double> D,
+	// 		ValueProvider<Double> outputmax_low,
+	// 		ValueProvider<Double> outputmax_high,
+	// 		ValueProvider<Double> threshold) {
+	// 	Kp = P;
+	// 	Ki = I;
+	// 	Kd = D;
+	// 	maxoutput_low = outputmax_low;
+	// 	maxoutput_high = outputmax_high;
+	// 	endthreshold = threshold;
+	// 	setTimeProvider(RobotProvider.getTimeProvider(), timeProvider.get());
+	// }
+
 	public PIDController(
 			ValueProvider<Double> P,
 			ValueProvider<Double> I,
 			ValueProvider<Double> D,
+			ValueProvider<Double> FF,
 			ValueProvider<Double> outputmax_low,
 			ValueProvider<Double> outputmax_high,
 			ValueProvider<Double> threshold) {
 		Kp = P;
 		Ki = I;
 		Kd = D;
+		Kff = FF;
 		maxoutput_low = outputmax_low;
 		maxoutput_high = outputmax_high;
 		endthreshold = threshold;
@@ -122,10 +149,16 @@ public class PIDController {
 		Kp = new ConstantValueProvider<Double>(P);
 		Ki = new ConstantValueProvider<Double>(I);
 		Kd = new ConstantValueProvider<Double>(D);
+		Kff = new MissingValue<Double>();
 		maxoutput_low = new MissingValue<Double>();
 		maxoutput_high = new MissingValue<Double>();
 		endthreshold = new ConstantValueProvider<Double>(threshold);
 		setTimeProvider(timeProvider, timeProvider.get());
+	}
+
+	public PIDController(double P, double I, double D, double FF, double threshold, TimeProviderI timeProvider) {
+		this(P,I,D,threshold,timeProvider);
+		Kff = new ConstantValueProvider<Double>(FF);
 	}
 
 	/**
@@ -193,7 +226,8 @@ public class PIDController {
 		double out =
 				Kp.get() * cur_error +
 				Ki.get() * total_error +
-				Kd.get() * ((cur_error - prev_error) / delta_time);
+				Kd.get() * ((cur_error - prev_error) / delta_time) +
+				Kff.get() * setpoint;
 		prev_error = cur_error;
 
 		pr("Pre-clip output: " + out);

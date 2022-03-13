@@ -20,12 +20,20 @@ public class PreciseTurn extends Procedure {
         Robot.drive.resetGyro();
         controller = new PIDController(Robot.drive.P_turn,Robot.drive.I_turn,Robot.drive.D_turn, Robot.drive.min_turn, Robot.drive.max_turn, Robot.drive.threshold_turn);
         controller.setSetpoint(final_angle);
-        while (controller.isDone() == false){
+        while (true){ //controller.isDone() == false
+            log(""+Robot.drive.getGyroAngle());
             controller.calculate(Robot.drive.getGyroAngle(),true);
             double turn = controller.getOutput();
+            if (Math.abs(turn) < Robot.drive.minpower_turn){
+                if (turn>0){
+                    turn = Robot.drive.minpower_turn;
+                } else {
+                    turn = -Robot.drive.minpower_turn;
+                }
+            }
             Robot.drive.setArcadeDrivePower(0,turn);
             context.yield();
         }
-        Robot.drive.setArcadeDrivePower(0, 0);
+        //Robot.drive.setArcadeDrivePower(0, 0);
     }
 }
