@@ -21,12 +21,17 @@ public class PIDElevator extends Procedure{
 
 	public void run (Context context) {
 		context.takeOwnership(Robot.elevator);
-		loggerCategory = Category.DRIVE;
+		
+		loggerCategory = Category.ELEVATOR;
 		double startPos = Robot.elevator.getElevatorPosition();
 		boolean running = true;
 		double pos = startPos;
+		double power = 0.0;
+		log("Starting PID. Goal: " + goal + " StartPos: " + startPos);
 		if (goal != startPos){
+			log("Initial Condition (Should be true): " + Boolean.toString(Math.abs(pos - goal) > elevatorPIDLeniency.get() && running));
 			while (Math.abs(pos - goal) > elevatorPIDLeniency.get() && running) {
+				log("" + Double.toString(Robot.elevator.getElevatorBottom() - pos));
 				pos = Robot.elevator.getElevatorPosition();
 				if (pos - goal < 0 && (Robot.elevator.getElevatorBottom() - pos < Robot.elevator.getElevatorLeniency() || Robot.elevator.getLimitSwitchBottom())) {
 					running = false;
@@ -34,9 +39,15 @@ public class PIDElevator extends Procedure{
 				if (pos - goal > 0 && (pos - Robot.elevator.getElevatorTop() < Robot.elevator.getElevatorLeniency() || Robot.elevator.getLimitSwitchTop())) {
 					running = false;
 				}
-				Robot.elevator.setElevatorPower(elevatorP.get() / Math.abs(goal - startPos) * (pos - goal));
-				context.yield();
+				power = elevatorP.get() / Math.abs(goal - startPos) * (pos - goal);
+				if (power < 0) {
+					power = -1 * (Robot.elevator.getElevatorPower() * Robot.elevator.getElevatorPower());
+				}
+				Robot.elevator.setElevatorPower((1 / Robot.elevator.getElevatorPower()) * Math.max(Math.abs(power), 0.4) * Math.abs(power) / power);
+				//context.yield();
 			}
+			Robot.elevator.setElevatorPower(0.0);
+			log("Ending PID!");
 		}
 	}
 

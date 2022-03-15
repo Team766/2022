@@ -3,6 +3,7 @@ package com.team766.frc2022.procedures;
 import com.team766.framework.Context;
 import com.team766.framework.Procedure;
 import com.team766.frc2022.Robot;
+import com.team766.logging.Category;
 
 public class ExtendElevator extends Procedure{
 	//bot = -1500
@@ -11,6 +12,7 @@ public class ExtendElevator extends Procedure{
 	
 	public ExtendElevator(){
 		distance = 400;
+		loggerCategory = Category.ELEVATOR;
 	}
 
 	public ExtendElevator(int disIN){
@@ -20,9 +22,12 @@ public class ExtendElevator extends Procedure{
 	public void run(Context context){
 		context.takeOwnership(Robot.elevator);
 
-		Robot.elevator.setElevatorPower(1.0);
+		/*Robot.elevator.setElevatorPower(1.0);
 		context.waitFor(() -> Robot.elevator.getElevatorPosition() <= distance);
-		Robot.elevator.setElevatorPower(0.0);
+		Robot.elevator.setElevatorPower(0.0);*/
+		log("Going to Top");
+		new PIDElevator(Robot.elevator.getElevatorTop()).run(context);
+
 
 /*
 		try{
