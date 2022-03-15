@@ -17,6 +17,7 @@ public class OI extends Procedure {
 	private JoystickReader m_joystick0;
 	private JoystickReader m_joystick1;
 	private JoystickReader m_joystick2;
+	private boolean b = true;
 	
 	public OI() {
 		loggerCategory = Category.OPERATOR_INTERFACE;
@@ -46,12 +47,20 @@ public class OI extends Procedure {
 
 			log(""+m_joystick2.getAxis(3));
 			
-			if (m_joystick2.getButtonPressed(2)) {
-				context.startAsync(new StartIntake());
-			} else if (m_joystick2.getButtonReleased(2)){
-				context.startAsync(new StopIntake());
+			if (b){
+				if (m_joystick2.getButtonPressed(2)) {
+					context.startAsync(new StartIntake());
+				} else if (m_joystick2.getButtonReleased(2)){
+					context.startAsync(new StopIntake());
+				}
 			}
 
+			if (Robot.intake.getSensor() != b){
+				b = Robot.intake.getSensor();
+				if (b == false){
+					context.startAsync(new StopIntake());
+				}
+			}
 			/*if(m_joystick2.getButtonPressed(1)){
 				context.startAsync(new StartArms());
 			}else if(m_joystick2.getButtonReleased(1)){
