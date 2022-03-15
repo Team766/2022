@@ -51,7 +51,7 @@ public class Drive extends Mechanism {
         // Initialize encoders
         m_rightEncoder = RobotProvider.instance.getEncoder("drive.rightEncoder");
         m_leftEncoder = RobotProvider.instance.getEncoder("drive.leftEncoder");
-      
+        
         // Initialize gyro
         // m_gyro = RobotProvider.instance.getGyro("drive.gyro");
         // DON'T WORRY ABOUT THE ERRORS, the robots should still be using the external gyro fine
@@ -70,7 +70,9 @@ public class Drive extends Mechanism {
             m_gyro.getRotation2d(), getLeftDistance(), getRightDistance());
     if(counter%100 == 1){
       //System.out.println(getPose()); 
-      log("left %f  right %f", getLeftDistance(), getRightDistance());       
+      log("leftDis %f  rightDis %f", getLeftDistance(), getRightDistance());
+      log("leftSpe %f  rightSpe %f", 10*distancePerPulse*m_leftTalon.getSensorVelocity(), -10*distancePerPulse*m_rightTalon.getSensorVelocity());       
+       
     }
     counter++;
   }
@@ -83,8 +85,9 @@ public class Drive extends Mechanism {
      // m_rightVictor1.set(rightPower);
      // m_rightVictor2.set(rightPower);
     }
+    //Inverted left encoder
     public double getLeftDistance(){
-      return(m_leftTalon.getSensorPosition() - offSetL)*distancePerPulse;
+      return -1*(m_leftTalon.getSensorPosition() - offSetL)*distancePerPulse;
     }
     public double getRightDistance(){
       return(m_rightTalon.getSensorPosition() - offSetR)*distancePerPulse;
@@ -105,7 +108,7 @@ public class Drive extends Mechanism {
    * @return The current wheel speeds.
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(m_leftTalon.getSensorVelocity(), m_rightTalon.getSensorVelocity());
+    return new DifferentialDriveWheelSpeeds(10*distancePerPulse*m_leftTalon.getSensorVelocity(), -10*distancePerPulse*m_rightTalon.getSensorVelocity());
   }
 
   /**
