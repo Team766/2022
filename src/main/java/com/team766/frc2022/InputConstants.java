@@ -1,3 +1,5 @@
+package com.team766.frc2022;
+
 /**
  * Constants used for the Operator Interface, eg for joyticks, buttons, dials, etc.
  * 
@@ -21,7 +23,6 @@ public final class InputConstants {
 	public static final int CONTROL_PANEL_SHOOTER_SWITCH = 1;
 	public static final int CONTROL_PANEL_INTAKE_BUTTON = 2;
 	
-	public static final int CONTROL_PANEL_INTAKE_BUTTON = 2;
 	public static final int CONTROL_PANEL_BELTS_BUTTON = 3;
 
 	public static final int CONTROL_PANEL_SPITBALL_BUTTON = 14;

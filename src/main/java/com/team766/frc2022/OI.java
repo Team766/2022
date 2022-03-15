@@ -26,7 +26,7 @@ public class OI extends Procedure {
 
 		m_leftJoystick = RobotProvider.instance.getJoystick(InputConstants.LEFT_JOYSTICK);
 		m_rightJoystick = RobotProvider.instance.getJoystick(InputConstants.RIGHT_JOYSTICK);
-		m_controlPanel = RobotProvider.instance.getJoystick(InputConstants.CONTROL_PANEL);
+		m_ControlPanel = RobotProvider.instance.getJoystick(InputConstants.CONTROL_PANEL);
 	}
 	
 	public void run(Context context) {
@@ -46,32 +46,32 @@ public class OI extends Procedure {
 			log("Pitch: " + Robot.gyro.getGyroPitch() + " Yaw: " + Robot.gyro.getGyroYaw() + " Roll: " + Robot.gyro.getGyroRoll());
 			log("Top: " + Robot.elevator.getLimitSwitchTop() + " Bottom: " + Robot.elevator.getLimitSwitchBottom());
 
-			if (m_controlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
+			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
 				Robot.elevator.setElevatorPower(-1);
-			} else if (m_controlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ELEVATOR_DOWN_BUTTON)) {
+			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ELEVATOR_DOWN_BUTTON)) {
 				Robot.elevator.setElevatorPower(1);
 			} else {
 				Robot.elevator.setElevatorPower(0);
 			}
 
 			// TODO: change dis
-			if (m_controlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ARMS_SWITCH)) {
+			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ARMS_SWITCH)) {
 				Robot.elevator.setArmsPower(1);
-			} else if (m_controlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ARMS_SWITCH)) {
+			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ARMS_SWITCH)) {
 				Robot.elevator.setArmsPower(-1);
 			}
 
-			if (m_controlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_BOTTOM_BUTTON)) {
+			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_BOTTOM_BUTTON)) {
 				Robot.elevator.resetElevatorPosition();
 			}
 
 			double dialPower = m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL);
-			if (m_controlPanel.getButton(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)){
+			if (m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)){
 				double configPower = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
 				double power = ((dialPower - 0.6456)*3.734)*configPower;
 				Robot.shooter.setVelocity(power);
 				log("shooter power:" + power);
-			} else if (m_controlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)) {
+			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)) {
 				Robot.shooter.stopShoot();
 			}
 
