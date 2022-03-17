@@ -44,7 +44,7 @@ public class OI extends Procedure {
 			//Robot.drive.setArcadeDrivePower(m_joystick0.getAxis(1), m_joystick0.getAxis(0));
 			context.takeOwnership(Robot.elevator);
 			Robot.elevator.setElevatorPower(-1 * m_joystick0.getAxis(1));
-			
+			Robot.drive.setArcadeDrivePower(m_joystick1.getAxis(0), -m_joystick1.getAxis(1));
 
 			if (m_joystick0.getButtonPressed(1)) {
 				if (m_joystick0.getButtonPressed(7)) {

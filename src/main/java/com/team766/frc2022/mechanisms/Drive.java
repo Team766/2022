@@ -40,7 +40,11 @@ public class Drive extends Mechanism {
         leftPower *= drivePower.get();
         rightPower *= drivePower.get();
         m_leftTalon.set(leftPower);
+        m_leftVictor1.set(leftPower);
+        m_leftVictor2.set(leftPower);
         m_rightTalon.set(rightPower);
+        m_rightVictor1.set(rightPower);
+        m_rightVictor2.set(rightPower);
     }
     
     public void setArcadeDrivePower(double forward, double turn) {
