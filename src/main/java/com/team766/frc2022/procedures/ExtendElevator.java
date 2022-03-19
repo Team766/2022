@@ -11,7 +11,7 @@ public class ExtendElevator extends Procedure{
 	private int distance;
 	
 	public ExtendElevator(){
-		distance = 415; //from 400 to 410
+		distance = 415; //from 400 to 415
 		loggerCategory = Category.ELEVATOR;
 	}
 

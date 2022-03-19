@@ -33,17 +33,17 @@ public class PIDElevator extends Procedure{
 			while (Math.abs(pos - goal) > elevatorPIDLeniency.get() && running) {
 				log("" + Double.toString(Robot.elevator.getElevatorBottom() - pos));
 				pos = Robot.elevator.getElevatorPosition();
-				if (pos - goal < 0 && (Robot.elevator.getElevatorBottom() - pos < Robot.elevator.getElevatorLeniency() || Robot.elevator.getLimitSwitchBottom())) {
+				if (pos - goal < 0 && (Robot.elevator.getElevatorBottom() - pos < elevatorPIDLeniency.get() || Robot.elevator.getLimitSwitchBottom())) {
 					running = false;
 				}
-				if (pos - goal > 0 && (pos - Robot.elevator.getElevatorTop() < Robot.elevator.getElevatorLeniency() || Robot.elevator.getLimitSwitchTop())) {
+				if (pos - goal > 0 && (pos - Robot.elevator.getElevatorTop() < elevatorPIDLeniency.get() || Robot.elevator.getLimitSwitchTop())) {
 					running = false;
 				}
 				power = elevatorP.get() / Math.abs(goal - startPos) * (pos - goal);
 				if (power < 0) {
 					power = -1 * (Robot.elevator.getElevatorPower() * Robot.elevator.getElevatorPower());
 				}
-				Robot.elevator.setElevatorPower((1 / Robot.elevator.getElevatorPower()) * Math.max(Math.abs(power), 0.4) * Math.abs(power) / power);
+				Robot.elevator.setElevatorPowerUnrestricted((1 / Robot.elevator.getElevatorPower()) * Math.max(Math.abs(power), 0.4) * Math.abs(power) / power);
 				//context.yield();
 			}
 			Robot.elevator.setElevatorPower(0.0);

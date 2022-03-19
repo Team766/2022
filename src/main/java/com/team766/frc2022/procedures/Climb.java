@@ -16,6 +16,7 @@ public class Climb extends Procedure{
 		//context.releaseOwnership(Robot.gyro);
 
 		Robot.elevator.setArmsPower(-1.0);
+		log("retracting arms");
 		//log("Extending Elevator");
 		//new ExtendElevator().run(context);
 		//Robot.elevator.resetElevatorPosition();
