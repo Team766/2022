@@ -49,7 +49,10 @@ public class Climb extends Procedure{
 		Robot.elevator.setArmsPower(-1.0);
 		context.waitForSeconds(0.5);
 		new RetractElevator().run(context);
-
-		Robot.elevator.setArmsPower(1.0);
+		context.waitForSeconds(0.1);
+		Robot.elevator.setElevatorPower(-0.25);
+		context.waitForSeconds(2);
+		Robot.elevator.setElevatorPower(0);
+		//Robot.elevator.setArmsPower(1.0); let it slide down
 	}
 }
