@@ -29,25 +29,39 @@ public class PIDElevator extends Procedure{
 		double power = 0.0;
 		log("Starting PID. Goal: " + goal + " StartPos: " + startPos);
 		if (goal != startPos){
-			log("Initial Condition (Should be true): " + Boolean.toString(Math.abs(pos - goal) > elevatorPIDLeniency.get() && running));
+			///log("Initial Condition (Should be true): " + Boolean.toString(Math.abs(pos - goal) > elevatorPIDLeniency.get() && running));
 			while (Math.abs(pos - goal) > elevatorPIDLeniency.get() && running) {
-				log("" + Double.toString(Robot.elevator.getElevatorBottom() - pos));
+				//log("" + Double.toString(Robot.elevator.getElevatorBottom() - pos));
 				pos = Robot.elevator.getElevatorPosition();
-				if (pos - goal < 0 && (Robot.elevator.getElevatorBottom() - pos < elevatorPIDLeniency.get() || Robot.elevator.getLimitSwitchBottom())) {
+				if (pos - goal < 0 && (Robot.elevator.getElevatorBottom() - pos < elevatorPIDLeniency.get())) {
 					running = false;
+					//log("Elevator Within Leniency: Moving Down");
 				}
-				if (pos - goal > 0 && (pos - Robot.elevator.getElevatorTop() < elevatorPIDLeniency.get() || Robot.elevator.getLimitSwitchTop())) {
+				if (pos - goal < 0 && (Robot.elevator.getLimitSwitchBottom())) {
 					running = false;
+					//log("Hit Bottom Limit Switch: Moving Down");
 				}
-				power = elevatorP.get() / Math.abs(goal - startPos) * (pos - goal);
+				if (pos - goal > 0 && (pos - Robot.elevator.getElevatorTop() < elevatorPIDLeniency.get())) {
+					running = false;
+					//log("Elevator Within Leniency: Moving Up");
+				}
+				if (pos - goal > 0 && (Robot.elevator.getLimitSwitchTop())) {
+					running = false;
+					//log("Hit Top Limit Switch: Moving Up");
+				}
+
+					power = elevatorP.get() / Math.abs(goal - startPos) * (pos - goal);
 				if (power < 0) {
-					power = -1 * (Robot.elevator.getElevatorPower() * Robot.elevator.getElevatorPower());
+					power = -1 * (Robot.elevator.getElevatorPower() /** Robot.elevator.getElevatorPower()*/);
 				}
+				//log("Power: " + ((1 / Robot.elevator.getElevatorPower()) * Math.max(Math.abs(power), 0.4) * Math.abs(power) / power));
 				Robot.elevator.setElevatorPowerUnrestricted((1 / Robot.elevator.getElevatorPower()) * Math.max(Math.abs(power), 0.4) * Math.abs(power) / power);
 				//context.yield();
+				log("Top switch: " + Robot.elevator.getLimitSwitchTop() + " Bottom : " + Robot.elevator.getLimitSwitchBottom());
 			}
 			Robot.elevator.setElevatorPower(0.0);
 			log("Ending PID!");
+			log("If no other end message logged, Elevator Within Leniency");
 		}
 	}
 

@@ -34,9 +34,9 @@ public class Climb extends Procedure{
 		new ExtendElevator().run(context);
 
 		Robot.elevator.setArmsPower(-1.0);
-		context.waitForSeconds(0.2);
+		context.waitForSeconds(1);
 		new RetractElevator().run(context);
-
+		context.waitForSeconds(0.1);
 		Robot.elevator.setArmsPower(1.0);
 		context.waitForSeconds(0.5);
 //Rung 2
@@ -49,10 +49,9 @@ public class Climb extends Procedure{
 
 		Robot.elevator.setArmsPower(-1.0);
 		context.waitForSeconds(0.5);
-		new RetractElevator().run(context);
-		context.waitForSeconds(0.1);
+		new PIDElevator(Robot.elevator.getElevatorBottom() + (Robot.elevator.getElevatorTop() - Robot.elevator.getElevatorBottom()) / 3).run(context);
 		Robot.elevator.setElevatorPower(-0.25);
-		context.waitForSeconds(2);
+		context.waitForSeconds(3);
 		Robot.elevator.setElevatorPower(0);
 		//Robot.elevator.setArmsPower(1.0); let it slide down
 	}
