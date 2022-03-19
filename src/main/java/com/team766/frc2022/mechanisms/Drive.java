@@ -7,6 +7,7 @@ import com.team766.framework.Mechanism;
 import com.team766.hal.EncoderReader;
 import com.team766.hal.RobotProvider;
 import com.team766.hal.SpeedController;
+import com.team766.hal.CANSpeedController.ControlMode;
 import com.team766.hal.CANSpeedController;
 import com.team766.logging.Category;
 import com.team766.hal.GyroReader;
@@ -19,26 +20,26 @@ public class Drive extends Mechanism {
     private CANSpeedController m_rightMotor2;
 
     //	private GyroReader m_gyro;
-	private AHRS m_gyro;
+	private GyroReader m_gyro;
 
 	// Values for PID Driving Straight
-	public double P_drive = ConfigFileReader.getInstance().getDouble("drive.drive.P").get();
-	public double I_drive = ConfigFileReader.getInstance().getDouble("drive.drive.I").get();
-	public double D_drive = ConfigFileReader.getInstance().getDouble("drive.drive.D").get();
-	public double FF_drive = ConfigFileReader.getInstance().getDouble("drive.drive.FF").get();
-	public double threshold_drive = ConfigFileReader.getInstance().getDouble("drive.drive.threshold").get();
-	public double minpower_drive = ConfigFileReader.getInstance().getDouble("drive.drive.minpower").get();
-	public double min_drive = -1;
-	public double max_drive = 1;
+	public double P_drive = ConfigFileReader.getInstance().getDouble("drive.drive.P").valueOr(0.0);
+	public double I_drive = ConfigFileReader.getInstance().getDouble("drive.drive.I").valueOr(0.0);
+	public double D_drive = ConfigFileReader.getInstance().getDouble("drive.drive.D").valueOr(0.0);
+	public double FF_drive = ConfigFileReader.getInstance().getDouble("drive.drive.FF").valueOr(0.0);
+	public double threshold_drive = ConfigFileReader.getInstance().getDouble("drive.drive.threshold").valueOr(0.0);
+	public double minpower_drive = ConfigFileReader.getInstance().getDouble("drive.drive.minpower").valueOr(0.0);
+	public double min_drive = -12;
+	public double max_drive = 12;
 
 	// Values for PID turning
-	public double P_turn = ConfigFileReader.getInstance().getDouble("drive.turn.P").get();
-	public double I_turn = ConfigFileReader.getInstance().getDouble("drive.turn.I").get();
-	public double D_turn = ConfigFileReader.getInstance().getDouble("drive.turn.D").get();
-	public double threshold_turn = ConfigFileReader.getInstance().getDouble("drive.turn.thereshold").get();
-	public double minpower_turn = ConfigFileReader.getInstance().getDouble("drive.turn.minpower").get();
-	public double min_turn = -1;
-	public double max_turn = 1;
+	public double P_turn = ConfigFileReader.getInstance().getDouble("drive.turn.P").valueOr(0.0);
+	public double I_turn = ConfigFileReader.getInstance().getDouble("drive.turn.I").valueOr(0.0);
+	public double D_turn = ConfigFileReader.getInstance().getDouble("drive.turn.D").valueOr(0.0);
+	public double threshold_turn = ConfigFileReader.getInstance().getDouble("drive.turn.thereshold").valueOr(0.0);
+	public double minpower_turn = ConfigFileReader.getInstance().getDouble("drive.turn.minpower").valueOr(0.0);
+	public double min_turn = -12;
+	public double max_turn = 12;
 
 	//Encoder Value (CHANGE THESE VALUES LATER)
 	public double ppr = 256; //pulses per revolution
@@ -51,7 +52,7 @@ public class Drive extends Mechanism {
         m_rightMotor1 = RobotProvider.instance.getCANMotor("drive.rightMotor1");
         m_leftMotor2 = RobotProvider.instance.getCANMotor("drive.leftMotor2");
         m_rightMotor2 = RobotProvider.instance.getCANMotor("drive.rightMotor2");
-        m_gyro = new AHRS(Port.kOnboard);
+        m_gyro = RobotProvider.instance.getGyro("drive.gyro");
         m_rightMotor1.setInverted(true);
         m_rightMotor2.setInverted(true);
     }
@@ -90,7 +91,24 @@ public class Drive extends Mechanism {
 		m_rightMotor2.set(rightPower);
 	}
 
+	public void setDrivePower(double leftPower, double rightPower, boolean voltage) {
+		if (voltage){
+			checkContextOwnership();
+
+			m_leftMotor1.set(ControlMode.Voltage, leftPower);
+			m_rightMotor1.set(ControlMode.Voltage, rightPower);
+			m_leftMotor2.set(ControlMode.Voltage, leftPower);
+			m_rightMotor2.set(ControlMode.Voltage, rightPower);
+		}
+	}
+
 	public void setArcadeDrivePower(double forward, double turn) {
 		setDrivePower(turn + forward, -turn + forward);
+	}
+
+	public void setArcadeDrivePower(double forward, double turn, boolean voltage) {
+		if (voltage){
+			setDrivePower(turn + forward, -turn + forward,true);
+		}
 	}
 }

@@ -1,9 +1,11 @@
 package com.team766.frc2022;
 
 import com.team766.framework.Procedure;
+import com.ShooterVelociltyUtil;
 import com.team766.config.ConfigFileReader;
 import com.team766.framework.Context;
 import com.team766.frc2022.Robot;
+import com.team766.frc2022.mechanisms.Limelight;
 import com.team766.frc2022.procedures.*;
 import com.team766.hal.JoystickReader;
 import com.team766.hal.RobotProvider;
@@ -36,16 +38,16 @@ public class OI extends Procedure {
 
 			double dialPower = m_joystick2.getAxis(3);
 			if (m_joystick2.getButton(1)){
-				double configPower = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
+				double configPower = ConfigFileReader.getInstance().getDouble("shooter.velocity").valueOr(1.0);
 				double power = ((dialPower - 0.6456)*3.734)*configPower;
 				Robot.shooter.setVelocity(power);
-				log("shooter power:" + power);
+				//log("shooter power:" + power);
 			} else if (m_joystick2.getButtonReleased(1)) {
 
 				Robot.shooter.stopShoot();
 			}
 
-			log(""+m_joystick2.getAxis(3));
+			//log(""+m_joystick2.getAxis(3));
 			
 			if (b){
 				if (m_joystick2.getButtonPressed(2)) {
@@ -74,6 +76,16 @@ public class OI extends Procedure {
 				context.startAsync(new StopBelts());
 			}
 
+			if (m_joystick0.getButtonPressed(1)) {
+				double distance = Robot.limelight.limelightFilter(context);
+				double power = ShooterVelociltyUtil.computeVelocityForDistance(distance);
+				Robot.shooter.setVelocity(power);
+				if(power == 0.0) {
+					log("out of range");
+				} else {
+					log("set velocity to " + power);
+				}
+
 			if(m_joystick2.getButtonPressed(14)){
 				context.startAsync(new SpitBall());
 			}else if(m_joystick2.getButtonReleased(14)){
@@ -82,8 +94,8 @@ public class OI extends Procedure {
 				context.startAsync(new StopArms());
 			}
 			
-			log(""+Robot.shooter.getVelocity());
-
+			log("Velocity: "+Robot.shooter.getVelocity());
+			log("Distance: "+Robot.limelight.distanceFromTarget());
 			if (m_joystick0.getButtonPressed(3)) {
 				context.startAsync(new activateShooter());
 			} else if (m_joystick0.getButtonReleased(3)){
@@ -92,5 +104,7 @@ public class OI extends Procedure {
 
 			context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 		}
+		}
 	}
 }
+

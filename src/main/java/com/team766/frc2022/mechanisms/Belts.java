@@ -18,7 +18,7 @@ public class Belts extends Mechanism {
 
 	public void startBelts() {
 		checkContextOwnership();
-		double power = ConfigFileReader.getInstance().getDouble("belt.beltPower").get();
+		double power = ConfigFileReader.getInstance().getDouble("belt.beltPower").valueOr(1.0);
 		log("setting them to config value");
 		m_leftStorageBelt.set(power);
 		m_rightStorageBelt.set(power);

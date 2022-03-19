@@ -15,7 +15,7 @@ import java.util.*;
 
 public class BetterLimelight extends Procedure{
     PIDController controller;
-    double stopdist = ConfigFileReader.getInstance().getDouble("limelight.dist").get(); //distance in front of reflective tape we want to be; this is actually the distance from robot to the center of the hub at 5000 power
+    double stopdist = ConfigFileReader.getInstance().getDouble("limelight.dist").valueOr(0.0); //distance in front of reflective tape we want to be; this is actually the distance from robot to the center of the hub at 5000 power
 
     public BetterLimelight(){
 		loggerCategory = Category.AUTONOMOUS; //Delcare here since we aren't creating it, just changing its value
@@ -46,8 +46,9 @@ public class BetterLimelight extends Procedure{
             }
             context.yield();
         }
+        log(""+turnangle);
 
-        new PreciseTurn(turnangle).run(context);
+       // new PreciseTurn(turnangle).run(context);
         
         while (true){ //filters out distance
             double cur_time = RobotProvider.instance.getClock().getTime();
@@ -66,8 +67,16 @@ public class BetterLimelight extends Procedure{
             }
             context.yield();
         }
-        
+
+        log(""+(distance-stopdist));
         new PreciseDrive(distance-stopdist).run(context);
+        
+        context.startAsync(new activateShooter());
+        context.waitForSeconds(2);
+        Robot.belts.startBelts();
+        context.waitForSeconds(1);
+        Robot.shooter.stopShoot();
+        Robot.belts.stopBelts();
     }
     /* 1. Drive and Turn at the same time.
        2. Better filtering algorithm.

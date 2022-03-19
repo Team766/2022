@@ -89,7 +89,7 @@ public class PIDController {
 		maxoutput_low = new ConstantValueProvider<Double>(outputmax_low);
 		maxoutput_high = new ConstantValueProvider<Double>(outputmax_high);
 		endthreshold = new ConstantValueProvider<Double>(threshold);
-		setTimeProvider(RobotProvider.getTimeProvider(), timeProvider.get());
+		setTimeProvider(RobotProvider.getTimeProvider());
 	}
 
 	public PIDController(double P, double I, double D, double FF, double outputmax_low,
@@ -98,9 +98,9 @@ public class PIDController {
 		Kff = new ConstantValueProvider<Double>(FF);
 	}
 
-	private void setTimeProvider(TimeProviderI timeProvider, double v) {
+	private void setTimeProvider(TimeProviderI timeProvider) {
 		this.timeProvider = timeProvider;
-		lastTime = v;
+		lastTime = timeProvider.get();
 	}
 
 	// public PIDController(
@@ -116,7 +116,7 @@ public class PIDController {
 	// 	maxoutput_low = outputmax_low;
 	// 	maxoutput_high = outputmax_high;
 	// 	endthreshold = threshold;
-	// 	setTimeProvider(RobotProvider.getTimeProvider(), timeProvider.get());
+	// 	setTimeProvider(RobotProvider.getTimeProvider());
 	// }
 
 	public PIDController(
@@ -134,7 +134,7 @@ public class PIDController {
 		maxoutput_low = outputmax_low;
 		maxoutput_high = outputmax_high;
 		endthreshold = threshold;
-		setTimeProvider(RobotProvider.getTimeProvider(), timeProvider.get());
+		setTimeProvider(RobotProvider.getTimeProvider());
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class PIDController {
 		maxoutput_low = new MissingValue<Double>();
 		maxoutput_high = new MissingValue<Double>();
 		endthreshold = new ConstantValueProvider<Double>(threshold);
-		setTimeProvider(timeProvider, timeProvider.get());
+		setTimeProvider(timeProvider);
 	}
 
 	public PIDController(double P, double I, double D, double FF, double threshold, TimeProviderI timeProvider) {
@@ -227,7 +227,7 @@ public class PIDController {
 				Kp.get() * cur_error +
 				Ki.get() * total_error +
 				Kd.get() * ((cur_error - prev_error) / delta_time) +
-				Kff.get() * setpoint;
+				Kff.valueOr(0.0) * setpoint;
 		prev_error = cur_error;
 
 		pr("Pre-clip output: " + out);
