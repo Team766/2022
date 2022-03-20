@@ -17,12 +17,12 @@ import com.team766.config.ConfigFileReader;
 public class Drive extends Mechanism {
 
     // Declaration of Mechanisms
-    private CANSpeedController m_leftVictor1;
-    private CANSpeedController m_leftVictor2;
-    private CANSpeedController m_rightVictor1;
-    private CANSpeedController m_rightVictor2;
-    private CANSpeedController m_leftTalon;
-    private CANSpeedController m_rightTalon;
+    private CANSpeedController m_leftTalon1;
+    private CANSpeedController m_leftTalon2;
+	private CANSpeedController m_leftTalon3;
+    private CANSpeedController m_rightTalon1;
+    private CANSpeedController m_rightTalon2;
+    private CANSpeedController m_rightTalon3;
     private ValueProvider<Double> drivePower;
 
     //	private GyroReader m_gyro;
@@ -52,34 +52,30 @@ public class Drive extends Mechanism {
 	public double radius = 0.075; //radius of the wheel in m
 
     public Drive() {
+		loggerCategory = Category.DRIVE;
         // Initializations
-        m_leftVictor1 = RobotProvider.instance.getVictorCANMotor("drive.leftVictor1"); 
-        m_rightVictor1 = RobotProvider.instance.getVictorCANMotor("drive.rightVictor1");
-        m_leftVictor2 = RobotProvider.instance.getVictorCANMotor("drive.leftVictor2");
-        m_rightVictor2 = RobotProvider.instance.getVictorCANMotor("drive.rightVictor2");
-        m_leftTalon = RobotProvider.instance.getTalonCANMotor("drive.leftTalon");
-        m_rightTalon = RobotProvider.instance.getTalonCANMotor("drive.rightTalon");
-        drivePower = ConfigFileReader.getInstance().getDouble("drive.drivePower"); //1
+        m_leftTalon1 = RobotProvider.instance.getCANMotor("drive.leftTalon1"); 
+		m_leftTalon2 = RobotProvider.instance.getCANMotor("drive.leftTalon2"); 
+		m_leftTalon3 = RobotProvider.instance.getCANMotor("drive.leftTalon3"); 
+		m_rightTalon1 = RobotProvider.instance.getCANMotor("drive.rightTalon1"); 
+		m_rightTalon2 = RobotProvider.instance.getCANMotor("drive.rightTalon2"); 
+		m_rightTalon3 = RobotProvider.instance.getCANMotor("drive.rightTalon3"); 
 
+		m_rightTalon1.setInverted(true);
+        m_rightTalon2.setInverted(true);
+		m_rightTalon3.setInverted(true);
         //m_rightVictor1.follow(m_rightTalon);
         //m_rightVictor2.follow(m_rightTalon);
         //m_leftVictor1.follow(m_leftTalon);
         //m_leftVictor2.follow(m_leftTalon);
 
-        loggerCategory = Category.DRIVE;
         m_gyro = new AHRS(Port.kOnboard);
-        m_leftMotor1 = RobotProvider.instance.getCANMotor("drive.leftMotor1");
-        m_rightMotor1 = RobotProvider.instance.getCANMotor("drive.rightMotor1");
-        m_leftMotor2 = RobotProvider.instance.getCANMotor("drive.leftMotor2");
-        m_rightMotor2 = RobotProvider.instance.getCANMotor("drive.rightMotor2");
-        m_rightMotor1.setInverted(true);
-        m_rightMotor2.setInverted(true);
     }
 
     public double getEncoderDistance() {
         // TODO: check if this should be reading from a Talon or from a Victor
-		double leftValue = m_leftVictor1.getSensorPosition();
-		double rightValue = m_rightVictor1.getSensorPosition();
+		double leftValue = m_leftTalon1.getSensorPosition();
+		double rightValue = m_rightTalon1.getSensorPosition();
 		log("Encoder Distance: " + Double.toString(0.5 * (leftValue + rightValue)));
 		double rev = 0.5 * (leftValue + rightValue)/ppr;
 		double distance = rev*2*Math.PI*radius;
@@ -89,8 +85,8 @@ public class Drive extends Mechanism {
 	public void resetEncoders() {
 		checkContextOwnership();
 
-		m_leftVictor1.setPosition(0);;
-		m_rightVictor1.setPosition(0);
+		m_leftTalon1.setPosition(0);;
+		m_rightTalon1.setPosition(0);
 	}
 
 	public void resetGyro() {
@@ -103,27 +99,25 @@ public class Drive extends Mechanism {
     }
 
     public void setDrivePower(double leftPower, double rightPower) {
-        loggerCategory = Category.DRIVE;
 		checkContextOwnership();
 
-        leftPower *= drivePower.get();
-        rightPower *= drivePower.get();
-        m_leftTalon.set(leftPower);
-        m_leftVictor1.set(leftPower);
-        m_leftVictor2.set(leftPower);
-        m_rightTalon.set(rightPower);
-        m_rightVictor1.set(rightPower);
-        m_rightVictor2.set(rightPower);
+        m_leftTalon1.set(leftPower);
+        m_leftTalon2.set(leftPower);
+        m_leftTalon3.set(leftPower);
+        m_rightTalon1.set(rightPower);
+        m_rightTalon2.set(rightPower);
+        m_rightTalon3.set(rightPower);
     }
 
 	public void setDrivePower(double leftPower, double rightPower, boolean voltage) {
 		if (voltage){
 			checkContextOwnership();
-
-			m_leftMotor1.set(ControlMode.Voltage, leftPower);
-			m_rightMotor1.set(ControlMode.Voltage, rightPower);
-			m_leftMotor2.set(ControlMode.Voltage, leftPower);
-			m_rightMotor2.set(ControlMode.Voltage, rightPower);
+			m_leftTalon1.set(ControlMode.Voltage,leftPower);
+			m_leftTalon2.set(ControlMode.Voltage,leftPower);
+			m_leftTalon3.set(ControlMode.Voltage,leftPower);
+			m_rightTalon1.set(ControlMode.Voltage,rightPower);
+			m_rightTalon2.set(ControlMode.Voltage,rightPower);
+			m_rightTalon3.set(ControlMode.Voltage,rightPower);
 		}
 	}
 
