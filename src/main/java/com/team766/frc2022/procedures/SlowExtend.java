@@ -10,10 +10,9 @@ import com.team766.frc2022.Robot;
 public class SlowExtend extends Procedure{
 	public void run(Context context){
 		context.takeOwnership(Robot.elevator);
-
-		new RetractElevator().run(context);
-
-		Robot.elevator.setElevatorPower(-0.25);
+		Robot.elevator.setElevatorPower(-0.3);
+		context.waitForSeconds(1);
+		Robot.elevator.setElevatorPower(0);
 
 	}
 }
