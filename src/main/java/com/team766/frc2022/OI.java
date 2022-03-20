@@ -1,9 +1,11 @@
 package com.team766.frc2022;
 
 import com.team766.framework.Procedure;
+import com.ShooterVelociltyUtil;
 import com.team766.config.ConfigFileReader;
 import com.team766.framework.Context;
 import com.team766.frc2022.Robot;
+import com.team766.frc2022.mechanisms.Limelight;
 import com.team766.frc2022.procedures.*;
 import com.team766.hal.JoystickReader;
 import com.team766.hal.RobotProvider;
@@ -21,7 +23,7 @@ public class OI extends Procedure {
 	private JoystickReader m_rightJoystick;
 	private JoystickReader m_ControlPanel;
 	private boolean b = true;
-	
+
 	public OI() {
 		loggerCategory = Category.OPERATOR_INTERFACE;
 
@@ -29,7 +31,7 @@ public class OI extends Procedure {
 		m_rightJoystick = RobotProvider.instance.getJoystick(InputConstants.RIGHT_JOYSTICK);
 		m_ControlPanel = RobotProvider.instance.getJoystick(InputConstants.CONTROL_PANEL);
 	}
-	
+
 	public void run(Context context) {
 		context.takeOwnership(Robot.drive);
 		context.takeOwnership(Robot.shooter);
@@ -80,20 +82,10 @@ public class OI extends Procedure {
 			}
 
 			log(""+m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL));
-			
-			if (b){
-				if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)) {
-					context.startAsync(new StartIntake());
-				} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)){
-					context.startAsync(new StopIntake());
-				}
-			}
-
-			if (Robot.intake.getSensor() != b){
-				b = Robot.intake.getSensor();
-				if (b == false){
-					context.startAsync(new StopIntake());
-				}
+			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)) {
+				context.startAsync(new StartIntake());
+			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)){
+				context.startAsync(new StopIntake());
 			}
 
 			/*if (m_joystick0.getButtonPressed(5)) {
@@ -115,16 +107,31 @@ public class OI extends Procedure {
 			} else if (m_rightJoystick.getButtonReleased(InputConstants.JOYSTICK_TRIGGER)){
 				context.startAsync(new StopBelts());
 			}
-
+			
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_SPITBALL_BUTTON)){
 				context.startAsync(new SpitBall());
 			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_SPITBALL_BUTTON)) {
-				context.startAsync(new StopBelts());
-				context.startAsync(new StopIntake());
-				context.startAsync(new StopArms());
+
+			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_AUTO_SHOOT)) {
+				double distance = Robot.limelight.limelightFilter(context);
+				if (distance != 0){
+					double power = ShooterVelociltyUtil.computeVelocityForDistance(distance);
+					Robot.shooter.setVelocity(power);
+					if(power == 0.0) {
+						log("out of range");
+					} else {
+						log("set velocity to " + power);
+					}
+				}
 			}
-			
-			log(""+Robot.shooter.getVelocity());
+
+			log("Velocity: "+Robot.shooter.getVelocity());
+			log("Distance: "+Robot.limelight.distanceFromTarget());
+			if (m_joystick0.getButtonPressed(3)) {
+				context.startAsync(new activateShooter());
+			} else if (m_joystick0.getButtonReleased(3)){
+				context.startAsync(new StopShooter());
+			}
 
 			context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 		}

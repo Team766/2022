@@ -9,12 +9,16 @@ import com.team766.config.ConfigFileReader;
 import com.team766.config.ConfigFileReader;
 import com.team766.framework.Mechanism;
 import com.team766.logging.Category;
+import com.team766.hal.RobotProvider;
+import com.team766.framework.Context;
+
+import java.util.*;
 
 public class Limelight extends Mechanism{
 	private NetworkTable table;
-	private final double mountAngle = ConfigFileReader.getInstance().getDouble("limelight.angle").get();
-	private final double mountHeightfromGround = ConfigFileReader.getInstance().getDouble("limelight.mountheight").get();;
-	private final double targetHeightfromGround = ConfigFileReader.getInstance().getDouble("limelight.targetheight").get();;
+	private final double mountAngle = ConfigFileReader.getInstance().getDouble("limelight.angle").valueOr(0.0);
+	private final double mountHeightfromGround = ConfigFileReader.getInstance().getDouble("limelight.mountheight").valueOr(0.0);;
+	private final double targetHeightfromGround = ConfigFileReader.getInstance().getDouble("limelight.targetheight").valueOr(0.0);
 
 	public Limelight(){
 		loggerCategory = Category.AUTONOMOUS;
@@ -56,9 +60,34 @@ public class Limelight extends Mechanism{
 	public double distanceFromTarget(){
 		double angle = Math.abs(Math.toRadians(mountAngle+verticalOffset()));
 		double height = Math.abs(targetHeightfromGround-mountHeightfromGround);
-		if (angle == 0){
+		if (angle == Math.PI/6){
 			return 0;
 		}
 		return height/Math.tan(angle);
 	}
+
+	public double limelightFilter(Context context){
+		double prev_time = RobotProvider.instance.getClock().getTime();
+			ArrayList<Double> list = new ArrayList<Double>();
+			double distance = 0;
+			while (true){ //filters out distance
+				double cur_time = RobotProvider.instance.getClock().getTime();
+				double dist = distanceFromTarget();
+				if (dist != 0){
+					list.add(dist);
+				}
+				if (cur_time-prev_time >= 0.3){
+					Collections.sort(list);
+					if (list.isEmpty()){
+						log("Stop trolling. There is no target in this direction.");
+					} else {
+						distance = list.get(list.size()/2);
+					}
+					break;
+				}
+				context.yield();
+			}
+
+		return distance;
+	}	
 }

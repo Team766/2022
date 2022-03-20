@@ -10,14 +10,20 @@ public class PreciseTurn extends Procedure {
     PIDController controller;
     double final_angle;
 
-    public PreciseTurn(double angle){
-		loggerCategory = Category.AUTONOMOUS; //Delcare here since we aren't creating it, just changing its value
-        this.final_angle = angle;
-	}
+    // public PreciseTurn(double angle){
+	// 	loggerCategory = Category.AUTONOMOUS; //Delcare here since we aren't creating it, just changing its value
+    //     this.final_angle = angle;
+	// }
+
+    public PreciseTurn(){
+        loggerCategory = Category.AUTONOMOUS; //Delcare here since we aren't creating it, just changing its value
+        this.final_angle = 90;
+    }
 
     public void run(Context context){
         context.takeOwnership(Robot.drive);
         Robot.drive.resetGyro();
+        log("Hi");
         controller = new PIDController(Robot.drive.P_turn,Robot.drive.I_turn,Robot.drive.D_turn, Robot.drive.min_turn, Robot.drive.max_turn, Robot.drive.threshold_turn);
         controller.setSetpoint(final_angle);
         while (true){ //controller.isDone() == false
