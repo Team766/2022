@@ -5,14 +5,14 @@ import com.team766.hal.RobotProvider;
 import com.team766.hal.CANSpeedController;
 import com.team766.hal.DigitalInputReader;
 import com.team766.hal.DoubleSolenoid;
-import com.team766.hal.SolenoidController;
 import com.team766.library.ValueProvider;
 import com.team766.logging.Category;
 
 public class Elevator extends Mechanism {
     // Declaration of Mechanisms
 	private CANSpeedController m_elevator;
-    private DoubleSolenoid m_arms;
+    private DoubleSolenoid m_leftArm;
+    private DoubleSolenoid m_rightArm;
     private DigitalInputReader m_bottom;
     private DigitalInputReader m_top;
 
@@ -26,7 +26,8 @@ public class Elevator extends Mechanism {
     public Elevator() {
         // Initializations
 		m_elevator = RobotProvider.instance.getCANMotor("climber.elevator");
-        m_arms = new DoubleSolenoid(RobotProvider.instance.getSolenoid("climber.armsFront"), RobotProvider.instance.getSolenoid("climber.armsBack"));
+        m_leftArm = RobotProvider.instance.getSolenoid("climber.armsLeft");
+        m_rightArm = RobotProvider.instance.getSolenoid("climber.armsRight");
         m_bottom = RobotProvider.instance.getDigitalInput("climber.bottomDigitalInput");
         m_top = RobotProvider.instance.getDigitalInput("climber.topDigitalInput");
 
@@ -86,11 +87,12 @@ public class Elevator extends Mechanism {
             //log("Neutral!");
             armsState = DoubleSolenoid.State.Neutral;
         }
-        m_arms.set(armsState);
+        m_leftArm.set(armsState);
+        m_rightArm.set(armsState);
     }
 
     public boolean getArmsPower() {
-        return m_arms.get();
+        return m_leftArm.get();
     }
 
     public double getElevatorPower() {
