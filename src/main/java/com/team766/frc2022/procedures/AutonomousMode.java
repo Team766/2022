@@ -7,7 +7,7 @@ import com.team766.logging.Category;
 import com.ShooterVelociltyUtil;
 import com.team766.controllers.PIDController;
 
-public class automode extends Procedure{
+public class AutonomousMode extends Procedure{
 	public void run(Context context){
 		context.takeOwnership(Robot.drive);
 		context.takeOwnership(Robot.belts);
