@@ -36,11 +36,11 @@ public class OI extends Procedure {
 		context.takeOwnership(Robot.drive);
 		context.takeOwnership(Robot.shooter);
 		context.takeOwnership(Robot.elevator); //move somewhere else later
+		context.takeOwnership(Robot.intake);
+		context.takeOwnership(Robot.belts);
 
 		Robot.shooter.setPIDValues();
 
-		 //move somewhere else later
-		boolean joystickControl = true;
 		//LaunchedContext climbingContext = null;
 		while (true) {
 			// TODO: tweak all of this based on actual revB controls
@@ -51,6 +51,12 @@ public class OI extends Procedure {
 			log("Elevator: " + Robot.elevator.getElevatorPosition() + " Arms: " + Robot.elevator.getArmsPower());
 			log("Pitch: " + Robot.gyro.getGyroPitch() + " Yaw: " + Robot.gyro.getGyroYaw() + " Roll: " + Robot.gyro.getGyroRoll());
 			log("Top: " + Robot.elevator.getLimitSwitchTop() + " Bottom: " + Robot.elevator.getLimitSwitchBottom());
+
+			if (m_leftJoystick.getButtonPressed(6)){
+				Robot.intake.startArms();
+			} else if (m_leftJoystick.getButtonReleased(6)){
+				Robot.intake.stopArms();
+			}
 
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
 				Robot.elevator.setElevatorPower(-1);
@@ -94,7 +100,6 @@ public class OI extends Procedure {
 				context.releaseOwnership(Robot.gyro);
 			}*/
 
-			context.releaseOwnership(Robot.elevator);
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
 				context.startAsync(new ExtendElevator());
 			}
@@ -111,6 +116,10 @@ public class OI extends Procedure {
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_SPITBALL_BUTTON)){
 				context.startAsync(new SpitBall());
 			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_SPITBALL_BUTTON)) {
+				context.startAsync(new StopBelts());
+				context.startAsync(new StopIntake());
+				context.startAsync(new StopArms());
+			}
 
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_AUTO_SHOOT)) {
 				double distance = Robot.limelight.limelightFilter(context);
@@ -127,11 +136,12 @@ public class OI extends Procedure {
 
 			log("Velocity: "+Robot.shooter.getVelocity());
 			log("Distance: "+Robot.limelight.distanceFromTarget());
-			if (m_joystick0.getButtonPressed(3)) {
+			
+			/* if (m_leftJoystick.getButtonPressed(3)) {
 				context.startAsync(new activateShooter());
-			} else if (m_joystick0.getButtonReleased(3)){
+			} else if (m_leftJoystick.getButtonReleased(3)) {
 				context.startAsync(new StopShooter());
-			}
+			} */
 
 			context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 		}

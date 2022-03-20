@@ -68,8 +68,6 @@ public class Drive extends Mechanism {
         //m_rightVictor2.follow(m_rightTalon);
         //m_leftVictor1.follow(m_leftTalon);
         //m_leftVictor2.follow(m_leftTalon);
-
-        m_gyro = new AHRS(Port.kOnboard);
     }
 
     public double getEncoderDistance() {

@@ -25,7 +25,7 @@ public class Elevator extends Mechanism {
 
     public Elevator() {
         // Initializations
-		m_elevator = RobotProvider.instance.getTalonCANMotor("climber.elevator");
+		m_elevator = RobotProvider.instance.getCANMotor("climber.elevator");
         m_arms = new DoubleSolenoid(RobotProvider.instance.getSolenoid("climber.armsFront"), RobotProvider.instance.getSolenoid("climber.armsBack"));
         m_bottom = RobotProvider.instance.getDigitalInput("climber.bottomDigitalInput");
         m_top = RobotProvider.instance.getDigitalInput("climber.topDigitalInput");
