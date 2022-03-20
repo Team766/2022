@@ -4,14 +4,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+
+import com.team766.config.ConfigFileReader;
+import com.team766.config.ConfigFileReader;
 import com.team766.framework.Mechanism;
 import com.team766.logging.Category;
 
 public class Limelight extends Mechanism{
 	private NetworkTable table;
-	private final double mountAngle = 0;
-	private final double mountHeightfromGround = 6.5;
-	private final double targetHeightfromGround = 26.5;
+	private final double mountAngle = ConfigFileReader.getInstance().getDouble("limelight.angle").get();
+	private final double mountHeightfromGround = ConfigFileReader.getInstance().getDouble("limelight.mountheight").get();;
+	private final double targetHeightfromGround = ConfigFileReader.getInstance().getDouble("limelight.targetheight").get();;
 
 	public Limelight(){
 		loggerCategory = Category.AUTONOMOUS;

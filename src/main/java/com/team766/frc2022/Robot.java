@@ -4,6 +4,7 @@ import com.team766.framework.AutonomousProcedureUtils;
 import com.team766.framework.Procedure;
 import com.team766.framework.Scheduler;
 import com.team766.framework.LaunchedContext;
+import com.team766.hal.wpilib.DigitalInput;
 import com.team766.frc2022.mechanisms.*;
 import com.team766.hal.MyRobot;
 import com.team766.hal.RobotProvider;

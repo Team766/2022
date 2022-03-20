@@ -15,7 +15,7 @@ import java.util.*;
 
 public class BetterLimelight extends Procedure{
     PIDController controller;
-    double stopdist = 4.5; //distance in front of reflective tape we want to be; this is actually the distance from robot to the center of the hub at 5000 power
+    double stopdist = ConfigFileReader.getInstance().getDouble("limelight.dist").get(); //distance in front of reflective tape we want to be; this is actually the distance from robot to the center of the hub at 5000 power
 
     public BetterLimelight(){
 		loggerCategory = Category.AUTONOMOUS; //Delcare here since we aren't creating it, just changing its value

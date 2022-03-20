@@ -5,21 +5,28 @@ import com.team766.framework.Mechanism;
 import com.team766.hal.SolenoidController;
 import com.team766.hal.CANSpeedController;
 import com.team766.hal.RobotProvider;
+import com.team766.hal.wpilib.DigitalInput;
 
 public class Intake extends Mechanism {
 	private SolenoidController m_intakeArm1;
 	private SolenoidController m_intakeArm2;
 	private CANSpeedController m_frontIntakeWheel;
 	private CANSpeedController m_middleIntakeWheel;
+	private DigitalInput m_sensor;
 	
 	public Intake() {
 		m_frontIntakeWheel = RobotProvider.instance.getCANMotor("Intake.frontWheel");
 		m_middleIntakeWheel = RobotProvider.instance.getCANMotor("Intake.topWheel");
 		m_intakeArm1 = RobotProvider.instance.getSolenoid("Intake.intakeArm1");
 		m_intakeArm2 = RobotProvider.instance.getSolenoid("Intake.intakeArm2");
+		m_sensor = new DigitalInput(ConfigFileReader.getInstance().getInt("intake.channel").get());
 		m_frontIntakeWheel.setInverted(true);
 	}
 
+	public boolean getSensor(){
+		return m_sensor.get();
+	}
+	
 	public void startIntake() {
 		checkContextOwnership();
 		double power = ConfigFileReader.getInstance().getDouble("Intake.intakePower").get();
