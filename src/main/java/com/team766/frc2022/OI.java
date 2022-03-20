@@ -35,12 +35,9 @@ public class OI extends Procedure {
 	public void run(Context context) {
 		context.takeOwnership(Robot.drive);
 		context.takeOwnership(Robot.shooter);
-		context.takeOwnership(Robot.elevator); //move somewhere else later
 
 		Robot.shooter.setPIDValues();
 
-		 //move somewhere else later
-		boolean joystickControl = true;
 		//LaunchedContext climbingContext = null;
 		while (true) {
 			// TODO: tweak all of this based on actual revB controls
@@ -53,22 +50,34 @@ public class OI extends Procedure {
 			log("Top: " + Robot.elevator.getLimitSwitchTop() + " Bottom: " + Robot.elevator.getLimitSwitchBottom());
 
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
+				context.takeOwnership(Robot.elevator);
 				Robot.elevator.setElevatorPower(-1);
+				context.releaseOwnership(Robot.elevator);
 			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ELEVATOR_DOWN_BUTTON)) {
+				context.takeOwnership(Robot.elevator);
 				Robot.elevator.setElevatorPower(1);
+				context.releaseOwnership(Robot.elevator);
 			} else {
+				context.takeOwnership(Robot.elevator);				
 				Robot.elevator.setElevatorPower(0);
+				context.releaseOwnership(Robot.elevator);
 			}
 
 			// TODO: change dis
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ARMS_SWITCH)) {
+				context.takeOwnership(Robot.elevator);				
 				Robot.elevator.setArmsPower(1);
+				context.releaseOwnership(Robot.elevator);
 			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ARMS_SWITCH)) {
+				context.takeOwnership(Robot.elevator);				
 				Robot.elevator.setArmsPower(-1);
+				context.releaseOwnership(Robot.elevator);
 			}
 
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_BOTTOM_BUTTON)) {
+				context.takeOwnership(Robot.elevator);				
 				Robot.elevator.resetElevatorPosition();
+				context.releaseOwnership(Robot.elevator);
 			}
 
 			double dialPower = m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL);
@@ -94,7 +103,6 @@ public class OI extends Procedure {
 				context.releaseOwnership(Robot.gyro);
 			}*/
 
-			context.releaseOwnership(Robot.elevator);
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
 				context.startAsync(new ExtendElevator());
 			}
