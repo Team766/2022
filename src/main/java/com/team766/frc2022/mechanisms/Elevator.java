@@ -87,6 +87,10 @@ public class Elevator extends Mechanism {
         return m_arms.get();
     }
 
+    public double getElevatorPower() {
+        return elevatorPower.get();
+    }
+
     public boolean getLimitSwitchBottom() {
         return m_bottom.get();
     }
@@ -113,6 +117,6 @@ public class Elevator extends Mechanism {
 
     @Override
     public void run() {
-        log("Elevator Encoder: " + getElevatorPosition());
+        //log("Elevator Encoder: " + getElevatorPosition());
     }
 }

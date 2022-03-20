@@ -37,6 +37,9 @@ public class OI extends Procedure {
 
 		Robot.shooter.setPIDValues();
 
+		 //move somewhere else later
+		boolean joystickControl = true;
+		//LaunchedContext climbingContext = null;
 		while (true) {
 			// TODO: tweak all of this based on actual revB controls
 			Robot.drive.setArcadeDrivePower(
@@ -91,6 +94,20 @@ public class OI extends Procedure {
 				if (b == false){
 					context.startAsync(new StopIntake());
 				}
+			}
+
+			/*if (m_joystick0.getButtonPressed(5)) {
+				context.takeOwnership(Robot.gyro);
+				Robot.gyro.resetGyro();
+				context.releaseOwnership(Robot.gyro);
+			}*/
+
+			context.releaseOwnership(Robot.elevator);
+			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
+				context.startAsync(new ExtendElevator());
+			}
+			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_DOWN_BUTTON)) {
+				context.startAsync(new RetractElevator());
 			}
 			
 			if (m_rightJoystick.getButtonPressed(InputConstants.JOYSTICK_TRIGGER)) {

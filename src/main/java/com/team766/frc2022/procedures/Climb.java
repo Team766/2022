@@ -15,44 +15,39 @@ public class Climb extends Procedure{
 		Robot.gyro.resetGyro();
 		//context.releaseOwnership(Robot.gyro);
 
-		new ArmsControl(false).run(context);
-		Robot.elevator.setElevatorPowerUnrestricted(0.5);
-		log("Set elevator power to 0.5");
-		context.waitFor(() -> Robot.elevator.getLimitSwitchTop() == true);
-		log("Hit limit switch");
-		Robot.elevator.setElevatorPowerUnrestricted(0.0);
-		log("set elevator power to 0");
-		Robot.elevator.resetElevatorPosition();
-		log("Reset elevator encoder");
+		Robot.elevator.setArmsPower(-1.0);
+		//log("Extending Elevator");
+		//new ExtendElevator().run(context);
+		//Robot.elevator.resetElevatorPosition();
+		//log("Reset elevator encoder");
 
 		new RetractElevator().run(context);
-		new ArmsControl(true).run(context);
+		Robot.elevator.setArmsPower(1.0);
 		context.waitForSeconds(0.2);
 //Rung 1
-		new ExtendElevator(12000).run(context);
+		new PIDElevator(Robot.elevator.getElevatorBottom() + (Robot.elevator.getElevatorTop() - Robot.elevator.getElevatorBottom()) / 3).run(context);
 
 		context.waitFor(() -> Robot.gyro.getGyroPitch() >= 39);
 
 		new ExtendElevator().run(context);
 
-		new ArmsControl(false).run(context);
+		Robot.elevator.setArmsPower(-1.0);
 		context.waitForSeconds(0.2);
 		new RetractElevator().run(context);
 
-		new ArmsControl(true).run(context);
+		Robot.elevator.setArmsPower(1.0);
 		context.waitForSeconds(0.2);
 //Rung 2
-		new ExtendElevator(12000).run(context);
+		new PIDElevator(Robot.elevator.getElevatorBottom() + (Robot.elevator.getElevatorTop() - Robot.elevator.getElevatorBottom()) / 3).run(context);
 
 		context.waitFor(() -> Robot.gyro.getGyroPitch() >= 39);
 
 		new ExtendElevator().run(context);
 
-		new ArmsControl(false).run(context);
+		Robot.elevator.setArmsPower(-1.0);
 		context.waitForSeconds(0.2);
 		new RetractElevator().run(context);
 
-		new ArmsControl(true).run(context);
-//Rung 3
+		Robot.elevator.setArmsPower(1.0);
 	}
 }
