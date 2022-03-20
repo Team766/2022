@@ -20,7 +20,7 @@ public class OI extends Procedure {
 	private JoystickReader m_joystick1;
 	private JoystickReader m_joystick2;
 	private boolean b = true;
-	
+
 	public OI() {
 		loggerCategory = Category.OPERATOR_INTERFACE;
 
@@ -28,7 +28,7 @@ public class OI extends Procedure {
 		m_joystick1 = RobotProvider.instance.getJoystick(1);
 		m_joystick2 = RobotProvider.instance.getJoystick(2);
 	}
-	
+
 	public void run(Context context) {
 		context.takeOwnership(Robot.drive);
 		context.takeOwnership(Robot.shooter);
@@ -43,7 +43,6 @@ public class OI extends Procedure {
 				Robot.shooter.setVelocity(power);
 				//log("shooter power:" + power);
 			} else if (m_joystick2.getButtonReleased(1)) {
-
 				Robot.shooter.stopShoot();
 			}
 
@@ -78,17 +77,19 @@ public class OI extends Procedure {
 
 			if (m_joystick0.getButtonPressed(1)) {
 				double distance = Robot.limelight.limelightFilter(context);
-				double power = ShooterVelociltyUtil.computeVelocityForDistance(distance);
-				Robot.shooter.setVelocity(power);
-				if(power == 0.0) {
-					log("out of range");
-				} else {
-					log("set velocity to " + power);
+				if (distance != 0){
+					double power = ShooterVelociltyUtil.computeVelocityForDistance(distance);
+					Robot.shooter.setVelocity(power);
+					if(power == 0.0) {
+						log("out of range");
+					} else {
+						log("set velocity to " + power);
+					}
 				}
-
-			if(m_joystick2.getButtonPressed(14)){
+			}
+			if (m_joystick2.getButtonPressed(14)){
 				context.startAsync(new SpitBall());
-			}else if(m_joystick2.getButtonReleased(14)){
+			}else if (m_joystick2.getButtonReleased(14)) {
 				context.startAsync(new StopBelts());
 				context.startAsync(new StopIntake());
 				context.startAsync(new StopArms());
@@ -104,7 +105,5 @@ public class OI extends Procedure {
 
 			context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 		}
-		}
 	}
 }
-
