@@ -26,7 +26,7 @@ public class Belts extends Mechanism {
 
 	public void stopBelts() {
 		checkContextOwnership();
-		log("stopping htem 0.0");
+		log("stopping them 0.0");
 		m_leftStorageBelt.set(0.0);
 		m_rightStorageBelt.set(0.0);
 	}

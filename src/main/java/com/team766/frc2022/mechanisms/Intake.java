@@ -20,7 +20,6 @@ public class Intake extends Mechanism {
 		m_intakeArm1 = RobotProvider.instance.getSolenoid("Intake.intakeArm1");
 		m_intakeArm2 = RobotProvider.instance.getSolenoid("Intake.intakeArm2");
 		m_sensor = new DigitalInput(ConfigFileReader.getInstance().getInt("intake.channel").valueOr(0));
-		m_frontIntakeWheel.setInverted(true);
 	}
 
 	public boolean getSensor(){

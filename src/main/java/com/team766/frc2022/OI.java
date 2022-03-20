@@ -37,7 +37,7 @@ public class OI extends Procedure {
 		context.takeOwnership(Robot.shooter);
 		context.takeOwnership(Robot.intake);
 		context.takeOwnership(Robot.belts);
-		
+
 		Robot.shooter.setPIDValues();
 
 		//LaunchedContext climbingContext = null;
@@ -119,8 +119,10 @@ public class OI extends Procedure {
 			}
 			
 			if (m_rightJoystick.getButtonPressed(InputConstants.JOYSTICK_TRIGGER)) {
+				log("Bru");
 				context.startAsync(new StartBelts());
 			} else if (m_rightJoystick.getButtonReleased(InputConstants.JOYSTICK_TRIGGER)){
+				log("Bru :(");
 				context.startAsync(new StopBelts());
 			}
 			
@@ -145,8 +147,8 @@ public class OI extends Procedure {
 				}
 			}
 
-			log("Velocity: "+Robot.shooter.getVelocity());
-			log("Distance: "+Robot.limelight.distanceFromTarget());
+			// log("Velocity: "+Robot.shooter.getVelocity());
+			// log("Distance: "+Robot.limelight.distanceFromTarget());
 			
 			/* if (m_leftJoystick.getButtonPressed(3)) {
 				context.startAsync(new activateShooter());
