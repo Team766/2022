@@ -72,6 +72,10 @@ public class Elevator extends Mechanism {
     public void resetElevatorPosition() {
         m_elevator.setPosition(0);
 	}
+
+    public void setElevatorPosition(int pos) {
+        m_elevator.setPosition(pos);
+	}
 	
 	public void setArmsPower(double power) {
 		checkContextOwnership();
