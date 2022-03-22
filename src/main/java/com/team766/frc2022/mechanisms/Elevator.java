@@ -63,6 +63,14 @@ public class Elevator extends Mechanism {
             m_elevator.set(0);
         } 
     }
+
+    public void setElevatorPowerTrueUnrestricted(double power){
+        power *= elevatorPower.get();
+        checkContextOwnership();
+        if(power > -0.3 && power < 0.3){
+            m_elevator.set(-power);
+        }
+    }
     
     public double getElevatorPosition() {
         

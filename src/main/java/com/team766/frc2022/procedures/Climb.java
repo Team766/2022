@@ -56,7 +56,7 @@ public class Climb extends Procedure{
 		context.waitFor(() -> Robot.gyro.getGyroPitch() >= 39 || RobotProvider.instance.getClock().getTime() - startTimeTwo >= 5);
 
 		new ExtendElevator().run(context);
-		context.waitForSeconds(0.2);
+		context.waitForSeconds(1.0);
 
 		Robot.elevator.setArmsPower(-1.0);
 		context.waitForSeconds(0.5);
@@ -67,8 +67,10 @@ public class Climb extends Procedure{
 		Robot.elevator.setElevatorPowerUnrestricted(-1.0);
 		context.waitFor(() -> Robot.elevator.getLimitSwitchBottom());
 		context.waitForSeconds(0.5);
-		Robot.elevator.setElevatorPowerUnrestricted(0.0);
+		Robot.elevator.setElevatorPowerTrueUnrestricted(-0.3);
 		//Robot.elevator.setArmsPower(1.0); let it slide down
+		context.waitForSeconds(1.0);
+		Robot.elevator.setElevatorPowerUnrestricted(0.0);
 		
 	}
 }
