@@ -5,6 +5,7 @@ import com.ShooterVelociltyUtil;
 import com.team766.config.ConfigFileReader;
 import com.team766.framework.Context;
 import com.team766.frc2022.Robot;
+import com.team766.frc2022.mechanisms.Elevator;
 import com.team766.frc2022.mechanisms.Limelight;
 import com.team766.frc2022.procedures.*;
 import com.team766.hal.JoystickReader;
@@ -47,31 +48,47 @@ public class OI extends Procedure {
 				-m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD), 
 				m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT));
 
-			log("Elevator: " + Robot.elevator.getElevatorPosition() + " Arms: " + Robot.elevator.getArmsPower());
+		//	log("Elevator: " + Robot.elevator.getElevatorPosition() + " Arms: " + Robot.elevator.getArmsPower());
 			log("Pitch: " + Robot.gyro.getGyroPitch() + " Yaw: " + Robot.gyro.getGyroYaw() + " Roll: " + Robot.gyro.getGyroRoll());
-			log("Top: " + Robot.elevator.getLimitSwitchTop() + " Bottom: " + Robot.elevator.getLimitSwitchBottom());
-
-			if (m_leftJoystick.getButtonPressed(6)){
-				Robot.intake.startArms();
-			} else if (m_leftJoystick.getButtonReleased(6)){
-				Robot.intake.stopArms();
-			}
-
+		//	log("Top: " + Robot.elevator.getLimitSwitchTop() + " Bottom: " + Robot.elevator.getLimitSwitchBottom());
+		//	log("Top switch: " + Boolean.toString(Robot.elevator.getLimitSwitchTop()) + " Bottom switch:" + Boolean.toString(Robot.elevator.getLimitSwitchBottom()));
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
 				context.takeOwnership(Robot.elevator);
-				Robot.elevator.setElevatorPower(-1);
+				Robot.elevator.setElevatorPower(0.5);
 				context.releaseOwnership(Robot.elevator);
+				log("UP");
+			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
+				context.takeOwnership(Robot.elevator);
+				Robot.elevator.setElevatorPower(0);
+				context.releaseOwnership(Robot.elevator);
+				log("UP Stop");
+			} 
+
+			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_DOWN_BUTTON)) {
+				context.takeOwnership(Robot.elevator);
+				Robot.elevator.setElevatorPower(-0.5);
+				context.releaseOwnership(Robot.elevator);
+				log("Down");
 			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ELEVATOR_DOWN_BUTTON)) {
 				context.takeOwnership(Robot.elevator);
-				Robot.elevator.setElevatorPower(1);
-				context.releaseOwnership(Robot.elevator);
-			} else {
-				context.takeOwnership(Robot.elevator);				
 				Robot.elevator.setElevatorPower(0);
+				context.releaseOwnership(Robot.elevator);
+				log("down stop");
+			} 
+
+			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_TOP_BUTTON)) {
+				context.takeOwnership(Robot.elevator);
+				new ExtendElevator().run(context);				
+				context.releaseOwnership(Robot.elevator);
+			}
+			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_BOTTOM_BUTTON)) {
+				context.takeOwnership(Robot.elevator);
+				new RetractElevator().run(context);				
 				context.releaseOwnership(Robot.elevator);
 			}
 
-			// TODO: change dis
+			//1 pushes the arms forward, -1 pushes the arms backwards
+			
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ARMS_SWITCH)) {
 				context.takeOwnership(Robot.elevator);				
 				Robot.elevator.setArmsPower(1);
@@ -82,11 +99,8 @@ public class OI extends Procedure {
 				context.releaseOwnership(Robot.elevator);
 			}
 
-			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_BOTTOM_BUTTON)) {
-				context.takeOwnership(Robot.elevator);				
-				Robot.elevator.resetElevatorPosition();
-				context.releaseOwnership(Robot.elevator);
-			}
+			// 
+			log(""+Robot.elevator.getElevatorPosition());
 
 			double dialPower = m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL);
 			if (m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)){
@@ -98,7 +112,7 @@ public class OI extends Procedure {
 				Robot.shooter.stopShoot();
 			}
 
-			log(""+m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL));
+			//log(""+m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL));
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)) {
 				context.startAsync(new StartIntake());
 			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)){
