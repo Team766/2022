@@ -23,12 +23,14 @@ public class Shooter extends Mechanism{
 	}
 
 	public void basicShoot(){
+		checkContextOwnership();
 		double power = ConfigFileReader.getInstance().getDouble("shooter.velocity").valueOr(1.0);
 		setVelocity(power);
 	}
 	
 
 	public void stopShoot(){
+		checkContextOwnership();
 		shooter.set(0.0);
 	}
 

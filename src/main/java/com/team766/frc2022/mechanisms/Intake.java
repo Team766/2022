@@ -59,9 +59,10 @@ public class Intake extends Mechanism {
 
 	public void reverseIntake(){
 		checkContextOwnership();
+		double power = ConfigFileReader.getInstance().getDouble("Intake.intakePower").get();
 
-		m_frontIntakeWheel.set(-1.0);
-		m_middleIntakeWheel.set(-1.0);
+		m_frontIntakeWheel.set(-power);
+		m_middleIntakeWheel.set(-power);
 
 		startArms();
 	}

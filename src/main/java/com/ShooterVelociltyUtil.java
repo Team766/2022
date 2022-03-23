@@ -3,8 +3,8 @@ import java.util.*;
 
 public class ShooterVelociltyUtil {
 
-	private static final double[] distances = { 3.0, 3.5, 4.0, 4.5, 5.0, 6.0, 7.0 };
-	private static final double[] powers = { 3300.0, 3500.0, 3800.0, 4000.0, 4200.0, 4600.0, 5000.0 };
+	private static final double[] distances = { 2.5, 3.0, 3.5, 4.0, 4.5, 5.0 };
+	private static final double[] powers = { 3400.0, 3400.0, 3600.0, 3750.0, 3850.0, 4000.0 };
 
 	public static double computeVelocityForDistance(double distance) {
 		/*
