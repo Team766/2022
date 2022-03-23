@@ -54,10 +54,10 @@ public class PIDElevator extends Procedure{
 				if (power < 0) {
 					power = -1 * (Robot.elevator.getElevatorPower() /** Robot.elevator.getElevatorPower()*/);
 				}
+				log("Elevator: " + pos + " Goal: " + goal);
 				//log("Power: " + ((1 / Robot.elevator.getElevatorPower()) * Math.max(Math.abs(power), 0.4) * Math.abs(power) / power));
 				Robot.elevator.setElevatorPowerUnrestricted((1 / Robot.elevator.getElevatorPower()) * Math.max(Math.abs(power), 0.4) * Math.abs(power) / power);
 				//context.yield();
-				log("Top switch: " + Robot.elevator.getLimitSwitchTop() + " Bottom : " + Robot.elevator.getLimitSwitchBottom());
 			}
 			Robot.elevator.setElevatorPower(0.0);
 			log("Ending PID!");
