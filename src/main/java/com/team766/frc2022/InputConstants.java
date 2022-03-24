@@ -38,4 +38,6 @@ public final class InputConstants {
 	public static final int JOYSTICK_TRIGGER = 1;
 	public static final int E_STOP = 11;
 	public static final int JOYSTICK_ELEVATOR_RESET_BUTTON = 2; //Joystick 2
+	public static final int JOYSTICK_CLIMB_RUNG_BUTTON = 4; //Joystick 2
+
 }
