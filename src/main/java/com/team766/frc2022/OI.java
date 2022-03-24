@@ -101,6 +101,10 @@ public class OI extends Procedure {
 				context.releaseOwnership(Robot.elevator);
 			}
 
+			if(m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_AUTOCLIMB_BUTTON)){
+				context.startAsync(new Climb());
+			}
+
 			if (m_leftJoystick.getButtonPressed(InputConstants.JOYSTICK_ELEVATOR_RESET_BUTTON)){
 				//context.takeOwnership(Robot.shooter);
 				context.startAsync(new ResetElevator());
@@ -108,6 +112,10 @@ public class OI extends Procedure {
 
 			if(m_leftJoystick.getButtonPressed(InputConstants.JOYSTICK_CLIMB_RUNG_BUTTON)){
 				context.startAsync(new ClimbRung());
+			}
+
+			if(m_leftJoystick.getButtonPressed(InputConstants.JOYSTICK_CLIMB_FIRST_RUNG_BUTTON)){
+				context.startAsync(new ClimbFirstRung());
 			}
 			// 
 			//log(""+Robot.elevator.getElevatorPosition());
