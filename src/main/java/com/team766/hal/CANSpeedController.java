@@ -101,6 +101,8 @@ public interface CANSpeedController extends SpeedController {
 
 	void setOutputRange(double minOutput, double maxOutput);
 
+	void setCurrentLimit(double ampsLimit);
+
 	void restoreFactoryDefault();
 
 	void setOpenLoopRamp(double secondsFromNeutralToFull);
