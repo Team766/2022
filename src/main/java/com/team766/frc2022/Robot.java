@@ -15,6 +15,7 @@ import com.team766.web.AutonomousSelector;
 import com.team766.web.ConfigUI;
 import com.team766.web.DriverInterface;
 import com.team766.web.LogViewer;
+import com.team766.web.ReadLogs;
 import com.team766.web.WebServer;
 
 public class Robot extends MyRobot {
@@ -45,6 +46,7 @@ public class Robot extends MyRobot {
 		m_webServer.addHandler(new DriverInterface(m_autonSelector));
 		m_webServer.addHandler(new ConfigUI());
 		m_webServer.addHandler(new LogViewer());
+		m_webServer.addHandler(new ReadLogs());
 		m_webServer.addHandler(m_autonSelector);
 		m_webServer.start();
 	}

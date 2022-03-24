@@ -5,6 +5,7 @@ import com.team766.framework.Mechanism;
 import com.team766.hal.EncoderReader;
 import com.team766.hal.RobotProvider;
 import com.team766.hal.SpeedController;
+import com.team766.library.RateLimiter;
 import com.team766.hal.CANSpeedController;
 import com.team766.logging.Category;
 //import edu.wpi.first.wpilibj.I2C.Port;
@@ -13,6 +14,7 @@ import com.kauailabs.navx.frc.*;
 
 public class Gyro extends Mechanism {
 	private AHRS m_gyro;
+	private RateLimiter m_loggingRate = new RateLimiter(0.05);
 
 	public Gyro() {
 		loggerCategory = Category.DRIVE;
@@ -45,6 +47,8 @@ public class Gyro extends Mechanism {
 
 	@Override
 	public void run() {
-		log("" + getGyroPitch());
+		if (m_loggingRate.next()) {
+			log("" + getGyroPitch());
+		}
 	}
 }
