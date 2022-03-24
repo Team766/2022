@@ -101,6 +101,10 @@ public class OI extends Procedure {
 				context.releaseOwnership(Robot.elevator);
 			}
 
+			if (m_leftJoystick.getButtonPressed(InputConstants.JOYSTICK_ELEVATOR_RESET_BUTTON)){
+				//context.takeOwnership(Robot.shooter);
+				context.startAsync(new ResetElevator());
+			}
 			// 
 			//log(""+Robot.elevator.getElevatorPosition());
 
@@ -142,6 +146,12 @@ public class OI extends Procedure {
 			} else if (m_rightJoystick.getButtonReleased(InputConstants.JOYSTICK_TRIGGER)){
 				context.startAsync(new StopBelts());
 			}
+
+			if (m_rightJoystick.getButtonPressed(InputConstants.JOYSTICK_TRIGGER)) {
+				context.startAsync(new StartBelts());
+			} else if (m_rightJoystick.getButtonReleased(InputConstants.JOYSTICK_TRIGGER)){
+				context.startAsync(new StopBelts());
+			}
 			
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_SPITBALL_BUTTON)){
 				context.startAsync(new SpitBall());
@@ -170,10 +180,10 @@ public class OI extends Procedure {
 			// 	Robot.shooter.stopShoot();
 			// }
 
-			if (m_leftJoystick.getButtonPressed(2)){
-				//context.takeOwnership(Robot.shooter);
-				Robot.shooter.basicShoot();
-			}// } else if (m_leftJoystick.getButtonReleased(2)){
+			// if (m_leftJoystick.getButtonPressed(2)){
+			// 	//context.takeOwnership(Robot.shooter);
+			// 	Robot.shooter.basicShoot();
+			// }// } else if (m_leftJoystick.getButtonReleased(2)){
 			// 	Robot.shooter.stopShoot();
 			// }
 

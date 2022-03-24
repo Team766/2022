@@ -1,4 +1,5 @@
 package com.team766.frc2022.mechanisms;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.team766.config.ConfigFileReader;
 import com.team766.framework.Mechanism;
 import com.team766.hal.RobotProvider;
@@ -26,6 +27,7 @@ public class Elevator extends Mechanism {
     public Elevator() {
         // Initializations
 		m_elevator = RobotProvider.instance.getCANMotor("climber.elevator");
+        m_elevator.setNeutralMode(NeutralMode.Brake);
         m_leftArm = RobotProvider.instance.getSolenoid("climber.armsLeft");
         m_rightArm = RobotProvider.instance.getSolenoid("climber.armsRight");
         m_bottom = RobotProvider.instance.getDigitalInput("climber.bottomDigitalInput");
