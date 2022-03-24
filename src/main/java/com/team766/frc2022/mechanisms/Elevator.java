@@ -90,11 +90,11 @@ public class Elevator extends Mechanism {
 		checkContextOwnership();
         DoubleSolenoid.State armsState;
         if (power > 0) {
-            log("Forward!");
-            armsState = DoubleSolenoid.State.Forward;
-        } else if (power < 0) {
             log("Backward!");
             armsState = DoubleSolenoid.State.Backward;
+        } else if (power < 0) {
+            log("Forward!");
+            armsState = DoubleSolenoid.State.Forward;
         } else {
             log("Neutral!");
             armsState = DoubleSolenoid.State.Neutral;
