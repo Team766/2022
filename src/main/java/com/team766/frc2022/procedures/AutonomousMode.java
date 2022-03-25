@@ -15,12 +15,12 @@ public class AutonomousMode extends Procedure{
 		context.takeOwnership(Robot.shooter);
 
 		Robot.drive.setArcadeDrivePower(-0.5, 0);
-		context.waitForSeconds(0.75);
+		context.waitForSeconds(0.25);
 		Robot.drive.setArcadeDrivePower(0,0);
-		double distance = Robot.limelight.limelightFilter(context);
-		log(""+distance);
-		if (distance != 0){
-			double power = ShooterVelociltyUtil.computeVelocityForDistance(distance);
+		context.waitForSeconds(0.5);
+		log(""+3);
+		if (3 != 0){
+			double power = ShooterVelociltyUtil.computeVelocityForDistance(3);
 			Robot.shooter.setVelocity(power);
 			if(power == 0.0) {
 				log("out of range");
