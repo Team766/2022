@@ -74,7 +74,7 @@ public class Limelight extends Mechanism{
 			while (true){ //filters out distance
 				double cur_time = RobotProvider.instance.getClock().getTime();
 				double dist = distanceFromTarget();
-				log("Temp distance: "+dist);
+				//  log("Temp distance: "+dist);
 				if (dist != 0){
 					list.add(dist);
 				}
