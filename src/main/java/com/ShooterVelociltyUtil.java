@@ -1,7 +1,10 @@
 package com;
 import java.util.*;
 import com.team766.logging.Category;
-
+import com.team766.hal.RobotProvider;
+import com.team766.logging.Logger;
+import com.team766.logging.Severity;
+import com.team766.framework.*;
 
 public class ShooterVelociltyUtil {
 
@@ -9,7 +12,7 @@ public class ShooterVelociltyUtil {
 	private static final double[] powers = { 3400.0, 3400.0, 3600.0, 3750.0, 3900.0, 4050.0,4300.0,4600.0};
 
 	public ShooterVelociltyUtil(){
-		//loggerCategory = Category.LIMELIGHT;
+		
 	}
 
 	public static double computeVelocityForDistance(double distance) {
@@ -27,6 +30,7 @@ public class ShooterVelociltyUtil {
 		list2.add(4500.0); */
 
 		if (distance < distances[0] || distance > distances[distances.length-1]) {
+			Logger.get(Category.LIMELIGHT).logRaw(Severity.INFO, "Velocity set to 0 in ShooterVelocityUtil");
 			return 0.0;
 		} else {
 			return findPoint(distance);
