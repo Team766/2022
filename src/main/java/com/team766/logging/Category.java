@@ -12,7 +12,8 @@ public enum Category {
 	CONFIGURATION,
 	PROCEDURES,
 	OPERATOR_INTERFACE,
-	ELEVATOR;
+	ELEVATOR,
+	LIMELIGHT;
 	
 	private static final Category[] VALUES = Category.values();
 	public static Category fromInteger(byte x) {

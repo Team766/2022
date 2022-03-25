@@ -84,15 +84,11 @@ public class OI extends Procedure {
 				log("down stop");
 			} 
 
-			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_TOP_BUTTON)) {
-				context.takeOwnership(Robot.elevator);
-				new ExtendElevator().run(context);				
-				context.releaseOwnership(Robot.elevator);
+			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_TOP_BUTTON)) {				
+				context.startAsync(new ExtendElevator());
 			}
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_BOTTOM_BUTTON)) {
-				context.takeOwnership(Robot.elevator);
-				new RetractElevator().run(context);				
-				context.releaseOwnership(Robot.elevator);
+				context.startAsync(new RetractElevator());	
 			}
 
 			//1 pushes the arms forward, -1 pushes the arms backwards
