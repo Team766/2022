@@ -5,6 +5,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+import com.ShooterVelociltyUtil;
 import com.team766.config.ConfigFileReader;
 import com.team766.config.ConfigFileReader;
 import com.team766.framework.Mechanism;
@@ -73,7 +74,7 @@ public class Limelight extends Mechanism{
 			while (true){ //filters out distance
 				double cur_time = RobotProvider.instance.getClock().getTime();
 				double dist = distanceFromTarget();
-				log(""+dist);
+				log("Temp distance: "+dist);
 				if (dist != 0){
 					list.add(dist);
 				}
@@ -82,6 +83,7 @@ public class Limelight extends Mechanism{
 					if (list.isEmpty()){
 						log("Stop trolling. There is no target in this direction.");
 					} else {
+						log("Final distance: "+dist);
 						distance = list.get(list.size()/2);
 					}
 					break;
@@ -89,6 +91,7 @@ public class Limelight extends Mechanism{
 				context.yield();
 			}
 
+		log("Power: "+ShooterVelociltyUtil.computeVelocityForDistance(distance));
 		return distance;
 	}	
 }
