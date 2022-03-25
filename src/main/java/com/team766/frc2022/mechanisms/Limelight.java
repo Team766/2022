@@ -21,7 +21,7 @@ public class Limelight extends Mechanism{
 	private final double targetHeightfromGround = ConfigFileReader.getInstance().getDouble("limelight.targetheight").valueOr(0.0);
 
 	public Limelight(){
-		loggerCategory = Category.AUTONOMOUS;
+		loggerCategory = Category.LIMELIGHT;
 		table = NetworkTableInstance.getDefault().getTable("limelight");
 
 	}
@@ -73,6 +73,7 @@ public class Limelight extends Mechanism{
 			while (true){ //filters out distance
 				double cur_time = RobotProvider.instance.getClock().getTime();
 				double dist = distanceFromTarget();
+				log(""+dist);
 				if (dist != 0){
 					list.add(dist);
 				}
