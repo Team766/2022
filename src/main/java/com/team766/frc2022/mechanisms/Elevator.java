@@ -137,8 +137,8 @@ public class Elevator extends Mechanism {
         return slowMode.get();
     }
 
-    @Override
+    /*@Override
     public void run() {
         //log("Elevator Encoder: " + getElevatorPosition());
-    }
+    }*/
 }

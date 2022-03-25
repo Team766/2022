@@ -62,7 +62,7 @@ public class OI extends Procedure {
 		
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
 				context.takeOwnership(Robot.elevator);
-				Robot.elevator.setElevatorPower(0.5);
+				Robot.elevator.setElevatorPower(1);
 				context.releaseOwnership(Robot.elevator);
 				log("UP");
 			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
@@ -74,7 +74,7 @@ public class OI extends Procedure {
 
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_DOWN_BUTTON)) {
 				context.takeOwnership(Robot.elevator);
-				Robot.elevator.setElevatorPower(-0.5);
+				Robot.elevator.setElevatorPower(-1);
 				context.releaseOwnership(Robot.elevator);
 				log("Down");
 			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ELEVATOR_DOWN_BUTTON)) {
