@@ -16,10 +16,10 @@ public class AutonomousMode extends Procedure{
 		context.takeOwnership(Robot.elevator);
 
 		Robot.drive.setArcadeDrivePower(-0.5, 0);
-		context.waitForSeconds(0.25);
+		context.waitForSeconds(0.3);
 		Robot.drive.setArcadeDrivePower(0,0);
 		context.waitForSeconds(0.5);
-		double power = ShooterVelociltyUtil.computeVelocityForDistance(3);
+		double power = ShooterVelociltyUtil.computeVelocityForDistance(4);
 			Robot.shooter.setVelocity(power);
 		context.waitForSeconds(5);
 		Robot.belts.startBelts();
