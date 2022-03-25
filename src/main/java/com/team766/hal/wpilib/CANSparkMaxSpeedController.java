@@ -84,6 +84,8 @@ public class CANSparkMaxSpeedController extends CANSparkMax implements CANSpeedC
 			case Velocity:
 				getPIDController().setReference(value, CANSparkMax.ControlType.kVelocity);
 				break;
+			case Voltage:
+				getPIDController().setReference(value, CANSparkMax.ControlType.kVelocity);
 			default:
 				throw new IllegalArgumentException("Unsupported control mode " + mode);
 		}
@@ -203,6 +205,10 @@ public class CANSparkMaxSpeedController extends CANSparkMax implements CANSpeedC
 	@Override
 	public void setOutputRange(double minOutput, double maxOutput) {
 		revErrorToException(ExceptionTarget.LOG, getPIDController().setOutputRange(minOutput, maxOutput));
+	}
+
+	public void setCurrentLimit(double ampsLimit) {
+		revErrorToException(ExceptionTarget.LOG, setSmartCurrentLimit((int)ampsLimit));
 	}
 
 	@Override

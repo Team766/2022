@@ -18,7 +18,7 @@ public class Belts extends Mechanism {
 
 	public void startBelts() {
 		checkContextOwnership();
-		double power = ConfigFileReader.getInstance().getDouble("belt.beltPower").get();
+		double power = ConfigFileReader.getInstance().getDouble("belt.beltPower").valueOr(1.0);
 		log("setting them to config value");
 		m_leftStorageBelt.set(power);
 		m_rightStorageBelt.set(power);
@@ -26,15 +26,16 @@ public class Belts extends Mechanism {
 
 	public void stopBelts() {
 		checkContextOwnership();
-		log("stopping htem 0.0");
+		log("stopping them 0.0");
 		m_leftStorageBelt.set(0.0);
 		m_rightStorageBelt.set(0.0);
 	}
 
 	public void reverseBelts(){
 		checkContextOwnership();
+		double power = ConfigFileReader.getInstance().getDouble("belt.beltPower").valueOr(1.0);
 
-		m_leftStorageBelt.set(-1.0);
-		m_rightStorageBelt.set(-1.0);
+		m_leftStorageBelt.set(-power);
+		m_rightStorageBelt.set(-power);
 	}
 }

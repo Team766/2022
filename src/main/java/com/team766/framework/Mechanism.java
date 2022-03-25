@@ -2,6 +2,7 @@ package com.team766.framework;
 
 import com.team766.logging.Category;
 import com.team766.logging.Logger;
+import com.team766.logging.LoggerExceptionUtils;
 import com.team766.logging.Severity;
 
 public abstract class Mechanism extends Loggable {
@@ -48,7 +49,8 @@ public abstract class Mechanism extends Loggable {
 
 	void releaseOwnership(Context context) {
 		if (m_owningContext != context) {
-			Logger.get(Category.PROCEDURES).logRaw(Severity.ERROR, context.getContextName() + " tried to release ownership of " + getName() + " but it doesn't own it");
+			//Logger.get(Category.PROCEDURES).logRaw(Severity.ERROR, context.getContextName() + " tried to release ownership of " + getName() + " but it doesn't own it");
+			LoggerExceptionUtils.logException(new Exception(context.getContextName() + " tried to release ownership of " + getName() + " but it doesn't own it"));
 			return;
 		}
 		Logger.get(Category.PROCEDURES).logRaw(Severity.INFO, context.getContextName() + " is releasing ownership of " + getName());

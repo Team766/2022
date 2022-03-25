@@ -5,6 +5,9 @@ import com.team766.framework.Context;
 import com.team766.framework.LaunchedContext;
 import com.team766.framework.Procedure;
 import com.team766.frc2022.Robot;
+import com.team766.hal.RobotProvider;
+import com.team766.library.ValueProvider;
+import com.team766.config.ConfigFileReader;
 
 public class Climb extends Procedure{
 
@@ -15,44 +18,59 @@ public class Climb extends Procedure{
 		Robot.gyro.resetGyro();
 		//context.releaseOwnership(Robot.gyro);
 
-		new ArmsControl(false).run(context);
-		Robot.elevator.setElevatorPowerUnrestricted(0.5);
-		log("Set elevator power to 0.5");
-		context.waitFor(() -> Robot.elevator.getLimitSwitchTop() == true);
-		log("Hit limit switch");
+		Robot.elevator.setArmsPower(-1.0);
+		log("retracting arms");
+		//log("Extending Elevator");
+		//new ExtendElevator().run(context);
+		//Robot.elevator.resetElevatorPosition();
+		//log("Reset elevator encoder");
+
+		new RetractElevator().run(context);
+		//Robot.elevator.setElevatorPosition(Robot.elevator.getElevatorBottom() - (int) ConfigFileReader.getInstance().getDouble("PIDclimber.elevatorPIDLeniency").get().doubleValue());
+		Robot.elevator.setArmsPower(1.0);
+		Robot.elevator.setElevatorPowerUnrestricted(-1.0);
+		context.waitFor(() -> Robot.elevator.getLimitSwitchBottom());
 		Robot.elevator.setElevatorPowerUnrestricted(0.0);
-		log("set elevator power to 0");
-		Robot.elevator.resetElevatorPosition();
-		log("Reset elevator encoder");
-
-		new RetractElevator().run(context);
-		new ArmsControl(true).run(context);
-		context.waitForSeconds(0.2);
 //Rung 1
-		new ExtendElevator(12000).run(context);
+		new PIDElevator(Robot.elevator.getElevatorBottom() + (Robot.elevator.getElevatorTop() - Robot.elevator.getElevatorBottom()) / 3).run(context);
 
-		context.waitFor(() -> Robot.gyro.getGyroPitch() >= 39);
+		double startTime = RobotProvider.instance.getClock().getTime();
+		context.waitFor(() -> Robot.gyro.getGyroPitch() >= 39 || RobotProvider.instance.getClock().getTime() - startTime >= 5);
+//41.56 = no swing, arms retract | 42.58 = no swing, arms extend | 22.8 = rung bottom contact | 20.12 = rung top contact(piston is in between) | 
 
 		new ExtendElevator().run(context);
 
-		new ArmsControl(false).run(context);
-		context.waitForSeconds(0.2);
+		Robot.elevator.setArmsPower(-1.0);
+		context.waitForSeconds(1);
+//		new PIDElevator(Robot.elevator.getElevatorBottom() + (Robot.elevator.getElevatorTop() - Robot.elevator.getElevatorBottom()) / 2).run(context);
+//		context.waitForSeconds(0.5);
 		new RetractElevator().run(context);
-
-		new ArmsControl(true).run(context);
-		context.waitForSeconds(0.2);
+		Robot.elevator.setArmsPower(1.0);
+		Robot.elevator.setElevatorPowerUnrestricted(-1.0);
+		context.waitFor(() -> Robot.elevator.getLimitSwitchBottom());
+		Robot.elevator.setElevatorPowerUnrestricted(0.0);
 //Rung 2
-		new ExtendElevator(12000).run(context);
+		new PIDElevator(Robot.elevator.getElevatorBottom() + (Robot.elevator.getElevatorTop() - Robot.elevator.getElevatorBottom()) / 3).run(context);
 
-		context.waitFor(() -> Robot.gyro.getGyroPitch() >= 39);
+		double startTimeTwo = RobotProvider.instance.getClock().getTime();
+		context.waitFor(() -> Robot.gyro.getGyroPitch() >= 39 || RobotProvider.instance.getClock().getTime() - startTimeTwo >= 5);
 
 		new ExtendElevator().run(context);
+		context.waitForSeconds(1.0);
 
-		new ArmsControl(false).run(context);
-		context.waitForSeconds(0.2);
+		Robot.elevator.setArmsPower(-1.0);
+		context.waitForSeconds(0.5);
+//		new PIDElevator(Robot.elevator.getElevatorBottom() + (Robot.elevator.getElevatorTop() - Robot.elevator.getElevatorBottom()) / 2).run(context);
+//		context.waitForSeconds(0.5);
 		new RetractElevator().run(context);
-
-		new ArmsControl(true).run(context);
-//Rung 3
+		Robot.elevator.setArmsPower(1.0);
+		Robot.elevator.setElevatorPowerUnrestricted(-1.0);
+		context.waitFor(() -> Robot.elevator.getLimitSwitchBottom());
+		context.waitForSeconds(0.5);
+		Robot.elevator.setElevatorPowerTrueUnrestricted(-0.3);
+		//Robot.elevator.setArmsPower(1.0); let it slide down
+		context.waitForSeconds(1.0);
+		Robot.elevator.setElevatorPowerUnrestricted(0.0);
+		
 	}
 }

@@ -28,11 +28,17 @@ public final class InputConstants {
 	public static final int CONTROL_PANEL_SPITBALL_BUTTON = 14;
 
 	// TODO: update these
-	public static final int CONTROL_PANEL_AUTOCLIMB_BUTTON = 8;
-	public static final int CONTROL_PANEL_ARMS_SWITCH = 11;
-	public static final int CONTROL_PANEL_ELEVATOR_UP_BUTTON = 15;
-	public static final int CONTROL_PANEL_ELEVATOR_DOWN_BUTTON = 16;
-	public static final int CONTROL_PANEL_ELEVATOR_TOP_BUTTON = 17;
-	public static final int CONTROL_PANEL_ELEVATOR_BOTTOM_BUTTON = 18;
+	public static final int CONTROL_PANEL_AUTOCLIMB_BUTTON = 9;
+	public static final int CONTROL_PANEL_ARMS_SWITCH = 13;
+	public static final int CONTROL_PANEL_ELEVATOR_UP_BUTTON = 7;
+	public static final int CONTROL_PANEL_ELEVATOR_DOWN_BUTTON = 8;
+	public static final int CONTROL_PANEL_ELEVATOR_TOP_BUTTON = 5;
+	public static final int CONTROL_PANEL_ELEVATOR_BOTTOM_BUTTON = 6;
+	public static final int CONTROL_PANEL_AUTO_SHOOT = 10;
 	public static final int JOYSTICK_TRIGGER = 1;
+	public static final int E_STOP = 11;
+	public static final int JOYSTICK_ELEVATOR_RESET_BUTTON = 2; //Joystick 2, left
+	public static final int JOYSTICK_CLIMB_RUNG_BUTTON = 4; //Joystick 2, left
+	public static final int JOYSTICK_CLIMB_FIRST_RUNG_BUTTON = 5; //joystick 2, left
+
 }

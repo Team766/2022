@@ -7,6 +7,7 @@ import com.team766.framework.Mechanism;
 import com.team766.hal.EncoderReader;
 import com.team766.hal.RobotProvider;
 import com.team766.hal.SpeedController;
+import com.team766.hal.CANSpeedController.ControlMode;
 import com.team766.hal.CANSpeedController;
 import com.team766.library.ValueProvider;
 import com.team766.logging.Category;
@@ -16,63 +17,63 @@ import com.team766.config.ConfigFileReader;
 public class Drive extends Mechanism {
 
     // Declaration of Mechanisms
-    private CANSpeedController m_leftVictor1;
-    private CANSpeedController m_leftVictor2;
-    private CANSpeedController m_rightVictor1;
-    private CANSpeedController m_rightVictor2;
-    private CANSpeedController m_leftTalon;
-    private CANSpeedController m_rightTalon;
+    private CANSpeedController m_leftTalon1;
+    private CANSpeedController m_leftTalon2;
+	private CANSpeedController m_leftTalon3;
+    private CANSpeedController m_rightTalon1;
+    private CANSpeedController m_rightTalon2;
+    private CANSpeedController m_rightTalon3;
     private ValueProvider<Double> drivePower;
 
     //	private GyroReader m_gyro;
-	private AHRS m_gyro;
+	private GyroReader m_gyro;
 
 	// Values for PID Driving Straight
-	public double P_drive = ConfigFileReader.getInstance().getDouble("drive.drive.P").get();
-	public double I_drive = ConfigFileReader.getInstance().getDouble("drive.drive.I").get();
-	public double D_drive = ConfigFileReader.getInstance().getDouble("drive.drive.D").get();
-	public double FF_drive = ConfigFileReader.getInstance().getDouble("drive.drive.FF").get();
-	public double threshold_drive = ConfigFileReader.getInstance().getDouble("drive.drive.threshold").get();
-	public double minpower_drive = ConfigFileReader.getInstance().getDouble("drive.drive.minpower").get();
-	public double min_drive = -1;
-	public double max_drive = 1;
+	public double P_drive = ConfigFileReader.getInstance().getDouble("drive.drive.P").valueOr(0.0);
+	public double I_drive = ConfigFileReader.getInstance().getDouble("drive.drive.I").valueOr(0.0);
+	public double D_drive = ConfigFileReader.getInstance().getDouble("drive.drive.D").valueOr(0.0);
+	public double FF_drive = ConfigFileReader.getInstance().getDouble("drive.drive.FF").valueOr(0.0);
+	public double threshold_drive = ConfigFileReader.getInstance().getDouble("drive.drive.threshold").valueOr(0.0);
+	public double minpower_drive = ConfigFileReader.getInstance().getDouble("drive.drive.minpower").valueOr(0.0);
+	public double min_drive = -12;
+	public double max_drive = 12;
 
 	// Values for PID turning
-	public double P_turn = ConfigFileReader.getInstance().getDouble("drive.turn.P").get();
-	public double I_turn = ConfigFileReader.getInstance().getDouble("drive.turn.I").get();
-	public double D_turn = ConfigFileReader.getInstance().getDouble("drive.turn.D").get();
-	public double threshold_turn = ConfigFileReader.getInstance().getDouble("drive.turn.thereshold").get();
-	public double minpower_turn = ConfigFileReader.getInstance().getDouble("drive.turn.minpower").get();
-	public double min_turn = -1;
-	public double max_turn = 1;
+	public double P_turn = ConfigFileReader.getInstance().getDouble("drive.turn.P").valueOr(0.0);
+	public double I_turn = ConfigFileReader.getInstance().getDouble("drive.turn.I").valueOr(0.0);
+	public double D_turn = ConfigFileReader.getInstance().getDouble("drive.turn.D").valueOr(0.0);
+	public double threshold_turn = ConfigFileReader.getInstance().getDouble("drive.turn.thereshold").valueOr(0.0);
+	public double minpower_turn = ConfigFileReader.getInstance().getDouble("drive.turn.minpower").valueOr(0.0);
+	public double min_turn = -12;
+	public double max_turn = 12;
 
 	//Encoder Value (CHANGE THESE VALUES LATER)
 	public double ppr = 256; //pulses per revolution
 	public double radius = 0.075; //radius of the wheel in m
 
     public Drive() {
+		loggerCategory = Category.DRIVE;
         // Initializations
-        m_leftVictor1 = RobotProvider.instance.getVictorCANMotor("drive.leftVictor1"); 
-        m_rightVictor1 = RobotProvider.instance.getVictorCANMotor("drive.rightVictor1");
-        m_leftVictor2 = RobotProvider.instance.getVictorCANMotor("drive.leftVictor2");
-        m_rightVictor2 = RobotProvider.instance.getVictorCANMotor("drive.rightVictor2");
-        m_leftTalon = RobotProvider.instance.getTalonCANMotor("drive.leftTalon");
-        m_rightTalon = RobotProvider.instance.getTalonCANMotor("drive.rightTalon");
-        drivePower = ConfigFileReader.getInstance().getDouble("drive.drivePower"); //1
+        m_leftTalon1 = RobotProvider.instance.getCANMotor("drive.leftTalon1"); 
+		m_leftTalon2 = RobotProvider.instance.getCANMotor("drive.leftTalon2"); 
+		m_leftTalon3 = RobotProvider.instance.getCANMotor("drive.leftTalon3"); 
+		m_rightTalon1 = RobotProvider.instance.getCANMotor("drive.rightTalon1"); 
+		m_rightTalon2 = RobotProvider.instance.getCANMotor("drive.rightTalon2"); 
+		m_rightTalon3 = RobotProvider.instance.getCANMotor("drive.rightTalon3"); 
 
+		m_rightTalon1.setInverted(true);
+        m_rightTalon2.setInverted(true);
+		m_rightTalon3.setInverted(true);
         //m_rightVictor1.follow(m_rightTalon);
         //m_rightVictor2.follow(m_rightTalon);
         //m_leftVictor1.follow(m_leftTalon);
         //m_leftVictor2.follow(m_leftTalon);
-
-        loggerCategory = Category.DRIVE;
-        m_gyro = new AHRS(Port.kOnboard);
     }
 
     public double getEncoderDistance() {
         // TODO: check if this should be reading from a Talon or from a Victor
-		double leftValue = m_leftVictor1.getSensorPosition();
-		double rightValue = m_rightVictor1.getSensorPosition();
+		double leftValue = m_leftTalon1.getSensorPosition();
+		double rightValue = m_rightTalon1.getSensorPosition();
 		log("Encoder Distance: " + Double.toString(0.5 * (leftValue + rightValue)));
 		double rev = 0.5 * (leftValue + rightValue)/ppr;
 		double distance = rev*2*Math.PI*radius;
@@ -82,8 +83,8 @@ public class Drive extends Mechanism {
 	public void resetEncoders() {
 		checkContextOwnership();
 
-		m_leftVictor1.setPosition(0);;
-		m_rightVictor1.setPosition(0);
+		m_leftTalon1.setPosition(0);;
+		m_rightTalon1.setPosition(0);
 	}
 
 	public void resetGyro() {
@@ -96,16 +97,35 @@ public class Drive extends Mechanism {
     }
 
     public void setDrivePower(double leftPower, double rightPower) {
-        loggerCategory = Category.DRIVE;
 		checkContextOwnership();
 
-        leftPower *= drivePower.get();
-        rightPower *= drivePower.get();
-        m_leftTalon.set(leftPower);
-        m_rightTalon.set(rightPower);
+        m_leftTalon1.set(leftPower);
+        m_leftTalon2.set(leftPower);
+        m_leftTalon3.set(leftPower);
+        m_rightTalon1.set(rightPower);
+        m_rightTalon2.set(rightPower);
+        m_rightTalon3.set(rightPower);
     }
+
+	public void setDrivePower(double leftPower, double rightPower, boolean voltage) {
+		if (voltage){
+			checkContextOwnership();
+			m_leftTalon1.set(ControlMode.Voltage,leftPower);
+			m_leftTalon2.set(ControlMode.Voltage,leftPower);
+			m_leftTalon3.set(ControlMode.Voltage,leftPower);
+			m_rightTalon1.set(ControlMode.Voltage,rightPower);
+			m_rightTalon2.set(ControlMode.Voltage,rightPower);
+			m_rightTalon3.set(ControlMode.Voltage,rightPower);
+		}
+	}
 
 	public void setArcadeDrivePower(double forward, double turn) {
 		setDrivePower(turn + forward, -turn + forward);
-	} 
+	}
+
+	public void setArcadeDrivePower(double forward, double turn, boolean voltage) {
+		if (voltage){
+			setDrivePower(turn + forward, -turn + forward,true);
+		}
+	}
 }

@@ -6,6 +6,7 @@ import com.team766.hal.CANSpeedController;
 import com.team766.hal.RobotProvider;
 import com.team766.hal.CANSpeedController.ControlMode;
 import com.team766.logging.Category;
+import com.team766.frc2022.Robot;
 
 public class Shooter extends Mechanism{
 	private CANSpeedController shooter;
@@ -22,20 +23,22 @@ public class Shooter extends Mechanism{
 	}
 
 	public void basicShoot(){
-		double power = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
+		checkContextOwnership();
+		double power = ConfigFileReader.getInstance().getDouble("shooter.velocity").valueOr(1.0);
 		setVelocity(power);
 	}
 	
 
 	public void stopShoot(){
+		checkContextOwnership();
 		shooter.set(0.0);
 	}
 
 	public void setPIDValues(){
-		shooter.setP(ConfigFileReader.getInstance().getDouble("shooter.p").get());
-		shooter.setI(ConfigFileReader.getInstance().getDouble("shooter.i").get());
-		shooter.setD(ConfigFileReader.getInstance().getDouble("shooter.d").get());
-		shooter.setFF(ConfigFileReader.getInstance().getDouble("shooter.ff").get()); //overcome friction
+		shooter.setP(ConfigFileReader.getInstance().getDouble("shooter.p").valueOr(0.0));
+		shooter.setI(ConfigFileReader.getInstance().getDouble("shooter.i").valueOr(0.0));
+		shooter.setD(ConfigFileReader.getInstance().getDouble("shooter.d").valueOr(0.0));
+		shooter.setFF(ConfigFileReader.getInstance().getDouble("shooter.ff").valueOr(0.0)); //overcome friction
 	}
 
 	public double getVelocity(){

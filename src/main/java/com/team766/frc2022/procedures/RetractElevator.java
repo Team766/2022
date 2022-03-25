@@ -8,9 +8,10 @@ public class RetractElevator extends Procedure{
 	public void run(Context context){
 		context.takeOwnership(Robot.elevator);
 
-		Robot.elevator.setElevatorPower(-1.0);
+		/*Robot.elevator.setElevatorPower(-1.0);
 		context.waitFor(() -> Robot.elevator.getElevatorPosition() >= 17500);
-		Robot.elevator.setElevatorPower(0.0);
+		Robot.elevator.setElevatorPower(0.0);*/
+		new PIDElevator(Robot.elevator.getElevatorBottom()).run(context);
 
 /*
 		try{

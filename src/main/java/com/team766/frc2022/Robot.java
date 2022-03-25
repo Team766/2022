@@ -4,6 +4,7 @@ import com.team766.framework.AutonomousProcedureUtils;
 import com.team766.framework.Procedure;
 import com.team766.framework.Scheduler;
 import com.team766.framework.LaunchedContext;
+import com.team766.hal.wpilib.DigitalInput;
 import com.team766.frc2022.mechanisms.*;
 import com.team766.hal.MyRobot;
 import com.team766.hal.RobotProvider;
@@ -14,6 +15,7 @@ import com.team766.web.AutonomousSelector;
 import com.team766.web.ConfigUI;
 import com.team766.web.DriverInterface;
 import com.team766.web.LogViewer;
+import com.team766.web.ReadLogs;
 import com.team766.web.WebServer;
 
 public class Robot extends MyRobot {
@@ -44,6 +46,7 @@ public class Robot extends MyRobot {
 		m_webServer.addHandler(new DriverInterface(m_autonSelector));
 		m_webServer.addHandler(new ConfigUI());
 		m_webServer.addHandler(new LogViewer());
+		m_webServer.addHandler(new ReadLogs());
 		m_webServer.addHandler(m_autonSelector);
 		m_webServer.start();
 	}
