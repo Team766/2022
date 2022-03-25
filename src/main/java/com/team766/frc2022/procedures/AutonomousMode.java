@@ -13,6 +13,7 @@ public class AutonomousMode extends Procedure{
 		context.takeOwnership(Robot.belts);
 		context.takeOwnership(Robot.limelight);
 		context.takeOwnership(Robot.shooter);
+		context.takeOwnership(Robot.elevator);
 
 		Robot.drive.setArcadeDrivePower(-0.5, 0);
 		context.waitForSeconds(0.25);
@@ -25,6 +26,7 @@ public class AutonomousMode extends Procedure{
 		context.waitForSeconds(2);
 		Robot.belts.stopBelts();
 		Robot.shooter.stopShoot();
+		Robot.elevator.setArmsPower(-1.0);
 
 		// Robot.drive.setArcadeDrivePower(-0.5, 0);
 		// context.waitForSeconds(0.5);
