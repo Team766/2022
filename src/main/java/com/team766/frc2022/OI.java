@@ -201,8 +201,8 @@ public class OI extends Procedure {
 			// 	Robot.shooter.stopShoot();
 			// }
 
-			log("Velocity: "+Robot.shooter.getVelocity());
-			log("Distance: "+Robot.limelight.distanceFromTarget());
+			// log("Velocity: "+Robot.shooter.getVelocity());
+			// log("Distance: "+Robot.limelight.distanceFromTarget());
 			
 			/* if (m_leftJoystick.getButtonPressed(3)) {
 				context.startAsync(new activateShooter());
