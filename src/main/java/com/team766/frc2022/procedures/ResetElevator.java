@@ -16,10 +16,13 @@ public class ResetElevator extends Procedure{
 	public void run (Context context) {
 		context.takeOwnership(Robot.elevator);
 		loggerCategory = Category.ELEVATOR;
-		while (!Robot.elevator.getLimitSwitchBottom()){
-			Robot.elevator.setElevatorPowerUnrestricted(-0.6);
+		try {
+			while (!Robot.elevator.getLimitSwitchBottom()){
+				Robot.elevator.setElevatorPowerUnrestricted(-0.6);
+			}
+		} finally {
+			Robot.elevator.setElevatorPowerUnrestricted(0.0);
 		}
-		Robot.elevator.setElevatorPowerUnrestricted(0.0);
 		Robot.elevator.resetElevatorPosition();
 		log("Elevator reset!");
 		
