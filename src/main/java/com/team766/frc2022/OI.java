@@ -38,8 +38,6 @@ public class OI extends Procedure {
 
 		context.takeOwnership(Robot.drive);
 		context.takeOwnership(Robot.shooter);
-		context.takeOwnership(Robot.intake);
-		context.takeOwnership(Robot.belts);
 
 		Robot.shooter.setPIDValues();
 
@@ -133,9 +131,9 @@ public class OI extends Procedure {
 			//log(""+m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL));
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)) {
 				if (index % 2 == 0){
-					context.startAsync(new StartIntake());
-				} else {
-					context.startAsync(new StopIntake());
+					new StartIntake().run(context);
+				}else{
+					new StopIntake().run(context);
 				}
 				index++;
 			} 
@@ -146,34 +144,29 @@ public class OI extends Procedure {
 				context.releaseOwnership(Robot.gyro);
 			}*/
 
+/*
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
 				context.startAsync(new ExtendElevator());
 			}
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_DOWN_BUTTON)) {
 				context.startAsync(new RetractElevator());
 			}
-			
+*/
 			if (m_rightJoystick.getButtonPressed(InputConstants.JOYSTICK_TRIGGER)) {
-				context.startAsync(new StartBelts());
+				new StartBelts().run(context);
 			} else if (m_rightJoystick.getButtonReleased(InputConstants.JOYSTICK_TRIGGER)){
-				context.startAsync(new StopBelts());
-			}
-
-			if (m_rightJoystick.getButtonPressed(InputConstants.JOYSTICK_TRIGGER)) {
-				context.startAsync(new StartBelts());
-			} else if (m_rightJoystick.getButtonReleased(InputConstants.JOYSTICK_TRIGGER)){
-				context.startAsync(new StopBelts());
+				new StopBelts().run(context);
 			}
 			
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_SPITBALL_BUTTON)){
-				context.startAsync(new SpitBall());
+				new SpitBall().run(context);
 			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_SPITBALL_BUTTON)) {
-				context.startAsync(new StopBelts());
-				context.startAsync(new StopIntake());
-				context.startAsync(new StopArms());
+				new StopBelts().run(context);
+				new StopIntake().run(context);
+				new StopArms().run(context);
 			}
 
-			if (m_leftJoystick.getButtonPressed(InputConstants.CONTROL_PANEL_AUTO_SHOOT)) {
+			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_AUTO_SHOOT)) {
 				double distance = Robot.limelight.limelightFilter(context);
 				log("Calculated distance");
 				if (distance != 0){
