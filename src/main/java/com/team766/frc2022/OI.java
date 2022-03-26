@@ -129,9 +129,7 @@ public class OI extends Procedure {
 				double power = ((dialPower - 0.6456)*3.734)*configPower;
 				Robot.shooter.setVelocity(power);
 				log("shooter power:" + power);
-			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)) {
-				Robot.shooter.stopShoot();
-			}
+			} 
 
 			//log(""+m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL));
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)) {
