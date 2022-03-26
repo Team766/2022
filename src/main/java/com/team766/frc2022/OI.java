@@ -50,7 +50,7 @@ public class OI extends Procedure {
 				m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT));
 
 			double cur_time = RobotProvider.instance.getClock().getTime();
-			if (cur_time-prev_time >= 0.5){
+			/*if (cur_time-prev_time >= 0.5){
 				log("Elevator: " + Robot.elevator.getElevatorPosition() + " Arms: " + Robot.elevator.getArmsPower());
 				log("Pitch: " + Robot.gyro.getGyroPitch() + " Yaw: " + Robot.gyro.getGyroYaw() + " Roll: " + Robot.gyro.getGyroRoll());
 				log("Top: " + Robot.elevator.getLimitSwitchTop() + " Bottom: " + Robot.elevator.getLimitSwitchBottom());
@@ -58,7 +58,7 @@ public class OI extends Procedure {
 				log("Velocity: "+Robot.shooter.getVelocity());
 				log("Distance: "+Robot.limelight.distanceFromTarget());
 				prev_time = cur_time;
-			}
+			}*/
 		
 			if (m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
 				context.takeOwnership(Robot.elevator);
@@ -86,9 +86,11 @@ public class OI extends Procedure {
 
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_TOP_BUTTON)) {				
 				context.startAsync(new ExtendElevator());
+				log("Elevator to Top");
 			}
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_BOTTOM_BUTTON)) {
-				context.startAsync(new RetractElevator());	
+				context.startAsync(new RetractElevator());
+				log("Elevator to Bottom");	
 			}
 
 			//1 pushes the arms forward, -1 pushes the arms backwards
