@@ -50,15 +50,15 @@ public class OI extends Procedure {
 				m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT));
 
 			double cur_time = RobotProvider.instance.getClock().getTime();
-			/*if (cur_time-prev_time >= 0.5){
-				log("Elevator: " + Robot.elevator.getElevatorPosition() + " Arms: " + Robot.elevator.getArmsPower());
-				log("Pitch: " + Robot.gyro.getGyroPitch() + " Yaw: " + Robot.gyro.getGyroYaw() + " Roll: " + Robot.gyro.getGyroRoll());
-				log("Top: " + Robot.elevator.getLimitSwitchTop() + " Bottom: " + Robot.elevator.getLimitSwitchBottom());
-				log("Top switch: " + Boolean.toString(Robot.elevator.getLimitSwitchTop()) + " Bottom switch:" + Boolean.toString(Robot.elevator.getLimitSwitchBottom()));
+			if (cur_time-prev_time >= 0.5){
+				/* log("Elevator: " + Robot.elevator.getElevatorPosition() + " Arms: " + Robot.elevator.getArmsPower());
+				 log("Pitch: " + Robot.gyro.getGyroPitch() + " Yaw: " + Robot.gyro.getGyroYaw() + " Roll: " + Robot.gyro.getGyroRoll());
+				 log("Top: " + Robot.elevator.getLimitSwitchTop() + " Bottom: " + Robot.elevator.getLimitSwitchBottom());
+				 log("Top switch: " + Boolean.toString(Robot.elevator.getLimitSwitchTop()) + " Bottom switch:" + Boolean.toString(Robot.elevator.getLimitSwitchBottom()));*/
 				log("Velocity: "+Robot.shooter.getVelocity());
-				log("Distance: "+Robot.limelight.distanceFromTarget());
+				//log("Distance: "+Robot.limelight.distanceFromTarget());
 				prev_time = cur_time;
-			}*/
+			}
 		
 			if (m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
 				context.takeOwnership(Robot.elevator);
@@ -84,14 +84,14 @@ public class OI extends Procedure {
 				log("down stop");
 			} 
 
-			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_TOP_BUTTON)) {				
-				context.startAsync(new ExtendElevator());
-				log("Elevator to Top");
-			}
-			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_BOTTOM_BUTTON)) {
-				context.startAsync(new RetractElevator());
-				log("Elevator to Bottom");	
-			}
+			// if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_TOP_BUTTON)) {				
+			// 	context.startAsync(new ExtendElevator());
+			// 	log("Elevator to Top");
+			// }
+			// if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ELEVATOR_BOTTOM_BUTTON)) {
+			// 	context.startAsync(new RetractElevator());
+			// 	log("Elevator to Bottom");	
+			// }
 
 			//1 pushes the arms forward, -1 pushes the arms backwards
 			
@@ -127,10 +127,11 @@ public class OI extends Procedure {
 
 			double dialPower = m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL);
 			if (m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)){
+				log("Manual shooting starting.");
 				double configPower = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
 				double power = ((dialPower - 0.6456)*3.734)*configPower;
 				Robot.shooter.setVelocity(power);
-				log("shooter power:" + power);
+				log("Power set to:" + power);
 			} 
 
 			//log(""+m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL));
@@ -171,8 +172,9 @@ public class OI extends Procedure {
 				new StopArms().run(context);
 			}
 
-			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_AUTO_SHOOT)) {
+			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_AUTO_SHOOT) && m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH) == false) {
 				double distance = Robot.limelight.limelightFilter(context);
+				log("Autoshooting starting.");
 				log("Calculated distance");
 				if (distance != 0){
 					//context.takeOwnership(Robot.shooter);
@@ -182,7 +184,7 @@ public class OI extends Procedure {
 					if(power == 0.0) {
 						log("out of range");
 					} else {
-						log("set velocity to " + power);
+						log("Velocity set to:" + power);
 					}
 				}
 			} 
