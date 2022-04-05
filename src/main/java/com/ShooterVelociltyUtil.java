@@ -8,8 +8,8 @@ import com.team766.framework.*;
 
 public class ShooterVelociltyUtil {
 
-	private static final double[] distances = { 2.5, 3.0, 3.5, 4.0, 4.5, 5.0,6.0,7.0 };
-	private static final double[] powers = { 3400.0, 3400.0, 3600.0, 3750.0, 3900.0, 4050.0,4300.0,4600.0};
+	private static final double[] distances = { 2.5, 3.0, 3.5, 4.0, 4.5, 5.0};
+	private static final double[] powers = {3450,3610,3900,4100,4300,4700};
 
 	public ShooterVelociltyUtil(){
 		

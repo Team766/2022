@@ -13,7 +13,12 @@ public class Shooter extends Mechanism{
 
 	public Shooter() {
 		shooter = RobotProvider.instance.getCANMotor("shooter");
+		shooter.restoreFactoryDefault();
+		shooter.setClosedLoopRamp(1.5);
+		shooter.setOpenLoopRamp(1.5);
+		shooter.setCurrentLimit(30);
 		loggerCategory = Category.PROCEDURES;
+		setPIDValues();
 	}
 
 	public void setVelocity(double power){
@@ -24,6 +29,7 @@ public class Shooter extends Mechanism{
 
 	public void basicShoot(){
 		checkContextOwnership();
+		setPIDValues();
 		double power = ConfigFileReader.getInstance().getDouble("shooter.velocity").valueOr(1.0);
 		setVelocity(power);
 	}

@@ -50,16 +50,19 @@ public class OI extends Procedure {
 				m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT));
 
 			double cur_time = RobotProvider.instance.getClock().getTime();
-			if (cur_time-prev_time >= 0.5){
-				/* log("Elevator: " + Robot.elevator.getElevatorPosition() + " Arms: " + Robot.elevator.getArmsPower());
-				 log("Pitch: " + Robot.gyro.getGyroPitch() + " Yaw: " + Robot.gyro.getGyroYaw() + " Roll: " + Robot.gyro.getGyroRoll());
-				 log("Top: " + Robot.elevator.getLimitSwitchTop() + " Bottom: " + Robot.elevator.getLimitSwitchBottom());
-				 log("Top switch: " + Boolean.toString(Robot.elevator.getLimitSwitchTop()) + " Bottom switch:" + Boolean.toString(Robot.elevator.getLimitSwitchBottom()));*/
-				log("Velocity: "+Robot.shooter.getVelocity());
-				//log("Distance: "+Robot.limelight.distanceFromTarget());
-				prev_time = cur_time;
-			}
+			// if (cur_time-prev_time >= 0.5){
+			// 	/* log("Elevator: " + Robot.elevator.getElevatorPosition() + " Arms: " + Robot.elevator.getArmsPower());
+			// 	 log("Pitch: " + Robot.gyro.getGyroPitch() + " Yaw: " + Robot.gyro.getGyroYaw() + " Roll: " + Robot.gyro.getGyroRoll());
+			// 	 log("Top: " + Robot.elevator.getLimitSwitchTop() + " Bottom: " + Robot.elevator.getLimitSwitchBottom());
+			// 	 log("Top switch: " + Boolean.toString(Robot.elevator.getLimitSwitchTop()) + " Bottom switch:" + Boolean.toString(Robot.elevator.getLimitSwitchBottom()));*/
+			// 	log("Velocity: "+Robot.shooter.getVelocity());
+			// 	//log("Distance: "+Robot.limelight.distanceFromTarget());
+			// 	prev_time = cur_time;
+			// }
 		
+			log("Distance: "+Robot.limelight.distanceFromTarget());
+			log("Velocity: "+Robot.shooter.getVelocity());
+
 			if (m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
 				context.takeOwnership(Robot.elevator);
 				Robot.elevator.setElevatorPower(1);
@@ -142,6 +145,7 @@ public class OI extends Procedure {
 					new StopIntake().run(context);
 				}
 				index++;
+
 			} 
 
 			/*if (m_joystick0.getButtonPressed(5)) {
@@ -192,12 +196,11 @@ public class OI extends Procedure {
 			// 	Robot.shooter.stopShoot();
 			// }
 
-			// if (m_leftJoystick.getButtonPressed(2)){
-			// 	//context.takeOwnership(Robot.shooter);
-			// 	Robot.shooter.basicShoot();
-			// }// } else if (m_leftJoystick.getButtonReleased(2)){
-			// 	Robot.shooter.stopShoot();
-			// }
+			if (m_leftJoystick.getButtonPressed(1)){
+				Robot.shooter.basicShoot();
+			} else if (m_leftJoystick.getButtonReleased(1)){
+				Robot.shooter.stopShoot();
+			}
 
 			// log("Velocity: "+Robot.shooter.getVelocity());
 			// log("Distance: "+Robot.limelight.distanceFromTarget());

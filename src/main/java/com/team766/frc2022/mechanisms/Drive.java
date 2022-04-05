@@ -64,6 +64,13 @@ public class Drive extends Mechanism {
 		m_rightTalon1.setInverted(true);
         m_rightTalon2.setInverted(true);
 		m_rightTalon3.setInverted(true);
+
+		m_leftTalon1.setCurrentLimit(20);
+		m_leftTalon2.setCurrentLimit(20);
+		m_leftTalon3.setCurrentLimit(20);
+		m_rightTalon1.setCurrentLimit(20);
+		m_rightTalon2.setCurrentLimit(20);
+		m_rightTalon3.setCurrentLimit(20);
         //m_rightVictor1.follow(m_rightTalon);
         //m_rightVictor2.follow(m_rightTalon);
         //m_leftVictor1.follow(m_leftTalon);
