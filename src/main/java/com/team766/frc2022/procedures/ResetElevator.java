@@ -19,6 +19,7 @@ public class ResetElevator extends Procedure{
 		try {
 			while (!Robot.elevator.getLimitSwitchBottom()){
 				Robot.elevator.setElevatorPowerUnrestricted(-0.6);
+				context.yield();
 			}
 		} finally {
 			Robot.elevator.setElevatorPowerUnrestricted(0.0);
