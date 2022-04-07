@@ -188,7 +188,7 @@ public class OI extends Procedure {
 				double distance = Robot.limelight.limelightFilter(context);
 				log("Autoshooting starting.");
 				log("Calculated distance");
-				if (distance != 0){
+				if (distance >= 2.5 && distance <= 5){
 					//context.takeOwnership(Robot.shooter);
 					log("Auto Shooting");
 					autopower = ShooterVelociltyUtil.computeVelocityForDistance(distance);
@@ -197,8 +197,8 @@ public class OI extends Procedure {
 						log("out of range");
 					} else {
 						log("Velocity set to:" + autopower);
+						startShoot = true;
 					}
-					startShoot = true;
 				}
 			} 
 
