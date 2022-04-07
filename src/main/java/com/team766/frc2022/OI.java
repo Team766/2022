@@ -185,6 +185,7 @@ public class OI extends Procedure {
 			}
 
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_AUTO_SHOOT) && m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH) == false) {
+				light.setColor("Maroon");
 				double distance = Robot.limelight.limelightFilter(context);
 				log("Autoshooting starting.");
 				log("Calculated distance");
