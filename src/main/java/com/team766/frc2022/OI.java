@@ -52,8 +52,8 @@ public class OI extends Procedure {
 		while (true) {
 			// TODO: tweak all of this based on actual revB controls
 			Robot.drive.setArcadeDrivePower(
-				-m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD), 
-				m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT));
+				-m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)*12, 
+				m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT)*12,true);
 
 			double cur_time = RobotProvider.instance.getClock().getTime();
 			// if (cur_time-prev_time >= 0.5){

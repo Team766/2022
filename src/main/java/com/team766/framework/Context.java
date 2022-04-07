@@ -133,14 +133,19 @@ public final class Context implements Runnable, LaunchedContext {
 			ex.printStackTrace();
 			LoggerExceptionUtils.logException(ex);
 		} finally {
-			synchronized (m_threadSync) {
-				m_state = State.DONE;
-				m_threadSync.notifyAll();
-			}
 			for (Mechanism m : m_ownedMechanisms) {
 				// Don't use this.releaseOwnership here, because that would cause a
 				// ConcurrentModificationException since we're iterating over m_ownedMechanisms
-				m.releaseOwnership(this);
+				try {
+					m.releaseOwnership(this);
+				} catch (Exception ex) {
+					LoggerExceptionUtils.logException(ex);
+				}
+			}
+			synchronized (m_threadSync) {
+				m_state = State.DONE;
+				c_currentContext = null;
+				m_threadSync.notifyAll();
 			}
 			m_ownedMechanisms.clear();
 		}
