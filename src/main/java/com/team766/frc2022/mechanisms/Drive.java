@@ -121,7 +121,6 @@ public class Drive extends Mechanism {
 				m_leftTalon1.set(ControlMode.Voltage,0);
 				m_leftTalon2.set(ControlMode.Voltage,0);
 				m_leftTalon3.set(ControlMode.Voltage,0);
-				log("Doesn't drive left");
 			} else if (Math.abs(leftPower)<4){
 				int power = 1;
 				if (leftPower<0){
@@ -130,17 +129,16 @@ public class Drive extends Mechanism {
 				m_leftTalon1.set(ControlMode.Voltage,power*minpower_turn);
 				m_leftTalon2.set(ControlMode.Voltage,power*minpower_turn);
 				m_leftTalon3.set(ControlMode.Voltage,power*minpower_turn);
-				log(""+power*minpower_turn);
 			} else {
-				m_leftTalon1.set(ControlMode.Voltage,Math.pow(leftPower,5));
-				m_leftTalon2.set(ControlMode.Voltage,Math.pow(leftPower,5));
-				m_leftTalon3.set(ControlMode.Voltage,Math.pow(leftPower,5));
+				double power = Math.signum(leftPower) * Math.pow(Math.abs(leftPower),2)/12.0;
+				m_leftTalon1.set(ControlMode.Voltage,power);
+				m_leftTalon2.set(ControlMode.Voltage,power);
+				m_leftTalon3.set(ControlMode.Voltage,power);
 			}
 			if (Math.abs(rightPower)<1){
 				m_rightTalon1.set(ControlMode.Voltage,0);
 				m_rightTalon2.set(ControlMode.Voltage,0);
 				m_rightTalon3.set(ControlMode.Voltage,0);
-				log("Doesn't drive right");
 			} else if (Math.abs(rightPower)<4){
 				int power = 1;
 				if (rightPower<0){
@@ -149,11 +147,11 @@ public class Drive extends Mechanism {
 				m_rightTalon1.set(ControlMode.Voltage,power*minpower_turn);
 				m_rightTalon2.set(ControlMode.Voltage,power*minpower_turn);
 				m_rightTalon3.set(ControlMode.Voltage,power*minpower_turn);
-				log(""+power*minpower_turn);
 			} else {
-				m_rightTalon1.set(ControlMode.Voltage,Math.pow(rightPower,5));
-				m_rightTalon2.set(ControlMode.Voltage,Math.pow(rightPower,5));
-				m_rightTalon3.set(ControlMode.Voltage,Math.pow(rightPower,5));
+				double power = Math.signum(rightPower) * Math.pow(Math.abs(rightPower),2)/12.0;
+				m_rightTalon1.set(ControlMode.Voltage,power);
+				m_rightTalon2.set(ControlMode.Voltage,power);
+				m_rightTalon3.set(ControlMode.Voltage,power);
 			}
 		}
 	}
