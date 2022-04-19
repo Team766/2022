@@ -33,7 +33,7 @@ public abstract class LogEntry {
 
 	public abstract Date getTime();
 
-	public abstract String format(LogReader reader);
+	public abstract String format(LogFormatProvider formatProvider);
 
 	/**
 	 * Should return a number which is unique to this in-memory object.

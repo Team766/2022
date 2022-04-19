@@ -69,7 +69,7 @@ public class LogEntryWithFormat extends LogEntry {
 	}
 	
 	@Override
-	public String format(LogReader reader) {
+	public String format(LogFormatProvider formatProvider) {
 		return String.format(m_format, m_args);
 	}
 }

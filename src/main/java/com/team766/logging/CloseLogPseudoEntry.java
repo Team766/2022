@@ -25,7 +25,7 @@ public class CloseLogPseudoEntry extends LogEntry {
 	}
 
 	@Override
-	public String format(LogReader reader) {
+	public String format(LogFormatProvider formatProvider) {
 		throw new UnsupportedOperationException("CloseLogPseudoEntry should not be read");
 	}
 }

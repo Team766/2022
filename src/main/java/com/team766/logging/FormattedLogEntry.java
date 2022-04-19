@@ -23,14 +23,14 @@ public class FormattedLogEntry extends LogEntry {
 	private final Severity m_severity;
 	private final Date m_time;
 	private final Category m_category;
-	private final int m_index;
+	private final int m_formatIndex;
 	private final Object[] m_args;
 	
-	public FormattedLogEntry(Severity severity, Date time, Category category, int index, Object[] args) {
+	public FormattedLogEntry(Severity severity, Date time, Category category, int formatIndex, Object[] args) {
 		m_severity = severity;
 		m_time = time;
 		m_category = category;
-		m_index = index;
+		m_formatIndex = formatIndex;
 		m_args = args;
 	}
 	
@@ -41,7 +41,7 @@ public class FormattedLogEntry extends LogEntry {
 			objectStream.writeByte(m_severity.ordinal());
 			objectStream.writeByte(m_category.ordinal());
 			objectStream.writeLong(m_time.getTime());
-			objectStream.writeInt(m_index);
+			objectStream.writeInt(m_formatIndex);
 			objectStream.writeObject(m_args);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -64,7 +64,15 @@ public class FormattedLogEntry extends LogEntry {
 	}
 	
 	@Override
-	public String format(LogReader reader) {
-		return String.format(reader.getFormatString(m_index), m_args);
+	public String format(LogFormatProvider formatProvider) {
+		return String.format(formatProvider.getFormatString(m_formatIndex), m_args);
+	}
+
+	public int getFormatIndex() {
+		return m_formatIndex;
+	}
+
+	public Object[] getValues() {
+		return m_args;
 	}
 }

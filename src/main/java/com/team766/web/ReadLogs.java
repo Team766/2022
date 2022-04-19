@@ -15,6 +15,7 @@ import com.team766.logging.Category;
 import com.team766.logging.Logger;
 import com.team766.logging.LogEntry;
 import com.team766.logging.LogReader;
+import com.team766.logging.LogWriter;
 import com.team766.logging.Severity;
 
 public class ReadLogs implements WebServer.Handler {
@@ -45,22 +46,22 @@ public class ReadLogs implements WebServer.Handler {
 		String r = String.join("\n", new String[]{
 			"<p>Free disk space: "
 				+ NumberFormat.getNumberInstance(Locale.US).format(
-					new File(Logger.logFilePathBase).getUsableSpace())
+					new File(LogWriter.logFilePathBase).getUsableSpace())
 				+ "</p>",
 			"<form action=\"" + ENDPOINT + "\"><p>",
 			HtmlElements.buildDropDown(
 				"logFile",
 				"",
-				Logger.logFilePathBase == null
+				Arrays.stream(LogWriter.logFilePathBase == null
 					? new String[0]
-					: new File(Logger.logFilePathBase).list()),
+					: new File(LogWriter.logFilePathBase).list())::iterator),
 			HtmlElements.buildDropDown(
 				"category",
 				"",
 				Stream.concat(
 					Stream.of("", ALL_ERRORS_NAME),
 					Arrays.stream(Category.values()).map(Category::name)
-					).toArray(String[]::new)),
+					)::iterator),
 			"<input type=\"submit\" value=\"Open Log\">",
 			"</p></form>",
 		});
@@ -81,7 +82,7 @@ public class ReadLogs implements WebServer.Handler {
 	) {
 		LogReader reader;
 		try {
-			reader = new LogReader(new File(Logger.logFilePathBase, logFile).getAbsolutePath());
+			reader = new LogReader(new File(LogWriter.logFilePathBase, logFile).getAbsolutePath());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

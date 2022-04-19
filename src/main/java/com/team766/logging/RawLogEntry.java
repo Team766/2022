@@ -60,7 +60,7 @@ public class RawLogEntry extends LogEntry {
 	}
 	
 	@Override
-	public String format(LogReader reader) {
+	public String format(LogFormatProvider formatProvider) {
 		return m_message;
 	}
 	

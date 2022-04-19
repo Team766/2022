@@ -4,26 +4,27 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Stream;
 import com.team766.logging.Category;
+import com.team766.logging.LogEntry;
+import com.team766.logging.LogWriter;
 import com.team766.logging.Logger;
-import com.team766.logging.RawLogEntry;
 import com.team766.logging.Severity;
 
 public class LogViewer implements WebServer.Handler {
 	private static final String ENDPOINT = "/logs";
 	private static final String ALL_ERRORS_NAME = "All Errors";
 
-	private static String makeLogEntriesTable(Iterable<RawLogEntry> entries) {
+	private static String makeLogEntriesTable(Iterable<LogEntry> entries) {
 		String r = "<table id=\"log-entries\" border=\"1\">\n";
-		for (RawLogEntry entry : entries) {
+		for (LogEntry entry : entries) {
 			r += String.format(
 				"<tr><td style=\"white-space: pre\">%s</td><td style=\"white-space: pre\">%s</td><td style=\"white-space: pre\">%s</td><td style=\"white-space: pre\">%s</td></tr>\n",
-				entry.getCategory(), entry.getTime(), entry.getSeverity(), entry.format());
+				entry.getCategory(), entry.getTime(), entry.getSeverity(), entry.format(LogWriter.instance));
 		}
 		r += "</table>";
 		return r;
 	}
 
-	private static String makePage(String categoryName, Iterable<RawLogEntry> entries) {
+	private static String makePage(String categoryName, Iterable<LogEntry> entries) {
 		return String.join("\n", new String[]{
 			"<h1>Log: " + categoryName + "</h1>",
 			"<form action=\"" + ENDPOINT + "\"><p>",
@@ -33,7 +34,7 @@ public class LogViewer implements WebServer.Handler {
 				Stream.concat(
 					Stream.of(ALL_ERRORS_NAME),
 					Arrays.stream(Category.values()).map(Category::name)
-				).toArray(String[]::new)),
+				)::iterator),
 			"<input type=\"submit\" value=\"View\">",
 			"</p></form>",
 			makeLogEntriesTable(entries),
@@ -92,7 +93,7 @@ public class LogViewer implements WebServer.Handler {
 		if (categoryName == null || categoryName.equals(ALL_ERRORS_NAME)) {
 			return makeAllErrorsPage();
 		} else {
-			Category category = Enum.valueOf(Category.class, categoryName);
+			Category category = Category.valueOf(categoryName);
 			return makePage(category.name(), Logger.get(category).recentEntries());
 		}
 	}
