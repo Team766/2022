@@ -18,7 +18,12 @@ import com.team766.web.WebServer;
 
 public class Robot extends MyRobot {
 	// Declare mechanisms here
+<<<<<<< Updated upstream
 	
+=======
+	public static Drive drive;
+	public static Gyro gyro;
+>>>>>>> Stashed changes
 	
 	private static OI m_oi;
 	
@@ -45,8 +50,14 @@ public class Robot extends MyRobot {
 	@Override
 	public void robotInit() {
 		// Initialize mechanisms here
+<<<<<<< Updated upstream
 		
 		
+=======
+		drive = new Drive();
+		drive = new Drive();
+		gyro = new Gyro();
+>>>>>>> Stashed changes
 		m_oi = new OI();
 	}
 	
