@@ -10,7 +10,5 @@ public class DoNothing extends Procedure {
 	public void run(Context context) {
 		context.takeOwnership(Robot.drive);
 		loggerCategory = Category.AUTONOMOUS;
-		Robot.drive.setArcadeDrivePower(0, 0);
 	}
-	
 }

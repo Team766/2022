@@ -4,12 +4,14 @@ import com.team766.hal.EncoderReader;
 import com.team766.hal.RobotProvider;
 import com.team766.hal.SpeedController;
 import com.team766.hal.CANSpeedController.ControlMode;
+import com.team766.hal.simulator.Encoder;
 import com.team766.hal.CANSpeedController;
 import com.team766.library.ValueProvider;
 import com.team766.logging.Category;
-import com.team766.hal.GyroReader;
 import com.team766.config.ConfigFileReader;
 import com.team766.framework.Mechanism;
+import com.ctre.phoenix.sensors.CANCoder;
+
 
 public class Drive extends Mechanism {
 
@@ -21,6 +23,10 @@ public class Drive extends Mechanism {
     private CANSpeedController m_SteerFrontLeft;
 	private CANSpeedController m_SteerBackRight;
 	private CANSpeedController m_SteerBackLeft;
+	private CANCoder BLencoder;
+	private CANCoder FLencoder;
+	private CANCoder BRencoder;
+	private CANCoder FRencoder;
     private ValueProvider<Double> drivePower;
 
 	// Values for PID Driving Straight
@@ -43,6 +49,13 @@ public class Drive extends Mechanism {
 		m_SteerBackRight = RobotProvider.instance.getCANMotor("drive.SteerBackRight"); 
 		m_SteerBackLeft = RobotProvider.instance.getCANMotor("drive.SteerBackLeft"); 
 
+		BLencoder = new CANCoder(3);
+		FLencoder = new CANCoder(2);
+		BRencoder = new CANCoder(4);
+		FRencoder = new CANCoder(1);
+
+
+
 		m_DriveFrontRight.setCurrentLimit(20);
 		m_DriveFrontLeft.setCurrentLimit(20);
 		m_DriveBackRight.setCurrentLimit(20);
@@ -55,15 +68,22 @@ public class Drive extends Mechanism {
 
     public void setDrivePower(double leftPower, double rightPower) {
 		checkContextOwnership();
-
+		log("Front left encoder: "+ getFLencoder() + " || Back left encoder: " + getBLencoder());
         m_DriveFrontRight.set(rightPower);
         m_DriveFrontLeft.set(leftPower);
         m_DriveBackRight.set(rightPower);
         m_DriveBackLeft.set(leftPower);
     }
-
-
-	public void setArcadeDrivePower(double forward, double turn) {
-		setDrivePower(turn + forward, -turn + forward);
+	public double getBLencoder(){
+		return BLencoder.getPosition();
+	}
+	public double getFLencoder(){
+		return FLencoder.getPosition();
+	}
+	public double getBRencoder(){
+		return BRencoder.getPosition();
+	}
+	public double getFRencoder(){
+		return FRencoder.getPosition();
 	}
 }

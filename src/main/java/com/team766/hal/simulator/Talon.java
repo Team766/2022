@@ -122,10 +122,10 @@ public class Talon implements CANSpeedController {
 		LoggerExceptionUtils.logException(new UnsupportedOperationException("setOutputRange() is currently unsupported in the simulator"));
 	}
 
-	@Override
-	public void setCurrentLimit(double ampsLimit) {
-		LoggerExceptionUtils.logException(new UnsupportedOperationException("setCurrentLimit() is currently unsupported in the simulator"));
-	}
+	 @Override
+	 public void setCurrentLimit(double ampsLimit) {
+	 	LoggerExceptionUtils.logException(new UnsupportedOperationException("setCurrentLimit() is currently unsupported in the simulator"));
+	 }
 
 	@Override
 	public void restoreFactoryDefault() {

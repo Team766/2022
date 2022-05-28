@@ -25,6 +25,7 @@ public interface CANSpeedController extends SpeedController {
 		MotionProfile,
 		MotionMagic,
 		MotionProfileArc,
+		Voltage,
 		Disabled,
 	}
 
@@ -100,11 +101,11 @@ public interface CANSpeedController extends SpeedController {
 
 	void setOutputRange(double minOutput, double maxOutput);
 
+	void setCurrentLimit(double ampsLimit);
+
 	void restoreFactoryDefault();
 
 	void setOpenLoopRamp(double secondsFromNeutralToFull);
 
 	void setClosedLoopRamp(double secondsFromNeutralToFull);
-
-	void setCurrentLimit(int i);
 }
