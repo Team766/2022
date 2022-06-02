@@ -2,6 +2,7 @@ package com.team766.hal;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.sensors.CANCoder;
 
 /**
  * Interface for speed controlling devices over CAN bus.
@@ -108,4 +109,7 @@ public interface CANSpeedController extends SpeedController {
 	void setOpenLoopRamp(double secondsFromNeutralToFull);
 
 	void setClosedLoopRamp(double secondsFromNeutralToFull);
+
+	// FIXME: Actually implement this. We did this to be quick for swerve drive
+	default void setRemoteFeedbackSensor(CANCoder canCoderRef, int remoteOrdinal) {}
 }

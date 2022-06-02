@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.IMotorController;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.CANCoder;
 import com.team766.hal.CANSpeedController;
 import com.team766.logging.Category;
 import com.team766.logging.Logger;
@@ -185,6 +186,11 @@ public class CANTalonFxSpeedController extends BaseCTRESpeedController implement
 	@Override
 	public void setNeutralMode(NeutralMode neutralMode) {
 		m_device.setNeutralMode(neutralMode);
+	}
+
+	@Override
+	public void setRemoteFeedbackSensor(CANCoder canCoderRef, int remoteOrdinal) {
+		errorCodeToException(ExceptionTarget.LOG, m_device.configRemoteFeedbackFilter(canCoderRef, remoteOrdinal));
 	}
 	
 }

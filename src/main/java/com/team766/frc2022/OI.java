@@ -31,10 +31,11 @@ public class OI extends Procedure {
 		context.takeOwnership(Robot.drive);
 		
 		while (true) {
-			log(getAngle(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT) ,m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)));
-			// Robot.drive.setDrivePower(
-			// 	m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD), 
-			// 	m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT));
+			//log(getAngle(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT) ,m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)));
+			 /*Robot.drive.setDrivePower(
+			 	m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD), 
+			 	m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT));*/
+			Robot.drive.setFLAngle(90);
 			double cur_time = RobotProvider.instance.getClock().getTime();
 				context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 		}
