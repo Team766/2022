@@ -10,7 +10,10 @@ import com.team766.library.ValueProvider;
 import com.team766.logging.Category;
 import com.team766.config.ConfigFileReader;
 import com.team766.framework.Mechanism;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
 
 
 public class Drive extends Mechanism {
@@ -51,6 +54,13 @@ public class Drive extends Mechanism {
 
 		BLencoder = new CANCoder(3);
 		FLencoder = new CANCoder(2);
+		CANCoderConfiguration config = new CANCoderConfiguration();
+		config.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
+		//config.magnetOffsetDegrees = Math.toDegrees(configuration.getOffset());
+		config.sensorDirection = true;
+		FLencoder.configAllSettings(config, 250);
+
+
 		BRencoder = new CANCoder(4);
 		FRencoder = new CANCoder(1);
 		
@@ -62,16 +72,34 @@ public class Drive extends Mechanism {
 		m_SteerFrontLeft.setCurrentLimit(20);
 		m_SteerBackRight.setCurrentLimit(20);
 		m_SteerBackLeft.setCurrentLimit(20);
-    }
+
+
+
+		//Setting up the connection between steer and cancoders
+		m_SteerFrontLeft.setRemoteFeedbackSensor(FLencoder, 0);
+		m_SteerFrontRight.setRemoteFeedbackSensor(FRencoder, 0);
+		m_SteerBackLeft.setRemoteFeedbackSensor(BLencoder, 0);
+		m_SteerBackRight.setRemoteFeedbackSensor(BRencoder, 0);
+
+		m_SteerFrontLeft.setSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
+		m_SteerFrontRight.setSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
+		m_SteerBackLeft.setSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
+		m_SteerBackRight.setSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);	
+	}
 
     public void setDrivePower(double leftPower, double rightPower) {
 		checkContextOwnership();
 		log("Front left encoder: "+ getFLencoder() + " || Back left encoder: " + getBLencoder() + " || Front right encoder: " + getFRencoder() + " || Back right encoder: " +getBRencoder());
-        m_SteerBackLeft.set(leftPower);
-        m_SteerBackRight.set(rightPower);
-        m_SteerFrontLeft.set(leftPower);
-        m_SteerFrontRight.set(rightPower);
     }
+
+	public void setFLAngle(double angle){
+		configPIDFL();
+		log("Angle: " + getFLencoder() + " || Motor angle: " + m_SteerFrontLeft.getSensorPosition());
+		m_SteerFrontLeft.set(ControlMode.Position, angle);
+	}
+	public void configPIDFL(){
+		m_SteerFrontLeft.setP(10  );
+	}
 	public double getBLencoder(){
 		return BLencoder.getAbsolutePosition();
 	}
