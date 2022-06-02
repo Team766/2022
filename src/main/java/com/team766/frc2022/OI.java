@@ -23,15 +23,11 @@ public class OI extends Procedure {
 		m_leftJoystick = RobotProvider.instance.getJoystick(0);
 		m_rightJoystick = RobotProvider.instance.getJoystick(1);
 	}
-	public double getAngle(double LR, double FB){
-		return Math.toDegrees(Math.atan2(LR ,-FB));
-	}
+
 	public double correctedJoysticks(double Joystick){
 		return(3.0*Math.pow(Joystick,2)-2.0*Math.pow(Joystick,3));
 	}
-	public double pythagrianJoysticks(double First, double Second){
-		return Math.sqrt(Math.pow(First,2)+Math.pow(Second,2));
-	}
+	
 
 	public void run(Context context) {
 		double prev_time = RobotProvider.instance.getClock().getTime();
@@ -51,17 +47,25 @@ public class OI extends Procedure {
 			//Use a cross defense when needed the most
 			if(m_leftJoystick.getButton(InputConstants.CROSS_DEFENSE)){
 				context.startAsync(new DefenseCross());
-			}
-			else{
+			} else {
 				//If we want, we can just turn all the wheels with the POV, otherwise, we use the regular joystick
 				if(m_leftJoystick.getPOV() != 1){
 					Robot.drive.drive2D(m_leftJoystick.getPOV(), 0);
 				}
 				else{
-				Robot.drive.drive2D(
-					getAngle(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT), m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)), 
-					pythagrianJoysticks(correctedJoysticks(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)), correctedJoysticks(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT)))
-				);
+					//Bad code, but good enough for testing
+					Robot.drive.drive2D(
+						correctedJoysticks(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT)),
+						correctedJoysticks(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD))
+					);	
+					//Good code :)
+					/* 
+					Robot.drive.swerveDrive( 
+							correctedJoysticks(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT)),
+							correctedJoysticks(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)),
+							correctedJoysticks(m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT))
+					);
+					*/
 				}
 			}
 

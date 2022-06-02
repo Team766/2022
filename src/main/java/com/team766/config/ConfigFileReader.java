@@ -117,7 +117,7 @@ public class ConfigFileReader {
 		return new DoubleConfigMultiValue(key);
 	}
 	
-	public ValueProvider<Double> getDouble(String key) {
+	public static ValueProvider<Double> getDouble(String key) {
 		return new DoubleConfigValue(key);
 	}
 	

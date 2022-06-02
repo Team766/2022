@@ -4,6 +4,7 @@ import com.team766.hal.EncoderReader;
 import com.team766.hal.RobotProvider;
 import com.team766.hal.SpeedController;
 import com.team766.hal.CANSpeedController.ControlMode;
+import com.team766.hal.mock.Joystick;
 import com.team766.hal.simulator.Encoder;
 import com.team766.hal.CANSpeedController;
 import com.team766.library.ValueProvider;
@@ -17,6 +18,8 @@ import com.ctre.phoenix.sensors.CANCoderConfiguration;
 
 
 public class Drive extends Mechanism {
+	public final ValueProvider<Double> LENGTH_OF_CHASSIS = ConfigFileReader.getDouble("LENGTH_OF_CHASSIS");
+	public final ValueProvider<Double> WIDTH_OF_CHASSIS = ConfigFileReader.getDouble("WIDTH_OF_CHASSIS");
 
 	private CANSpeedController m_DriveFrontRight;
     private CANSpeedController m_DriveFrontLeft;
@@ -99,21 +102,54 @@ public class Drive extends Mechanism {
 		m_SteerBackRight.setSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);	
 		m_SteerBackLeft.setSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
 	}
+	//If you want me to repeat code, then no.
+	public double pythagrian(double x, double y) {
+		return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+	}
+	public double getAngle(double LR, double FB){
+		return Math.toDegrees(Math.atan2(LR ,-FB));
+	}
+
 	//This is the method that is called to drive the robot in the 2D plane
-    public void drive2D(double angle, double power) {
+    public void drive2D(double JoystickX, double JoystickY) {
 		checkContextOwnership();
 		logs();
 		configPID();
+		double power = pythagrian(JoystickX, JoystickY);
+		double angle = getAngle(JoystickX, JoystickY);
+		//Temporary Drive code, kinda sucks
 		m_DriveFrontRight.set(power);
 		m_DriveFrontLeft.set(power);
 		m_DriveBackRight.set(power);
 		m_DriveBackLeft.set(power);
 
+
+		//Steer code
 		m_SteerFrontLeft.set(ControlMode.Position, angle);
 		m_SteerFrontRight.set(ControlMode.Position, angle);
 		m_SteerBackLeft.set(ControlMode.Position, angle);
 		m_SteerBackRight.set(ControlMode.Position, angle);
     }
+
+	public void swerveDrive(double JoystickX, double JoystickY, double JoystickTheta){
+		checkContextOwnership();
+		configPID();
+		double radius = Math.sqrt(Math.pow(LENGTH_OF_CHASSIS.get(), 2) + Math.pow(WIDTH_OF_CHASSIS.get(), 2));
+		double a = JoystickX - JoystickTheta * (LENGTH_OF_CHASSIS.get() / radius);
+		double b = JoystickX + JoystickTheta * (LENGTH_OF_CHASSIS.get() / radius);
+		double c = JoystickY - JoystickTheta * (WIDTH_OF_CHASSIS.get() / radius);
+		double d = JoystickY + JoystickTheta * (WIDTH_OF_CHASSIS.get() / radius);
+		m_DriveFrontRight.set(pythagrian(b, d));
+		m_DriveFrontLeft.set(pythagrian(b, c));
+		m_DriveBackRight.set(pythagrian(a, d));
+		m_DriveBackLeft.set(pythagrian(a, c));
+
+		double angle = getAngle(JoystickX, JoystickY);
+		m_SteerFrontLeft.set(ControlMode.Position, angle);
+		m_SteerFrontRight.set(ControlMode.Position, angle);
+		m_SteerBackLeft.set(ControlMode.Position, angle);
+		m_SteerBackRight.set(ControlMode.Position, angle);
+	}
 	//Logging the encoder values (also I love Github Copilot <3)
 	public void logs(){
 		log("Front Right Encoder: " + e_FrontRight.getPosition() + " Front Left Encoder: " + e_FrontLeft.getPosition() + " Back Right Encoder: " + e_BackRight.getPosition() + " Back Left Encoder: " + e_BackLeft.getPosition());
@@ -163,6 +199,12 @@ public class Drive extends Mechanism {
 		m_SteerBackLeft.setD(0);
 		m_SteerBackLeft.setFF(0);
 
+
+		//
+
+
+
+		//IDK what those do tbh, but I like to keep them here.
 		//m_SteerFrontRight.setSensorInverted(false);
 		//m_SteerFrontLeft.setSensorInverted(false);
 		//m_SteerBackRight.setSensorInverted(false);
