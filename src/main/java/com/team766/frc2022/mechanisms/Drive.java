@@ -53,9 +53,7 @@ public class Drive extends Mechanism {
 		FLencoder = new CANCoder(2);
 		BRencoder = new CANCoder(4);
 		FRencoder = new CANCoder(1);
-
-
-
+		
 		m_DriveFrontRight.setCurrentLimit(20);
 		m_DriveFrontLeft.setCurrentLimit(20);
 		m_DriveBackRight.setCurrentLimit(20);
@@ -68,22 +66,22 @@ public class Drive extends Mechanism {
 
     public void setDrivePower(double leftPower, double rightPower) {
 		checkContextOwnership();
-		log("Front left encoder: "+ getFLencoder() + " || Back left encoder: " + getBLencoder());
-        m_DriveFrontRight.set(rightPower);
-        m_DriveFrontLeft.set(leftPower);
-        m_DriveBackRight.set(rightPower);
-        m_DriveBackLeft.set(leftPower);
+		log("Front left encoder: "+ getFLencoder() + " || Back left encoder: " + getBLencoder() + " || Front right encoder: " + getFRencoder() + " || Back right encoder: " +getBRencoder());
+        m_SteerBackLeft.set(leftPower);
+        m_SteerBackRight.set(rightPower);
+        m_SteerFrontLeft.set(leftPower);
+        m_SteerFrontRight.set(rightPower);
     }
 	public double getBLencoder(){
-		return BLencoder.getPosition();
+		return BLencoder.getAbsolutePosition();
 	}
 	public double getFLencoder(){
-		return FLencoder.getPosition();
+		return FLencoder.getAbsolutePosition();
 	}
 	public double getBRencoder(){
-		return BRencoder.getPosition();
+		return BRencoder.getAbsolutePosition();
 	}
 	public double getFRencoder(){
-		return FRencoder.getPosition();
+		return FRencoder.getAbsolutePosition();
 	}
 }

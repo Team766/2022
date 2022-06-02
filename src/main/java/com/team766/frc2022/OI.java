@@ -22,20 +22,19 @@ public class OI extends Procedure {
 		m_leftJoystick = RobotProvider.instance.getJoystick(0);
 		m_rightJoystick = RobotProvider.instance.getJoystick(1);
 	}
-	
+	public double getAngle(double LR, double FB){
+		return Math.toDegrees(Math.atan2(LR ,-FB));
+	}
 	public void run(Context context) {
-		int index = 0; // index counter for the intake
-		double autopower = 0; // power given during auto shooting
 		double prev_time = RobotProvider.instance.getClock().getTime();
 
 		context.takeOwnership(Robot.drive);
 		
-		//LaunchedContext climbingContext = null;
 		while (true) {
-			// TODO: tweak all of this based on actual revB controls
-			Robot.drive.setDrivePower(
-				m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD), 
-				m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT));
+			log(getAngle(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT) ,m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)));
+			// Robot.drive.setDrivePower(
+			// 	m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD), 
+			// 	m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT));
 			double cur_time = RobotProvider.instance.getClock().getTime();
 				context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 		}

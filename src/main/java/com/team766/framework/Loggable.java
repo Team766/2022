@@ -13,6 +13,10 @@ public abstract class Loggable {
 		log(Severity.INFO, message);
 	}
 
+	protected void log(double message) {
+		log(Severity.INFO, message + "");
+	}
+
 	protected void log(Severity severity, String message) {
 		Logger.get(loggerCategory).logRaw(severity, getName() + ": " + message);
 	}
