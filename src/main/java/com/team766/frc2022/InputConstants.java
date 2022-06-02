@@ -7,12 +7,16 @@ package com.team766.frc2022;
  */
 public final class InputConstants {
 
-	// "joysticks"
+	//Joysticks
 	public static final int LEFT_JOYSTICK = 0;
 	public static final int RIGHT_JOYSTICK = 1;
 	public static final int CONTROL_PANEL = 2;
 
-	// navigation
+	//Navigation
 	public static final int AXIS_LEFT_RIGHT = 0;
 	public static final int AXIS_FORWARD_BACKWARD = 1;
+
+	// Joystick buttons
+	public static final int CROSS_DEFENSE = 1; //TODO: change this to the right button
+	//Other buttons
 }
