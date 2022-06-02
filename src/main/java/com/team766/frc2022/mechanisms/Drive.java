@@ -199,10 +199,7 @@ public class Drive extends Mechanism {
 		m_SteerBackLeft.setD(0);
 		m_SteerBackLeft.setFF(0);
 
-
-		//
-
-
+		//pid values from sds for Flacons 500: P = 0.2 I = 0.0 D = 0.1 FF = 0.0
 
 		//IDK what those do tbh, but I like to keep them here.
 		//m_SteerFrontRight.setSensorInverted(false);
