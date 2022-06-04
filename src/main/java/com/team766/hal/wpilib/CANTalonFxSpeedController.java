@@ -94,7 +94,7 @@ public class CANTalonFxSpeedController extends BaseCTRESpeedController implement
 	
 	@Override
 	public void setPosition(int position){
-		errorCodeToException(ExceptionTarget.THROW, m_device.setSelectedSensorPosition(position, 0, 0));
+		errorCodeToException(ExceptionTarget.THROW, m_device.setSelectedSensorPosition(position));
 	}
 
 	@Override

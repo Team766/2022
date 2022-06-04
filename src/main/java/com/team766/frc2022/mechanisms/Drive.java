@@ -47,6 +47,7 @@ public class Drive extends Mechanism {
 	public double max_turn = 12;
 
     public Drive() {
+		
 		loggerCategory = Category.DRIVE;
         // Initializations of motors
 		//Initialize the drive motors
@@ -71,13 +72,13 @@ public class Drive extends Mechanism {
 
 		//initialize the encoders
 		e_FrontRight = new CANCoder(1);
-		e_FrontRight.configAllSettings(config, 250);
+		//e_FrontRight.configAllSettings(config, 250);
 		e_FrontLeft = new CANCoder(2);
-		e_FrontLeft.configAllSettings(config, 250);
+		//e_FrontLeft.configAllSettings(config, 250);
 		e_BackRight = new CANCoder(4);
-		e_BackRight.configAllSettings(config, 250);
+		//e_BackRight.configAllSettings(config, 250);
 		e_BackLeft = new CANCoder(3);
-		e_BackLeft.configAllSettings(config, 250);
+		//e_BackLeft.configAllSettings(config, 250);
  
 		
 		//Current limit for motors to avoid breaker problems (mostly to avoid getting electrical people to yell at us)
@@ -92,15 +93,17 @@ public class Drive extends Mechanism {
 		m_SteerBackLeft.setCurrentLimit(20);
 
 		//Setting up the connection between steering motors and cancoders
-		m_SteerFrontRight.setRemoteFeedbackSensor(e_FrontRight, 0);
-		m_SteerFrontLeft.setRemoteFeedbackSensor(e_FrontLeft, 0);
-		m_SteerBackRight.setRemoteFeedbackSensor(e_BackRight, 0);
-		m_SteerBackLeft.setRemoteFeedbackSensor(e_BackLeft, 0);
+		//m_SteerFrontRight.setRemoteFeedbackSensor(e_FrontRight, 0);
+		//m_SteerFrontLeft.setRemoteFeedbackSensor(e_FrontLeft, 0);
+		//m_SteerBackRight.setRemoteFeedbackSensor(e_BackRight, 0);
+		//m_SteerBackLeft.setRemoteFeedbackSensor(e_BackLeft, 0);
 
-		m_SteerFrontRight.setSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
-		m_SteerFrontLeft.setSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
-		m_SteerBackRight.setSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);	
-		m_SteerBackLeft.setSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
+		m_SteerFrontRight.setSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+		m_SteerFrontLeft.setSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+		m_SteerBackRight.setSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);	
+		m_SteerBackLeft.setSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+		configPID();
+
 	}
 	//If you want me to repeat code, then no.
 	public double pythagrian(double x, double y) {
@@ -152,51 +155,59 @@ public class Drive extends Mechanism {
 	}
 	//Logging the encoder values (also I love Github Copilot <3)
 	public void logs(){
-		log("Front Right Encoder: " + e_FrontRight.getPosition() + " Front Left Encoder: " + e_FrontLeft.getPosition() + " Back Right Encoder: " + e_BackRight.getPosition() + " Back Left Encoder: " + e_BackLeft.getPosition());
+		log("Front Right Encoder: " + getFrontRight() + " Front Left Encoder: " + getFrontLeft() + " Back Right Encoder: " + getBackRight() + " Back Left Encoder: " + getBackLeft());
 	}
-
+	public void setFrontRightEncoders(){
+		m_SteerFrontRight.setPosition((int)Math.round(2048.0/360.0 * (150.0/7.0) * e_FrontRight.getAbsolutePosition()));
+	}
+	public void setFrontLeftEncoders(){
+		m_SteerFrontLeft.setPosition((int)Math.round(2048.0/360.0 * (150.0/7.0) * e_FrontLeft.getAbsolutePosition()));
+		//log("New encoder value: " + (int)Math.round(2048.0/360.0 * (150.0/7.0) * e_FrontLeft.getAbsolutePosition()) + " || Motor value: " + m_SteerFrontLeft.getSensorPosition());
+		}
+	public void setBackRightEncoders(){
+		m_SteerBackRight.setPosition((int)Math.round(2048.0/360.0 * (150.0/7.0) * e_BackRight.getAbsolutePosition()));
+	}
+	public void setBackLeftEncoders(){
+		m_SteerBackLeft.setPosition((int)Math.round(2048.0/360.0 * (150.0/7.0) * e_BackLeft.getAbsolutePosition()));
+	}
 	//To control each steering individually with a PID
 	public void setFrontRightAngle(double angle){
-		configPID();
-		log("Angle: " + getFrontRight() + " || Motor angle: " + m_SteerFrontRight.getSensorPosition());
-		m_SteerFrontRight.set(ControlMode.Position, angle);
+		//log("Angle: " + getFrontRight() + " || Motor angle: " + 360.0/ 2048.0 * m_SteerFrontRight.getSensorPosition());
+		m_SteerFrontRight.set(ControlMode.Position, 2048.0/360.0 * (150.0/7.0) * angle);
 	}
 	public void setFrontLeftAngle(double angle){
-		configPID();
-		log("Angle: " + getFrontLeft() + " || Motor angle: " + m_SteerFrontLeft.getSensorPosition());
-		m_SteerFrontLeft.set(ControlMode.Position, angle);
+		//log("Angle: " + getFrontLeft() + " || Motor angle: " + Math.pow((2048.0/360.0 * (150.0/7.0)),-1) * m_SteerFrontLeft.getSensorPosition());
+		m_SteerFrontLeft.set(ControlMode.Position, 2048.0/360.0 * (150.0/7.0) * angle);
 	}
 	public void setBackRightAngle(double angle){
-		configPID();
-		log("Angle: " + getBackRight() + " || Motor angle: " + m_SteerBackRight.getSensorPosition());
-		m_SteerBackRight.set(ControlMode.Position, angle);
+		//log("Angle: " + getBackRight() + " || Motor angle: " + m_SteerBackRight.getSensorPosition());
+		m_SteerBackRight.set(ControlMode.Position, 2048.0/360.0 * (150.0/7.0) * angle);
 	}
 	public void setBackLeftAngle(double angle){
-		configPID();
-		log("Angle: " + getBackLeft() + " || Motor angle: " + m_SteerBackLeft.getSensorPosition());
-		m_SteerBackLeft.set(ControlMode.Position, angle);
+		//log("Angle: " + getBackLeft() + " || Motor angle: " + m_SteerBackLeft.getSensorPosition());
+		m_SteerBackLeft.set(ControlMode.Position, 2048.0/360.0 * (150.0/7.0) * angle);
 	}
 	
 	public void configPID(){
 		//PID for turning the various steering motors. Here is a good link to a tuning website: https://www.robotsforroboticists.com/pid-control/
-		m_SteerFrontRight.setP(0);
+		m_SteerFrontRight.setP(0.2);
 		m_SteerFrontRight.setI(0);
-		m_SteerFrontRight.setD(0);
+		m_SteerFrontRight.setD(0.1);
 		m_SteerFrontRight.setFF(0);
 
-		m_SteerFrontLeft.setP(10);
+		m_SteerFrontLeft.setP(0.2);
 		m_SteerFrontLeft.setI(0);
-		m_SteerFrontLeft.setD(0);
+		m_SteerFrontLeft.setD(0.1);
 		m_SteerFrontLeft.setFF(0);
 		
-		m_SteerBackRight.setP(0);
+		m_SteerBackRight.setP(0.2);
 		m_SteerBackRight.setI(0);
-		m_SteerBackRight.setD(0);
+		m_SteerBackRight.setD(0.1);
 		m_SteerBackRight.setFF(0);
 
-		m_SteerBackLeft.setP(0);
+		m_SteerBackLeft.setP(0.2);
 		m_SteerBackLeft.setI(0);
-		m_SteerBackLeft.setD(0);
+		m_SteerBackLeft.setD(0.1);
 		m_SteerBackLeft.setFF(0);
 
 		//pid values from sds for Flacons 500: P = 0.2 I = 0.0 D = 0.1 FF = 0.0
@@ -219,7 +230,7 @@ public class Drive extends Mechanism {
 		return e_BackRight.getAbsolutePosition();
 	}
 	public double getBackLeft(){
-		return e_FrontRight.getAbsolutePosition();
+		return e_BackLeft.getAbsolutePosition();
 	}
 }
 
