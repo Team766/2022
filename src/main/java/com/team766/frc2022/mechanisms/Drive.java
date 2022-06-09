@@ -146,26 +146,16 @@ public class Drive extends Mechanism {
 		//log("Angle: " + angle + " || Last angle:" + lastAngle + " || New Angle: " + newAngle(angle, lastAngle));
 		//log("New angle: " + newAngle(-179, 179));
 	}
-    public void setAnglesZeroDrive(double JoystickX, double JoystickY) {
+    public void setAnglesZeroDrive() {
 		checkContextOwnership();
-		//logs();
-		configPID();
-		double angle = 0;
-		//Temporary Drive code, kinda sucks
 		m_DriveFrontRight.set(0);
 		m_DriveFrontLeft.set(0);
 		m_DriveBackRight.set(0);
 		m_DriveBackLeft.set(0);
-		//TODO fix gyro
-		currentAngle = gyro.getGyroYaw();
-		//Steer code
-		setFrontRightAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontRight.getSensorPosition()));
-		setFrontLeftAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontLeft.getSensorPosition()));
-		setBackRightAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackRight.getSensorPosition()));
-		setBackLeftAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackLeft.getSensorPosition()));
-		log(currentAngle);
-		//log("Angle: " + angle + " || Last angle:" + lastAngle + " || New Angle: " + newAngle(angle, lastAngle));
-		//log("New angle: " + newAngle(-179, 179));
+		m_SteerFrontRight.stopMotor();
+		m_SteerFrontLeft.stopMotor();
+		m_SteerBackLeft.stopMotor();
+		m_SteerBackRight.stopMotor();
 	}
 
 
