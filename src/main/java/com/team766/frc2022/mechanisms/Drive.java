@@ -106,6 +106,15 @@ public class Drive extends Mechanism {
 	public double getAngle(double LR, double FB){
 		return Math.toDegrees(Math.atan2(LR ,-FB));
 	}
+
+	public static double correctedJoysticks(double Joystick){
+		if(Joystick >= 0)
+			  return(3.0*Math.pow(Joystick,2)-2.0*Math.pow(Joystick,3));
+		  else  
+		  return(-1*3.0*Math.pow(-1*Joystick,2)+2.0*Math.pow(-1*Joystick,3));
+	}
+
+	
 	public static double fieldAngle(double angle, double gyro){
 		double newAngle;
 		newAngle = angle - gyro;
@@ -131,7 +140,7 @@ public class Drive extends Mechanism {
     public void drive2D(double JoystickX, double JoystickY) {
 		checkContextOwnership();
 		//logs();
-		double power = pythagrian(JoystickX, JoystickY)/2.0;
+		double power = pythagrian(correctedJoysticks(JoystickX), correctedJoysticks(JoystickY))/2.0;
 		
 		double angle = fieldAngle(getAngle(JoystickX, JoystickY),gyroValue);
 		log("Given angle: " + getAngle(JoystickX,JoystickY) + " || Gyro: " + gyroValue + " || New angle: " + angle);

@@ -25,11 +25,6 @@ public class OI extends Procedure {
 		m_rightJoystick = RobotProvider.instance.getJoystick(1);
 	}
 
-	public double correctedJoysticks(double Joystick){
-		return(3.0*Math.pow(Joystick,2)-2.0*Math.pow(Joystick,3));
-	}
-	
-
 	public void run(Context context) {
 		double prev_time = RobotProvider.instance.getClock().getTime();
 		context.takeOwnership(Robot.gyro);
