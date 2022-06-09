@@ -61,7 +61,7 @@ public class OI extends Procedure {
 				lastX = m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT);
 				lastY = (m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD));
 			}  else {
-				Robot.drive.setAnglesZeroDrive(0, 0);
+				Robot.drive.setAnglesZeroDrive();
 			}
 
 			//Use a cross defense when needed the most
