@@ -38,19 +38,9 @@ public class Drive extends Mechanism {
     
 	private ValueProvider<Double> drivePower;
 
-	// Values for PID Driving Straight
-	public double min_drive = -12;
-	public double max_drive = 12;
-
-	// Values for PID turning
-	public double min_turn = -12;
-	public double max_turn = 12;
-
-	private double lastAngle; 
-
-	public double currentAngle = 0;
-	Gyro gyro = new Gyro();
-    public Drive() {
+	private double gyroValue;
+	
+	public Drive() {
 		
 		loggerCategory = Category.DRIVE;
         // Initializations of motors
@@ -108,7 +98,6 @@ public class Drive extends Mechanism {
 		m_SteerBackRight.setSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);	
 		m_SteerBackLeft.setSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 		configPID();
-		lastAngle = (getFrontRight() + getFrontLeft() + getBackRight() + getBackLeft())/4.0;
 	}
 	//If you want me to repeat code, then no.
 	public double pythagrian(double x, double y) {
@@ -117,34 +106,45 @@ public class Drive extends Mechanism {
 	public double getAngle(double LR, double FB){
 		return Math.toDegrees(Math.atan2(LR ,-FB));
 	}
+	public static double fieldAngle(double angle, double gyro){
+		double newAngle;
+		newAngle = angle - gyro;
+		if(newAngle < 0){
+			newAngle = newAngle + 360;
+		}
+		if(newAngle >= 180){
+			newAngle = newAngle -360;
+		}
+		return newAngle;
+	}
 	public static double newAngle(double newAngle, double lastAngle){
 		while(newAngle<0) newAngle += 360;
 		while(newAngle < (lastAngle - 180)) newAngle+=360;
 		while(newAngle > (lastAngle + 180)) newAngle-=360;
 		return newAngle;
 	}
+	//Not the actual gyro, but I am passing it through the OI.java to get it here
+	public void setGyro(double value){
+		gyroValue = value;
+	}
 	//This is the method that is called to drive the robot in the 2D plane
     public void drive2D(double JoystickX, double JoystickY) {
 		checkContextOwnership();
 		//logs();
-		configPID();
 		double power = pythagrian(JoystickX, JoystickY)/2.0;
-		double angle = getAngle(JoystickX, JoystickY);
+		
+		double angle = fieldAngle(getAngle(JoystickX, JoystickY),gyroValue);
+		log("Given angle: " + getAngle(JoystickX,JoystickY) + " || Gyro: " + gyroValue + " || New angle: " + angle);
 		//Temporary Drive code, kinda sucks
 		m_DriveFrontRight.set(power);
 		m_DriveFrontLeft.set(power);
 		m_DriveBackRight.set(power);
 		m_DriveBackLeft.set(power);
-		//TODO fix gyro
-		currentAngle = gyro.getGyroYaw();
 		//Steer code
 		setFrontRightAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontRight.getSensorPosition()));
 		setFrontLeftAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontLeft.getSensorPosition()));
 		setBackRightAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackRight.getSensorPosition()));
 		setBackLeftAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackLeft.getSensorPosition()));
-		log(currentAngle);
-		//log("Angle: " + angle + " || Last angle:" + lastAngle + " || New Angle: " + newAngle(angle, lastAngle));
-		//log("New angle: " + newAngle(-179, 179));
 	}
     public void setAnglesZeroDrive() {
 		checkContextOwnership();
@@ -161,7 +161,6 @@ public class Drive extends Mechanism {
 
 	public void swerveDrive(double JoystickX, double JoystickY, double JoystickTheta){
 		checkContextOwnership();
-		configPID();
 		double radius = Math.sqrt(Math.pow(LENGTH_OF_CHASSIS.get(), 2) + Math.pow(WIDTH_OF_CHASSIS.get(), 2));
 		double a = JoystickX - JoystickTheta * (LENGTH_OF_CHASSIS.get() / radius);
 		double b = JoystickX + JoystickTheta * (LENGTH_OF_CHASSIS.get() / radius);

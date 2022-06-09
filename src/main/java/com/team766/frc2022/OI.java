@@ -16,7 +16,6 @@ import com.team766.logging.Category;
 public class OI extends Procedure {
 	private JoystickReader m_leftJoystick;
 	private JoystickReader m_rightJoystick;
-	private int EncoderDriftVariable = 0;
 	private double lastX = 0;
 	private double lastY = 0;
 	public OI() {
@@ -33,27 +32,26 @@ public class OI extends Procedure {
 
 	public void run(Context context) {
 		double prev_time = RobotProvider.instance.getClock().getTime();
-
+		context.takeOwnership(Robot.gyro);
 		context.takeOwnership(Robot.drive);
+		//Robot.gyro.resetGyro();
+		Robot.drive.setFrontRightEncoders();
+		Robot.drive.setFrontLeftEncoders();
+		Robot.drive.setBackRightEncoders();
+		Robot.drive.setBackLeftEncoders();
 		
 		while (true) {
 			//log(getAngle(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT) ,m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)));
-			if(EncoderDriftVariable % 64 == 0){
-				Robot.drive.setFrontRightEncoders();
-				Robot.drive.setFrontLeftEncoders();
-				Robot.drive.setBackRightEncoders();
-				Robot.drive.setBackLeftEncoders();
-				//	log("Fixing encoders!");
-				EncoderDriftVariable++;
-			}
+			Robot.drive.setGyro(Robot.gyro.getGyroYaw());		
+			log(Robot.gyro.getGyroYaw());
 			// To test each PID individually or set angles:
-			// Robot.drive.setFrontLeftAngle(69);
-			// Robot.drive.setFrontRightAngle(69);
-			// Robot.drive.setBackLeftAngle(69);
-			// Robot.drive.setBackRightAngle(69);
+			// Robot.drive.setFrontLeftAngle(0);
+			// Robot.drive.setFrontRightAngle(0);
+			// Robot.drive.setBackLeftAngle(0);
+			// Robot.drive.setBackRightAngle(0);
 			// Robot.drive.logs();
 
-			if(Math.pow(Math.pow(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT),2) + Math.pow(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD),2), 0.5) > 0.1 ){
+			if(Math.pow(Math.pow(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT),2) + Math.pow(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD),2), 0.5) > 0.1 /*To make sure the robot can "stop if no one is using the joystick"*/ ){
 			Robot.drive.drive2D(
 			 			((m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT))),
 			 			((m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)))

@@ -4,6 +4,7 @@ public enum Category {
 	// Only add to the end of this list
 	JAVA_EXCEPTION,
 	DRIVE,
+	GYRO,
 	HAL,
 	CAMERA,
 	PID_CONTROLLER,

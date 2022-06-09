@@ -1,6 +1,8 @@
 package com.team766.frc2022.mechanisms;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.I2C.Port;
+
 import com.team766.framework.Mechanism;
 import com.team766.hal.EncoderReader;
 import com.team766.hal.RobotProvider;
@@ -17,10 +19,10 @@ public class Gyro extends Mechanism {
 	private RateLimiter m_loggingRate = new RateLimiter(0.05);
 
 	public Gyro() {
-		loggerCategory = Category.DRIVE;
+		loggerCategory = Category.GYRO;
 
 		//m_gyro = new AHRS(SerialPort.Port.kUSB);
-		m_gyro = new AHRS(I2C.Port.kOnboard);
+		m_gyro = new AHRS(Port.kOnboard);
 	}
 
 	public void resetGyro() {
@@ -47,8 +49,8 @@ public class Gyro extends Mechanism {
 
 	@Override
 	public void run() {
-		// if (m_loggingRate.next()) {
-		// 	log("" + getGyroPitch());
-		// }
+		 if (m_loggingRate.next()) {
+		 	log(getGyroYaw());
+		 }
 	}
 }
