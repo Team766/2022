@@ -46,6 +46,10 @@ public class Drive extends Mechanism {
 	public double min_turn = -12;
 	public double max_turn = 12;
 
+	private double lastAngle; 
+
+	public double currentAngle = 0;
+	Gyro gyro = new Gyro();
     public Drive() {
 		
 		loggerCategory = Category.DRIVE;
@@ -60,7 +64,7 @@ public class Drive extends Mechanism {
 		m_SteerFrontLeft = RobotProvider.instance.getCANMotor("drive.SteerFrontLeft"); 
 		m_SteerBackRight = RobotProvider.instance.getCANMotor("drive.SteerBackRight"); 
 		m_SteerBackLeft = RobotProvider.instance.getCANMotor("drive.SteerBackLeft");
-
+		
 		//Setting up the "config" 
 		CANCoderConfiguration config = new CANCoderConfiguration();
 		config.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
@@ -86,7 +90,8 @@ public class Drive extends Mechanism {
 		m_DriveFrontLeft.setCurrentLimit(20);
 		m_DriveBackRight.setCurrentLimit(20);
 		m_DriveBackLeft.setCurrentLimit(20);
-
+		m_DriveBackLeft.setInverted(true);
+		m_DriveBackRight.setInverted(true);
 		m_SteerFrontRight.setCurrentLimit(20);
 		m_SteerFrontLeft.setCurrentLimit(20);
 		m_SteerBackRight.setCurrentLimit(20);
@@ -103,7 +108,7 @@ public class Drive extends Mechanism {
 		m_SteerBackRight.setSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);	
 		m_SteerBackLeft.setSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 		configPID();
-
+		lastAngle = (getFrontRight() + getFrontLeft() + getBackRight() + getBackLeft())/4.0;
 	}
 	//If you want me to repeat code, then no.
 	public double pythagrian(double x, double y) {
@@ -112,27 +117,57 @@ public class Drive extends Mechanism {
 	public double getAngle(double LR, double FB){
 		return Math.toDegrees(Math.atan2(LR ,-FB));
 	}
-
+	public static double newAngle(double newAngle, double lastAngle){
+		while(newAngle<0) newAngle += 360;
+		while(newAngle < (lastAngle - 180)) newAngle+=360;
+		while(newAngle > (lastAngle + 180)) newAngle-=360;
+		return newAngle;
+	}
 	//This is the method that is called to drive the robot in the 2D plane
     public void drive2D(double JoystickX, double JoystickY) {
 		checkContextOwnership();
-		logs();
+		//logs();
 		configPID();
-		double power = pythagrian(JoystickX, JoystickY);
+		double power = pythagrian(JoystickX, JoystickY)/2.0;
 		double angle = getAngle(JoystickX, JoystickY);
 		//Temporary Drive code, kinda sucks
 		m_DriveFrontRight.set(power);
 		m_DriveFrontLeft.set(power);
 		m_DriveBackRight.set(power);
 		m_DriveBackLeft.set(power);
-
-
+		//TODO fix gyro
+		currentAngle = gyro.getGyroYaw();
 		//Steer code
-		m_SteerFrontLeft.set(ControlMode.Position, angle);
-		m_SteerFrontRight.set(ControlMode.Position, angle);
-		m_SteerBackLeft.set(ControlMode.Position, angle);
-		m_SteerBackRight.set(ControlMode.Position, angle);
-    }
+		setFrontRightAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontRight.getSensorPosition()));
+		setFrontLeftAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontLeft.getSensorPosition()));
+		setBackRightAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackRight.getSensorPosition()));
+		setBackLeftAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackLeft.getSensorPosition()));
+		log(currentAngle);
+		//log("Angle: " + angle + " || Last angle:" + lastAngle + " || New Angle: " + newAngle(angle, lastAngle));
+		//log("New angle: " + newAngle(-179, 179));
+	}
+    public void setAnglesZeroDrive(double JoystickX, double JoystickY) {
+		checkContextOwnership();
+		//logs();
+		configPID();
+		double angle = 0;
+		//Temporary Drive code, kinda sucks
+		m_DriveFrontRight.set(0);
+		m_DriveFrontLeft.set(0);
+		m_DriveBackRight.set(0);
+		m_DriveBackLeft.set(0);
+		//TODO fix gyro
+		currentAngle = gyro.getGyroYaw();
+		//Steer code
+		setFrontRightAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontRight.getSensorPosition()));
+		setFrontLeftAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontLeft.getSensorPosition()));
+		setBackRightAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackRight.getSensorPosition()));
+		setBackLeftAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackLeft.getSensorPosition()));
+		log(currentAngle);
+		//log("Angle: " + angle + " || Last angle:" + lastAngle + " || New Angle: " + newAngle(angle, lastAngle));
+		//log("New angle: " + newAngle(-179, 179));
+	}
+
 
 	public void swerveDrive(double JoystickX, double JoystickY, double JoystickTheta){
 		checkContextOwnership();
@@ -148,10 +183,10 @@ public class Drive extends Mechanism {
 		m_DriveBackLeft.set(pythagrian(a, c));
 
 		double angle = getAngle(JoystickX, JoystickY);
-		m_SteerFrontLeft.set(ControlMode.Position, angle);
-		m_SteerFrontRight.set(ControlMode.Position, angle);
-		m_SteerBackLeft.set(ControlMode.Position, angle);
-		m_SteerBackRight.set(ControlMode.Position, angle);
+		setFrontRightAngle(angle);
+		setFrontLeftAngle(angle);
+		setBackRightAngle(angle);
+		setBackLeftAngle(angle);
 	}
 	//Logging the encoder values (also I love Github Copilot <3)
 	public void logs(){
@@ -177,6 +212,7 @@ public class Drive extends Mechanism {
 	}
 	public void setFrontLeftAngle(double angle){
 		//log("Angle: " + getFrontLeft() + " || Motor angle: " + Math.pow((2048.0/360.0 * (150.0/7.0)),-1) * m_SteerFrontLeft.getSensorPosition());
+		//log("Angle: %f Motor angle: %f", getFrontLeft(), Math.pow((2048.0/360.0 * (150.0/7.0)),-1) * m_SteerFrontLeft.getSensorPosition());
 		m_SteerFrontLeft.set(ControlMode.Position, 2048.0/360.0 * (150.0/7.0) * angle);
 	}
 	public void setBackRightAngle(double angle){

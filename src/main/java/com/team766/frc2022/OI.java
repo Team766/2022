@@ -17,6 +17,8 @@ public class OI extends Procedure {
 	private JoystickReader m_leftJoystick;
 	private JoystickReader m_rightJoystick;
 	private int EncoderDriftVariable = 0;
+	private double lastX = 0;
+	private double lastY = 0;
 	public OI() {
 		loggerCategory = Category.OPERATOR_INTERFACE;
 
@@ -36,22 +38,32 @@ public class OI extends Procedure {
 		
 		while (true) {
 			//log(getAngle(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT) ,m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)));
-			//if(EncoderDriftVariable % 64 == 0){
-			//	Robot.drive.setFrontRightEncoders();
-			//	Robot.drive.setFrontLeftEncoders();
-			//	Robot.drive.setBackRightEncoders();
-			//	Robot.drive.setBackLeftEncoders();
-			//	log("Fixing encoders!");
-			//}
-			EncoderDriftVariable++;
-			Robot.drive.logs();
+			if(EncoderDriftVariable % 64 == 0){
+				Robot.drive.setFrontRightEncoders();
+				Robot.drive.setFrontLeftEncoders();
+				Robot.drive.setBackRightEncoders();
+				Robot.drive.setBackLeftEncoders();
+				//	log("Fixing encoders!");
+				EncoderDriftVariable++;
+			}
 			// To test each PID individually or set angles:
-			Robot.drive.setFrontLeftAngle(0);
-			//Robot.drive.setFrontRightAngle(0);
-			//Robot.drive.setBackLeftAngle(0);
-			//Robot.drive.setBackRightAngle(0);
-			
-			
+			// Robot.drive.setFrontLeftAngle(69);
+			// Robot.drive.setFrontRightAngle(69);
+			// Robot.drive.setBackLeftAngle(69);
+			// Robot.drive.setBackRightAngle(69);
+			// Robot.drive.logs();
+
+			if(Math.pow(Math.pow(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT),2) + Math.pow(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD),2), 0.5) > 0.1 ){
+			Robot.drive.drive2D(
+			 			((m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT))),
+			 			((m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)))
+			);
+				lastX = m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT);
+				lastY = (m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD));
+			}  else {
+				Robot.drive.setAnglesZeroDrive(0, 0);
+			}
+
 			//Use a cross defense when needed the most
 			// if(m_leftJoystick.getButton(InputConstants.CROSS_DEFENSE)){
 			// 	context.startAsync(new DefenseCross());

@@ -10,7 +10,7 @@ import java.util.EnumMap;
 import com.team766.library.CircularBuffer;
 
 public class Logger {
-	private static final int MAX_NUM_RECENT_ENTRIES = 100;
+	private static final int MAX_NUM_RECENT_ENTRIES = 500;
 	
 	private static EnumMap<Category, Logger> m_loggers = new EnumMap<Category, Logger>(Category.class);
 	private static LogWriter m_logWriter = null;
