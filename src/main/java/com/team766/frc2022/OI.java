@@ -56,7 +56,8 @@ public class OI extends Procedure {
 						lastX = m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT);
 						lastY = (m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD));
 				}  else {
-					Robot.drive.setAnglesZeroDrive();
+					Robot.drive.stopSteerMotors();
+					Robot.drive.stopSteerMotors();
 				}
 			}
 			if(m_leftJoystick.getButtonPressed(1))
