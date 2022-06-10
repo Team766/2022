@@ -155,16 +155,19 @@ public class Drive extends Mechanism {
 		setBackRightAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackRight.getSensorPosition()));
 		setBackLeftAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackLeft.getSensorPosition()));
 	}
-    public void setAnglesZeroDrive() {
+    public void stopDriveMotors() {
 		checkContextOwnership();
-		m_DriveFrontRight.set(0);
-		m_DriveFrontLeft.set(0);
-		m_DriveBackRight.set(0);
-		m_DriveBackLeft.set(0);
+		m_DriveFrontRight.stopMotor();
+		m_DriveFrontLeft.stopMotor();
+		m_DriveBackRight.stopMotor();
+		m_DriveBackLeft.stopMotor();
+	}
+	public void stopSteerMotors() {
+		checkContextOwnership();
 		m_SteerFrontRight.stopMotor();
 		m_SteerFrontLeft.stopMotor();
-		m_SteerBackLeft.stopMotor();
 		m_SteerBackRight.stopMotor();
+		m_SteerBackLeft.stopMotor();
 	}
 
 

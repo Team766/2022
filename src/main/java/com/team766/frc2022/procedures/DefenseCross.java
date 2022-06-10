@@ -15,6 +15,7 @@ public class DefenseCross extends Procedure {
 		Robot.drive.setSFL(-45);
 		Robot.drive.setSBR(-45);
 		Robot.drive.setSBL(45);
+		Robot.drive.stopDriveMotors();
 		context.releaseOwnership(Robot.drive);
 	}
 }
