@@ -11,11 +11,10 @@ public class DefenseCross extends Procedure {
 		context.takeOwnership(Robot.drive);
 		loggerCategory = Category.PROCEDURES;
 
-		Robot.drive.setFrontLeftAngle(45);
-		Robot.drive.setFrontRightAngle(45);
-		Robot.drive.setBackLeftAngle(45);
-		Robot.drive.setBackRightAngle(45);
-		
-
+		Robot.drive.setSFR(45);
+		Robot.drive.setSFL(-45);
+		Robot.drive.setSBR(-45);
+		Robot.drive.setSBL(45);
+		context.releaseOwnership(Robot.drive);
 	}
 }

@@ -76,16 +76,16 @@ public class Drive extends Mechanism {
  
 		
 		//Current limit for motors to avoid breaker problems (mostly to avoid getting electrical people to yell at us)
-		m_DriveFrontRight.setCurrentLimit(20);
-		m_DriveFrontLeft.setCurrentLimit(20);
-		m_DriveBackRight.setCurrentLimit(20);
-		m_DriveBackLeft.setCurrentLimit(20);
+		m_DriveFrontRight.setCurrentLimit(15);
+		m_DriveFrontLeft.setCurrentLimit(15);
+		m_DriveBackRight.setCurrentLimit(15);
+		m_DriveBackLeft.setCurrentLimit(15);
 		m_DriveBackLeft.setInverted(true);
 		m_DriveBackRight.setInverted(true);
-		m_SteerFrontRight.setCurrentLimit(20);
-		m_SteerFrontLeft.setCurrentLimit(20);
-		m_SteerBackRight.setCurrentLimit(20);
-		m_SteerBackLeft.setCurrentLimit(20);
+		m_SteerFrontRight.setCurrentLimit(15);
+		m_SteerFrontLeft.setCurrentLimit(15);
+		m_SteerBackRight.setCurrentLimit(15);
+		m_SteerBackLeft.setCurrentLimit(15);
 
 		//Setting up the connection between steering motors and cancoders
 		//m_SteerFrontRight.setRemoteFeedbackSensor(e_FrontRight, 0);
@@ -140,8 +140,8 @@ public class Drive extends Mechanism {
     public void drive2D(double JoystickX, double JoystickY) {
 		checkContextOwnership();
 		//logs();
-		double power = pythagrian(correctedJoysticks(JoystickX), correctedJoysticks(JoystickY))/2.0;
-		
+		//double power = pythagrian((JoystickX), correctedJoysticks(JoystickY))/Math.sqrt(2);
+		double power = Math.max(Math.abs(JoystickX),Math.abs(JoystickY));
 		double angle = fieldAngle(getAngle(JoystickX, JoystickY),gyroValue);
 		log("Given angle: " + getAngle(JoystickX,JoystickY) + " || Gyro: " + gyroValue + " || New angle: " + angle);
 		//Temporary Drive code, kinda sucks
@@ -221,7 +221,18 @@ public class Drive extends Mechanism {
 		//log("Angle: " + getBackLeft() + " || Motor angle: " + m_SteerBackLeft.getSensorPosition());
 		m_SteerBackLeft.set(ControlMode.Position, 2048.0/360.0 * (150.0/7.0) * angle);
 	}
-	
+	public void setSFR(double angle){
+		setFrontRightAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontRight.getSensorPosition()));
+	}
+	public void setSFL(double angle){
+		setFrontLeftAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontRight.getSensorPosition()));
+	}
+	public void setSBR(double angle){
+		setBackRightAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontRight.getSensorPosition()));
+	}
+	public void setSBL(double angle){
+		setBackLeftAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontRight.getSensorPosition()));
+	}
 	public void configPID(){
 		//PID for turning the various steering motors. Here is a good link to a tuning website: https://www.robotsforroboticists.com/pid-control/
 		m_SteerFrontRight.setP(0.2);

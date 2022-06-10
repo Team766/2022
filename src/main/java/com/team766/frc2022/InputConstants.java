@@ -17,6 +17,6 @@ public final class InputConstants {
 	public static final int AXIS_FORWARD_BACKWARD = 1;
 
 	// Joystick buttons
-	public static final int CROSS_DEFENSE = 1; //TODO: change this to the right button
+	public static final int CROSS_DEFENSE = 7; //TODO: change this to the right button
 	//Other buttons
 }
