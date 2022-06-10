@@ -186,6 +186,9 @@ public class Drive extends Mechanism {
 		setBackRightAngle(angle);
 		setBackLeftAngle(angle);
 	}
+
+	 
+
 	//Logging the encoder values (also I love Github Copilot <3)
 	public void logs(){
 		log("Front Right Encoder: " + getFrontRight() + " Front Left Encoder: " + getFrontLeft() + " Back Right Encoder: " + getBackRight() + " Back Left Encoder: " + getBackLeft());
