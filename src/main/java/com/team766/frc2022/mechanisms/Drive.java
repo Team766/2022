@@ -82,10 +82,10 @@ public class Drive extends Mechanism {
 		m_DriveBackLeft.setCurrentLimit(15);
 		m_DriveBackLeft.setInverted(true);
 		m_DriveBackRight.setInverted(true);
-		m_SteerFrontRight.setCurrentLimit(15);
-		m_SteerFrontLeft.setCurrentLimit(15);
-		m_SteerBackRight.setCurrentLimit(15);
-		m_SteerBackLeft.setCurrentLimit(15);
+		m_SteerFrontRight.setCurrentLimit(10);
+		m_SteerFrontLeft.setCurrentLimit(10);
+		m_SteerBackRight.setCurrentLimit(10);
+		m_SteerBackLeft.setCurrentLimit(10);
 
 		//Setting up the connection between steering motors and cancoders
 		//m_SteerFrontRight.setRemoteFeedbackSensor(e_FrontRight, 0);
@@ -191,6 +191,30 @@ public class Drive extends Mechanism {
 	}
 
 	 
+	    
+public void turning(double Joystick){
+	checkContextOwnership();
+	if(Joystick > 0){
+		setFrontRightAngle(newAngle(135, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontRight.getSensorPosition()));
+		setFrontLeftAngle(newAngle(45, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontLeft.getSensorPosition()));
+		setBackRightAngle(newAngle(-135, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackRight.getSensorPosition()));
+		setBackLeftAngle(newAngle(-45, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackLeft.getSensorPosition()));
+		m_DriveFrontRight.set(Math.abs(Joystick));
+		m_DriveFrontLeft.set(Math.abs(Joystick));
+		m_DriveBackRight.set(Math.abs(Joystick));
+		m_DriveBackLeft.set(Math.abs(Joystick));
+	}
+	if(Joystick < 0){
+		setFrontRightAngle(newAngle(-45, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontRight.getSensorPosition()));
+		setFrontLeftAngle(newAngle(-135, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontLeft.getSensorPosition()));
+		setBackRightAngle(newAngle(45, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackRight.getSensorPosition()));
+		setBackLeftAngle(newAngle(135, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackLeft.getSensorPosition()));
+		m_DriveFrontRight.set(Math.abs(Joystick));
+		m_DriveFrontLeft.set(Math.abs(Joystick));
+		m_DriveBackRight.set(Math.abs(Joystick));
+		m_DriveBackLeft.set(Math.abs(Joystick));
+	}
+}
 
 	//Logging the encoder values (also I love Github Copilot <3)
 	public void logs(){
