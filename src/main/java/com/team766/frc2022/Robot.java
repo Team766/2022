@@ -1,10 +1,11 @@
-package com.team766.frc2020;
+package com.team766.frc2022;
 
 import com.team766.framework.AutonomousProcedureUtils;
 import com.team766.framework.Procedure;
 import com.team766.framework.Scheduler;
 import com.team766.framework.LaunchedContext;
-import com.team766.frc2020.mechanisms.*;
+import com.team766.hal.wpilib.DigitalInput;
+import com.team766.frc2022.mechanisms.*;
 import com.team766.hal.MyRobot;
 import com.team766.hal.RobotProvider;
 import com.team766.logging.Category;
@@ -12,16 +13,28 @@ import com.team766.logging.Logger;
 import com.team766.logging.Severity;
 import com.team766.web.AutonomousSelector;
 import com.team766.web.ConfigUI;
+import com.team766.web.Dashboard;
+import com.team766.web.DriverInterface;
 import com.team766.web.LogViewer;
+import com.team766.web.ReadLogs;
 import com.team766.web.WebServer;
 
 public class Robot extends MyRobot {
 	// Declare mechanisms here
 	public static Drive drive;
+<<<<<<< HEAD:src/main/java/com/team766/frc2020/Robot.java
 	public static Launcher launcher;
 	public static IntakeArm intakeArm;
 	public static IntakeWheels intakeWheels;
 	public static LineSensors lineSensors;
+=======
+	public static Intake intake;
+	public static Belts belts;
+	public static Shooter shooter;
+	public static Limelight limelight;
+	public static Elevator elevator;
+	public static Gyro gyro;
+>>>>>>> 5aa736fde879533e63e8d1c727194e5908c3c3fa:src/main/java/com/team766/frc2022/Robot.java
 	
 	private static OI m_oi;
 	
@@ -36,11 +49,14 @@ public class Robot extends MyRobot {
 	private double m_disabledModeStartTime;
 
 	public Robot() {
-		m_webServer = new WebServer();
-		m_webServer.addHandler("/config", new ConfigUI());
-		m_webServer.addHandler("/logs", new LogViewer());
 		m_autonSelector = new AutonomousSelector(AutonomousModes.class);
-		m_webServer.addHandler("/values", m_autonSelector);
+		m_webServer = new WebServer();
+		m_webServer.addHandler(new Dashboard());
+		m_webServer.addHandler(new DriverInterface(m_autonSelector));
+		m_webServer.addHandler(new ConfigUI());
+		m_webServer.addHandler(new LogViewer());
+		m_webServer.addHandler(new ReadLogs());
+		m_webServer.addHandler(m_autonSelector);
 		m_webServer.start();
 	}
 
@@ -48,11 +64,21 @@ public class Robot extends MyRobot {
 	public void robotInit() {
 		// Initialize mechanisms here
 		drive = new Drive();
+<<<<<<< HEAD:src/main/java/com/team766/frc2020/Robot.java
 		launcher = new Launcher();
 		intakeArm = new IntakeArm();
 		intakeWheels = new IntakeWheels();
 		lineSensors = new LineSensors();
 		
+=======
+		intake = new Intake();
+		belts = new Belts();
+		shooter = new Shooter();
+		limelight = new Limelight();
+		drive = new Drive();
+		elevator = new Elevator();
+		gyro = new Gyro();
+>>>>>>> 5aa736fde879533e63e8d1c727194e5908c3c3fa:src/main/java/com/team766/frc2022/Robot.java
 		m_oi = new OI();
 	}
 	
@@ -92,8 +118,10 @@ public class Robot extends MyRobot {
 	@Override
 	public void autonomousInit() {
 		if (m_oiContext != null) {
+			Logger.get(Category.PROCEDURES).logRaw(Severity.INFO, "Stopping OI");
 			m_oiContext.stop();
 			m_oiContext = null;
+			Logger.get(Category.PROCEDURES).logRaw(Severity.INFO, "Stopped OI");
 		}
 		
 		if (m_autonomous == null) {

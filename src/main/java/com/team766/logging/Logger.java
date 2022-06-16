@@ -1,6 +1,7 @@
 package com.team766.logging;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -15,16 +16,25 @@ public class Logger {
 	private static EnumMap<Category, Logger> m_loggers = new EnumMap<Category, Logger>(Category.class);
 	private static LogWriter m_logWriter = null;
 	private CircularBuffer<RawLogEntry> m_recentEntries = new CircularBuffer<RawLogEntry>(MAX_NUM_RECENT_ENTRIES);
+
+	public static String logFilePathBase = null;
 	
 	static {
 		for (Category category : Category.values()) {
 			m_loggers.put(category, new Logger(category));
 		}
 		try {
-			String logFilePath = ConfigFileReader.getInstance().getString("logFilePath").get();
-			logFilePath = new File(logFilePath).getAbsolutePath();
-			m_logWriter = new LogWriter(logFilePath);
-			get(Category.CONFIGURATION).logRaw(Severity.INFO, "Logging to " + logFilePath);
+			ConfigFileReader config_file = ConfigFileReader.getInstance();
+			if (config_file != null) {
+				logFilePathBase = config_file.getString("logFilePath").get();
+				new File(logFilePathBase).mkdirs();
+				final String timestamp = new SimpleDateFormat("yyyyMMdd'T'HHmmss").format(new Date());
+				final String logFilePath = new File(logFilePathBase, timestamp).getAbsolutePath();
+				m_logWriter = new LogWriter(logFilePath);
+				get(Category.CONFIGURATION).logRaw(Severity.INFO, "Logging to " + logFilePath);
+			} else {
+				get(Category.CONFIGURATION).logRaw(Severity.ERROR, "Config file is not available. Logs will only be in-memory and will be lost when the robot is turned off.");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			LoggerExceptionUtils.logException(e);

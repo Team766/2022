@@ -2,13 +2,19 @@ package com.team766.framework;
 
 import com.team766.logging.Category;
 import com.team766.logging.Logger;
+import com.team766.logging.LoggerExceptionUtils;
 import com.team766.logging.Severity;
 
-public abstract class Mechanism extends Loggable implements Runnable {
+public abstract class Mechanism extends Loggable {
 	private Context m_owningContext = null;
+	private boolean m_runningPeriodic = false;
 	
 	public Mechanism() {
-		Scheduler.getInstance().add(this);
+		Scheduler.getInstance().add(() -> {
+			this.m_runningPeriodic = true;
+			this.run();
+			this.m_runningPeriodic = false;
+		});
 	}
 
 	public String getName() {
@@ -16,7 +22,7 @@ public abstract class Mechanism extends Loggable implements Runnable {
 	}
 	
 	protected void checkContextOwnership() {
-		if (Context.currentContext() != m_owningContext) {
+		if (Context.currentContext() != m_owningContext && !m_runningPeriodic) {
 			String message = getName() + " tried to be used by " + Context.currentContext().getContextName();
 			if (m_owningContext != null) {
 				message += " while owned by " + m_owningContext.getContextName();
@@ -33,9 +39,16 @@ public abstract class Mechanism extends Loggable implements Runnable {
 			Logger.get(Category.PROCEDURES).logRaw(Severity.INFO, context.getContextName() + " is inheriting ownership of " + getName() + " from " + parentContext.getContextName());
 		} else {
 			Logger.get(Category.PROCEDURES).logRaw(Severity.INFO, context.getContextName() + " is taking ownership of " + getName());
-			if (m_owningContext != null && m_owningContext != context) {
+			while (m_owningContext != null && m_owningContext != context) {
 				Logger.get(Category.PROCEDURES).logRaw(Severity.WARNING, "Stopping previous owner of " + getName() + ": " + m_owningContext.getContextName());
 				m_owningContext.stop();
+				var stoppedContext = m_owningContext;
+				context.yield();
+				if (m_owningContext == stoppedContext) {
+					Logger.get(Category.PROCEDURES).logRaw(Severity.ERROR, "Previous owner of " + getName() + ", " + m_owningContext.getContextName() + " did not release ownership when requested. Release will be forced.");
+					m_owningContext.releaseOwnership(this);
+					break;
+				}
 			}
 		}
 		m_owningContext = context;
@@ -43,13 +56,13 @@ public abstract class Mechanism extends Loggable implements Runnable {
 
 	void releaseOwnership(Context context) {
 		if (m_owningContext != context) {
-			Logger.get(Category.PROCEDURES).logRaw(Severity.ERROR, context.getContextName() + " tried to release ownership of " + getName() + " but it doesn't own it");
+			//Logger.get(Category.PROCEDURES).logRaw(Severity.ERROR, context.getContextName() + " tried to release ownership of " + getName() + " but it doesn't own it");
+			LoggerExceptionUtils.logException(new Exception(context.getContextName() + " tried to release ownership of " + getName() + " but it doesn't own it"));
 			return;
 		}
 		Logger.get(Category.PROCEDURES).logRaw(Severity.INFO, context.getContextName() + " is releasing ownership of " + getName());
 		m_owningContext = null;
 	}
 
-	@Override
 	public void run () {}
 }

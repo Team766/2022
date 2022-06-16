@@ -50,7 +50,7 @@ public class ConfigFileReader {
 		} catch (Exception e) {
 			System.err.println("Failed to load config file!");
 			e.printStackTrace();
-			LoggerExceptionUtils.logException(e);
+			LoggerExceptionUtils.logException(new IOException("Failed to load config file!", e));
 		}
 	}
 
@@ -127,6 +127,10 @@ public class ConfigFileReader {
 	
 	public ValueProvider<String> getString(String key) {
 		return new StringConfigValue(key);
+	}
+
+	public <E extends Enum<E>> ValueProvider<E> getEnum(Class<E> enumClass, String key) {
+		return new EnumConfigValue<E>(enumClass, key);
 	}
 	
 	Object getRawValue(String key){

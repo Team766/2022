@@ -1,6 +1,5 @@
 package com.team766.hal;
 
-import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -10,11 +9,19 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public interface CANSpeedController extends SpeedController {
 
+	public enum Type {
+		VictorSPX,
+		TalonSRX,
+		SparkMax,
+		TalonFX,
+	}
+
 	public enum ControlMode {
 		PercentOutput,
 		Position,
 		Velocity,
 		Current,
+		Voltage,
 		Follower,
 		MotionProfile,
 		MotionMagic,
@@ -80,33 +87,25 @@ public interface CANSpeedController extends SpeedController {
 
 	void setNeutralMode(NeutralMode neutralMode);
 
-	ErrorCode config_kP(int slotIdx, double value, int timeoutMs);
+	void setP(double value);
 
-	ErrorCode config_kI(int slotIdx, double value, int timeoutMs);
+	void setI(double value);
 
-	ErrorCode config_kD(int slotIdx, double value, int timeoutMs);
+	void setD(double value);
 
-	ErrorCode config_kF(int slotIdx, double value, int timeoutMs);
+	void setFF(double value);
 
-	ErrorCode configSelectedFeedbackSensor(FeedbackDevice feedbackDevice);
+	void setSelectedFeedbackSensor(FeedbackDevice feedbackDevice);
+	
+	void setSensorInverted(boolean inverted);
 
-	ErrorCode configNominalOutputForward(double PercentOutput);
+	void setOutputRange(double minOutput, double maxOutput);
 
-	ErrorCode configNominalOutputReverse(double PercentOutput);
+	void setCurrentLimit(double ampsLimit);
 
-	ErrorCode configPeakOutputForward(double PercentOutput);
+	void restoreFactoryDefault();
 
-	ErrorCode configPeakOutputReverse(double PercentOutput);
+	void setOpenLoopRamp(double secondsFromNeutralToFull);
 
-	ErrorCode configMotionCruiseVelocity(int sensorUnitsPer100ms);
-
-	ErrorCode configMotionAcceleration(int sensorunitsPer100msPerSec);
-
-	void setSensorPhase(boolean PhaseSensor);
-
-	ErrorCode configFactoryDefault();
-
-	void configOpenLoopRamp(double secondsFromNeutralToFull, int timeoutMs);
-
-	void configClosedLoopRamp(double secondsFromNeutralToFull, int timeoutMs);
+	void setClosedLoopRamp(double secondsFromNeutralToFull);
 }

@@ -1,9 +1,11 @@
 package com.team766.hal.simulator;
 
-import com.ctre.phoenix.ErrorCode;
+import static com.team766.math.Math.clamp;
+
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.team766.hal.CANSpeedController;
+import com.team766.logging.LoggerExceptionUtils;
 import com.team766.simulator.ProgramInterface;
 
 public class Talon implements CANSpeedController {
@@ -21,8 +23,7 @@ public class Talon implements CANSpeedController {
 	
 	@Override
 	public void set(double speed) {
-		// TODO: clamp to -1..1 when in PercentOutput mode
-		channel.command.output = speed;
+		set(ControlMode.PercentOutput, speed);
 	}
 
 	@Override
@@ -59,6 +60,9 @@ public class Talon implements CANSpeedController {
 
 	@Override
 	public void set(ControlMode mode, double value) {
+		if (mode == ControlMode.PercentOutput) {
+			value = clamp(value, -1.0, 1.0);
+		}
 		channel.command.output = value;
 		channel.command.controlMode = 
 				ProgramInterface.CANSpeedControllerCommand.ControlMode.valueOf(mode.name());
@@ -75,86 +79,66 @@ public class Talon implements CANSpeedController {
 
 	@Override
 	public void follow(CANSpeedController leader) {
-		throw new UnsupportedOperationException();
+		LoggerExceptionUtils.logException(new UnsupportedOperationException("follow() is currently unsupported in the simulator"));
 	}
 	
 	@Override
 	public void setNeutralMode(NeutralMode neutralMode) {
-		throw new UnsupportedOperationException();
+		LoggerExceptionUtils.logException(new UnsupportedOperationException("setNeutralMode() is currently unsupported in the simulator"));
 	}
 
 	@Override
-	public ErrorCode config_kP(int slotIdx, double value, int timeoutMs) {
-		throw new UnsupportedOperationException();
+	public void setP(double value) {
+		LoggerExceptionUtils.logException(new UnsupportedOperationException("setP() is currently unsupported in the simulator"));
 	}
 
 	@Override
-	public ErrorCode config_kI(int slotIdx, double value, int timeoutMs) {
-		throw new UnsupportedOperationException();
+	public void setI(double value) {
+		LoggerExceptionUtils.logException(new UnsupportedOperationException("setI() is currently unsupported in the simulator"));
 	}
 
 	@Override
-	public ErrorCode config_kD(int slotIdx, double value, int timeoutMs) {
-		throw new UnsupportedOperationException();
+	public void setD(double value) {
+		LoggerExceptionUtils.logException(new UnsupportedOperationException("setD() is currently unsupported in the simulator"));
 	}
 
 	@Override
-	public ErrorCode configSelectedFeedbackSensor(FeedbackDevice feedbackDevice) {
-		throw new UnsupportedOperationException();
+	public void setFF(double value) {
+		LoggerExceptionUtils.logException(new UnsupportedOperationException("setFF() is currently unsupported in the simulator"));
 	}
 
 	@Override
-	public ErrorCode configNominalOutputForward(double PercentOutput) {
-		throw new UnsupportedOperationException();
+	public void setSelectedFeedbackSensor(FeedbackDevice feedbackDevice) {
+		LoggerExceptionUtils.logException(new UnsupportedOperationException("setSelectedFeedbsckSensor() is currently unsupported in the simulator"));
 	}
 
 	@Override
-	public ErrorCode configNominalOutputReverse(double PercentOutput) {
-		throw new UnsupportedOperationException();
+	public void setSensorInverted(boolean inverted) {
+		LoggerExceptionUtils.logException(new UnsupportedOperationException("setSensorInverted() is currently unsupported in the simulator"));
 	}
 
 	@Override
-	public ErrorCode configPeakOutputForward(double PercentOutput) {
-		throw new UnsupportedOperationException();
+	public void setOutputRange(double minOutput, double maxOutput) {
+		LoggerExceptionUtils.logException(new UnsupportedOperationException("setOutputRange() is currently unsupported in the simulator"));
 	}
 
 	@Override
-	public ErrorCode configPeakOutputReverse(double PercentOutput) {
-		throw new UnsupportedOperationException();
+	public void setCurrentLimit(double ampsLimit) {
+		LoggerExceptionUtils.logException(new UnsupportedOperationException("setCurrentLimit() is currently unsupported in the simulator"));
 	}
 
 	@Override
-	public void setSensorPhase(boolean PhaseSensor) {
-		throw new UnsupportedOperationException();
+	public void restoreFactoryDefault() {
+		LoggerExceptionUtils.logException(new UnsupportedOperationException("restoreFactoryDefault() is currently unsupported in the simulator"));
 	}
 
 	@Override
-	public ErrorCode configFactoryDefault() {
-		throw new UnsupportedOperationException();
+	public void setOpenLoopRamp(double secondsFromNeutralToFull) {
+		LoggerExceptionUtils.logException(new UnsupportedOperationException("setOpenLoopRamp() is currently unsupported in the simulator"));
 	}
 
 	@Override
-	public void configOpenLoopRamp(double secondsFromNeutralToFull, int timeoutMs) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void configClosedLoopRamp(double secondsFromNeutralToFull, int timeoutMs) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public ErrorCode config_kF(int slotIdx, double value, int timeoutMs) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public ErrorCode configMotionCruiseVelocity(int sensorUnitsPer100ms) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public ErrorCode configMotionAcceleration(int sensorUnitsPer100msPerSec) {
-		throw new UnsupportedOperationException();
+	public void setClosedLoopRamp(double secondsFromNeutralToFull) {
+		LoggerExceptionUtils.logException(new UnsupportedOperationException("setClosedLoopRamp() is currently unsupported in the simulator"));
 	}
 }
