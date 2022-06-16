@@ -107,6 +107,11 @@ public class LogWriter extends LogFormatProvider {
 					if (entry instanceof CloseLogPseudoEntry) {
 						return;
 					}
+					try {
+						m_objectStream.reset();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 					entry.write(m_objectStream);
 				}
 			}

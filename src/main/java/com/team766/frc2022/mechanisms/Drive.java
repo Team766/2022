@@ -106,6 +106,20 @@ public class Drive extends Mechanism {
 	public double getAngle(double LR, double FB){
 		return Math.toDegrees(Math.atan2(LR ,-FB));
 	}
+	public double round(double value, int places) {
+		double scale = Math.pow(10, places);
+		return Math.round(value * scale) / scale;
+	}
+	public double NewAng(double FirstMag, double FirstAng, double SecondMag, double SecondAng){
+		double FinalX = FirstMag*Math.cos(Math.toRadians(FirstAng)) + SecondMag*Math.cos(Math.toRadians(SecondAng));
+		double FinalY = FirstMag*Math.sin(Math.toRadians(FirstAng)) + SecondMag*Math.sin(Math.toRadians(SecondAng));
+		return round(Math.toDegrees(Math.atan2(FinalY,FinalX)),5);
+	}
+	public double NewMag(double FirstMag, double FirstAng, double SecondMag, double SecondAng){
+		double FinalX = FirstMag*Math.cos(Math.toRadians(FirstAng)) + SecondMag*Math.cos(Math.toRadians(SecondAng));
+		double FinalY = FirstMag*Math.sin(Math.toRadians(FirstAng)) + SecondMag*Math.sin(Math.toRadians(SecondAng));
+		return round(Math.sqrt(Math.pow(FinalX,2) + Math.pow(FinalY,2)),5);
+	}
 
 	public static double correctedJoysticks(double Joystick){
 		if(Joystick >= 0)
@@ -173,21 +187,51 @@ public class Drive extends Mechanism {
 
 	public void swerveDrive(double JoystickX, double JoystickY, double JoystickTheta){
 		checkContextOwnership();
-		double radius = Math.sqrt(Math.pow(LENGTH_OF_CHASSIS.get(), 2) + Math.pow(WIDTH_OF_CHASSIS.get(), 2));
-		double a = JoystickX - JoystickTheta * (LENGTH_OF_CHASSIS.get() / radius);
-		double b = JoystickX + JoystickTheta * (LENGTH_OF_CHASSIS.get() / radius);
-		double c = JoystickY - JoystickTheta * (WIDTH_OF_CHASSIS.get() / radius);
-		double d = JoystickY + JoystickTheta * (WIDTH_OF_CHASSIS.get() / radius);
-		m_DriveFrontRight.set(pythagrian(b, d));
-		m_DriveFrontLeft.set(pythagrian(b, c));
-		m_DriveBackRight.set(pythagrian(a, d));
-		m_DriveBackLeft.set(pythagrian(a, c));
-
-		double angle = getAngle(JoystickX, JoystickY);
-		setFrontRightAngle(angle);
-		setFrontLeftAngle(angle);
-		setBackRightAngle(angle);
-		setBackLeftAngle(angle);
+		double power = Math.max(Math.abs(JoystickX),Math.abs(JoystickY));
+		double angle = fieldAngle(getAngle(JoystickX, JoystickY),gyroValue);
+		double frPower;
+		double flPower;
+		double brPower;
+		double blPower;
+		double frAngle;
+		double flAngle;
+		double brAngle;
+		double blAngle;
+		if(JoystickTheta >= 0){
+			frPower = NewMag(power, angle, JoystickTheta, 135);
+			flPower = NewMag(power, angle, JoystickTheta, 45);
+			brPower = NewMag(power, angle, JoystickTheta, -135);
+			blPower = NewMag(power, angle, JoystickTheta, -45);
+			frAngle = NewAng(power, angle, JoystickTheta, 135);
+			flAngle = NewAng(power, angle, JoystickTheta, 45);
+			brAngle = NewAng(power, angle, JoystickTheta, -135);
+			blAngle = NewAng(power, angle, JoystickTheta, -45);
+		}
+		else{
+			frPower = NewMag(power, angle, Math.abs(JoystickTheta), -45);
+			flPower = NewMag(power, angle, Math.abs(JoystickTheta), -135);
+			brPower = NewMag(power, angle, Math.abs(JoystickTheta), 45);
+			blPower = NewMag(power, angle, Math.abs(JoystickTheta), 135);
+			frAngle = NewAng(power, angle, Math.abs(JoystickTheta), -45);
+			flAngle = NewAng(power, angle, Math.abs(JoystickTheta), -135);
+			brAngle = NewAng(power, angle, Math.abs(JoystickTheta), 45);
+			blAngle = NewAng(power, angle, Math.abs(JoystickTheta), 135);
+		}
+		if(Math.max(Math.max(frPower,flPower), Math.max(brPower,blPower)) > 1){
+			frPower /= Math.max(Math.max(frPower,flPower), Math.max(brPower,blPower));
+			flPower /= Math.max(Math.max(frPower,flPower), Math.max(brPower,blPower));
+			brPower /= Math.max(Math.max(frPower,flPower), Math.max(brPower,blPower));
+			blPower /= Math.max(Math.max(frPower,flPower), Math.max(brPower,blPower));
+		}
+		m_DriveFrontRight.set(frPower);
+		m_DriveFrontLeft.set(flPower);
+		m_DriveBackRight.set(brPower);
+		m_DriveBackLeft.set(blPower);
+		//Steer code
+		setFrontRightAngle(newAngle(frAngle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontRight.getSensorPosition()));
+		setFrontLeftAngle(newAngle(flAngle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerFrontLeft.getSensorPosition()));
+		setBackRightAngle(newAngle(brAngle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackRight.getSensorPosition()));
+		setBackLeftAngle(newAngle(blAngle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackLeft.getSensorPosition()));
 	}
 
 	 

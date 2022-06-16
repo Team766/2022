@@ -10,7 +10,7 @@ import com.team766.hal.SpeedController;
 import com.team766.library.RateLimiter;
 import com.team766.hal.CANSpeedController;
 import com.team766.logging.Category;
-//import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.I2C.Port;
 import com.team766.hal.GyroReader;
 import com.kauailabs.navx.frc.*;
 
@@ -27,7 +27,6 @@ public class Gyro extends Mechanism {
 
 	public void resetGyro() {
 		checkContextOwnership();
-
 		m_gyro.reset();
 	}
 
@@ -49,8 +48,8 @@ public class Gyro extends Mechanism {
 
 	@Override
 	public void run() {
-		 if (m_loggingRate.next()) {
-		 	log(getGyroYaw());
-		 }
+		 //if (m_loggingRate.next()) {
+		 	//log("Gyro angle: " + getGyroYaw() + "Is connected: " + m_gyro.isConnected());
+		 //}
 	}
 }

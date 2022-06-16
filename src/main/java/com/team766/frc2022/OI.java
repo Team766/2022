@@ -18,6 +18,7 @@ public class OI extends Procedure {
 	private JoystickReader m_rightJoystick;
 	private double lastX = 0;
 	private double lastY = 0;
+	double turningValue = 0;
 	public OI() {
 		loggerCategory = Category.OPERATOR_INTERFACE;
 
@@ -37,55 +38,56 @@ public class OI extends Procedure {
 		
 		while (true) {
 			//log(getAngle(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT) ,m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)));
-			Robot.drive.setGyro(Robot.gyro.getGyroYaw());		
+			if(m_rightJoystick.getButton(7)){
+				Robot.drive.setGyro(0);
+
+			}else{
+				Robot.drive.setGyro(Robot.gyro.getGyroYaw());
+
+			}		
 			//log(Robot.gyro.getGyroYaw());			
 			//TODO: fix defense: the robot basically locks up if there is defense
 			// if(m_leftJoystick.getButton(InputConstants.CROSS_DEFENSE)){
 			// 	context.startAsync(new DefenseCross());
 			// }
-			if(m_leftJoystick.getButtonReleased(InputConstants.CROSS_DEFENSE))
-				Robot.drive.stopSteerMotors();
-			if(Math.pow(Math.pow(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT),2) + Math.pow(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD),2), 0.5) > 0.15 ){
+			
+			/*if(Math.pow(Math.pow(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT),2) + Math.pow(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD),2), 0.5) > 0.15 ){
 				Robot.drive.drive2D(
 					((m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT))),
 					((m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)))
 				);
 			}  else {
+				if(Math.abs(m_leftJoystick.getAxis(InputConstants.AXIS_TWIST))>=0.1){
+					Robot.drive.turning(m_leftJoystick.getAxis(InputConstants.AXIS_TWIST));
+				} else {
 				Robot.drive.stopDriveMotors();
 				Robot.drive.stopSteerMotors();
-			}
-			
+				}
+			}*/
 			if(m_leftJoystick.getButtonPressed(1))
 				Robot.gyro.resetGyro();
-
-			//Robot.drive.turning(m_leftJoystick.getAxis(InputConstants.AXIS_TWIST));
-
-
-			//Use a cross defense when needed the most
-			// if(m_leftJoystick.getButton(InputConstants.CROSS_DEFENSE)){
-			// 	context.startAsync(new DefenseCross());
-			// } else {
-			// 	//If we want, we can just turn all the wheels with the POV, otherwise, we use the regular joystick
-			// 	if(m_leftJoystick.getPOV() != -1){
-			// 		Robot.drive.drive2D(m_leftJoystick.getPOV(), 0);
-			// 	}
-			// 	else{
-			// 		//Bad code, but good enough for testing
-			// 		Robot.drive.drive2D(
-			// 			correctedJoysticks(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT)),
-			// 			correctedJoysticks(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD))
-			// 		);	
-			// 		//Good code :)
-			// 		/* 
-			// 		Robot.drive.swerveDrive( 
-			// 				correctedJoysticks(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT)),
-			// 				correctedJoysticks(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)),
-			// 				correctedJoysticks(m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT))
-			// 		);
-			// 		*/
-			// 	}
-				
-			//}
+			
+			if(m_leftJoystick.getButtonPressed(2)){
+				Robot.drive.setFrontRightEncoders();
+				Robot.drive.setFrontLeftEncoders();
+				Robot.drive.setBackRightEncoders();
+				Robot.drive.setBackLeftEncoders();
+			}
+			if(m_rightJoystick.getButton(1)){
+				turningValue = m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT); 
+			} else {
+				turningValue = 0;
+			}
+			if(Math.abs(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT))+
+			Math.abs(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)) > 0.05){
+			Robot.drive.swerveDrive( 
+				(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT)),
+			 	(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)),
+			 	(turningValue)
+			);} else{
+				Robot.drive.stopDriveMotors();
+				Robot.drive.stopSteerMotors();				
+			}
 
 			double cur_time = RobotProvider.instance.getClock().getTime();
 				context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
