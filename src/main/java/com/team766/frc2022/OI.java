@@ -233,9 +233,11 @@ public class OI extends Procedure {
 						startShoot = false;
 					} 
 					
-					if (m_rightJoystick.getButtonPressed(InputConstants.JOYSTICK_TRIGGER)) {
+					if (m_rightJoystick.getAxis(InputConstants.CONTROLLER_AXIS_BELT_FORWARDS) >= 0.1) {
 						new StartBelts().run(context);
-					} else if (m_rightJoystick.getButtonReleased(InputConstants.JOYSTICK_TRIGGER)){
+					} else if (m_rightJoystick.getAxis(InputConstants.CONTROLLER_AXIS_BELT_BACKWARDS) >= 0.1){
+						new SpitBall().run(context);
+					} else {
 						new StopBelts().run(context);
 					}
 
