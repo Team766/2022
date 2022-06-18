@@ -22,19 +22,12 @@ import com.team766.web.WebServer;
 public class Robot extends MyRobot {
 	// Declare mechanisms here
 	public static Drive drive;
-<<<<<<< HEAD:src/main/java/com/team766/frc2020/Robot.java
-	public static Launcher launcher;
-	public static IntakeArm intakeArm;
-	public static IntakeWheels intakeWheels;
-	public static LineSensors lineSensors;
-=======
 	public static Intake intake;
 	public static Belts belts;
 	public static Shooter shooter;
 	public static Limelight limelight;
 	public static Elevator elevator;
 	public static Gyro gyro;
->>>>>>> 5aa736fde879533e63e8d1c727194e5908c3c3fa:src/main/java/com/team766/frc2022/Robot.java
 	
 	private static OI m_oi;
 	
@@ -64,13 +57,6 @@ public class Robot extends MyRobot {
 	public void robotInit() {
 		// Initialize mechanisms here
 		drive = new Drive();
-<<<<<<< HEAD:src/main/java/com/team766/frc2020/Robot.java
-		launcher = new Launcher();
-		intakeArm = new IntakeArm();
-		intakeWheels = new IntakeWheels();
-		lineSensors = new LineSensors();
-		
-=======
 		intake = new Intake();
 		belts = new Belts();
 		shooter = new Shooter();
@@ -78,7 +64,6 @@ public class Robot extends MyRobot {
 		drive = new Drive();
 		elevator = new Elevator();
 		gyro = new Gyro();
->>>>>>> 5aa736fde879533e63e8d1c727194e5908c3c3fa:src/main/java/com/team766/frc2022/Robot.java
 		m_oi = new OI();
 	}
 	

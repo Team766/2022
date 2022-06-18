@@ -27,7 +27,7 @@ public class OI extends Procedure {
 	private JoystickReader m_leftJoystick;
 	private JoystickReader m_rightJoystick;
 	private JoystickReader m_ControlPanel;
-	private JoystickReader m_Controller;
+	private JoystickReader m_controller;
 	private boolean b = true;
 	private StatusLight light;
 	private ValueProvider<Integer> controlMode;
@@ -57,7 +57,7 @@ public class OI extends Procedure {
 		Robot.shooter.setPIDValues();
 
 		//LaunchedContext climbingContext = null;
-		switch (controlMode) {
+		switch (controlMode.get()) {
 			case 0:
 				while (true) {
 					// TODO: tweak all of this based on actual revB controls
@@ -174,81 +174,63 @@ public class OI extends Procedure {
 
 					context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 				}
-				break;
-
-			case default:
+			default:
 				while (true) {
 					// TODO: tweak all of this based on actual revB controls
 					Robot.drive.setArcadeDrivePower(
-						-m_controller.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)*12, 
-						m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT)*12,true);
+						-m_controller.getAxis(InputConstants.CONTROLLER_AXIS_LEFT_VERTICAL)*12, 
+						m_controller.getAxis(InputConstants.CONTROLLER_AXIS_RIGHT_HORIZONTAL)*12,true);
 
 					double cur_time = RobotProvider.instance.getClock().getTime();
 				
 					log("Distance: "+Robot.limelight.distanceFromTarget());
 					log("Velocity: "+Robot.shooter.getVelocity());
 
-					if (m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
+					if (m_controller.getPOV() == 0 || m_controller.getPOV() == 45 || m_controller.getPOV() == 315) {
 						context.takeOwnership(Robot.elevator);
 						Robot.elevator.setElevatorPower(1);
 						context.releaseOwnership(Robot.elevator);
 						log("UP");
-					} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
-						context.takeOwnership(Robot.elevator);
-						Robot.elevator.setElevatorPower(0);
-						context.releaseOwnership(Robot.elevator);
-						log("UP Stop");
-					} 
-
-					if (m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_ELEVATOR_DOWN_BUTTON)) {
+					} else if (m_controller.getPOV() == 135 || m_controller.getPOV() == 180 || m_controller.getPOV() == 225) {
 						context.takeOwnership(Robot.elevator);
 						Robot.elevator.setElevatorPower(-1);
 						context.releaseOwnership(Robot.elevator);
 						log("Down");
-					} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ELEVATOR_DOWN_BUTTON)) {
+					} else {
 						context.takeOwnership(Robot.elevator);
 						Robot.elevator.setElevatorPower(0);
 						context.releaseOwnership(Robot.elevator);
-						log("down stop");
-					} 
-
-					//1 pushes the arms forward, -1 pushes the arms backwards
+						log("elevator stop");
+					}
 					
-					if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ARMS_SWITCH)) {
-						context.takeOwnership(Robot.elevator);				
+					if (m_controller.getButtonPressed(InputConstants.CONTROLLER_ARMS_SWITCH)) {
+						context.takeOwnership(Robot.elevator);
+						if (Robot.elevator.getArmsPower()) {
+							Robot.elevator.setArmsPower(1.0);
+						} else {
+							Robot.elevator.setArmsPower(-1.0);
+						}			
 						Robot.elevator.setArmsPower(1);
-						context.releaseOwnership(Robot.elevator);
-					} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ARMS_SWITCH)) {
-						context.takeOwnership(Robot.elevator);				
-						Robot.elevator.setArmsPower(-1);
 						context.releaseOwnership(Robot.elevator);
 					}
 
-					if (m_leftJoystick.getButtonPressed(InputConstants.JOYSTICK_ELEVATOR_RESET_BUTTON)){
+					if (m_controller.getButtonPressed(InputConstants.CONTROLLER_ELEVATOR_RESET_BUTTON)){
 						//context.takeOwnership(Robot.shooter);
 						log("Activated");
 						context.startAsync(new ResetElevator());
 					}
 
-					double dialPower = m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL);
-					if (m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)){
-						log("Manual shooting starting.");
+					if (m_controller.getButtonPressed(InputConstants.CONTROLLER_SHOOTER_POWER_TOGGLE)){
+						log("Manual shooter toggle");
 						double configPower = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
-						double power = ((dialPower - 0.6456)*3.734)*configPower;
-						Robot.shooter.setVelocity(power);
-						log("Power set to:" + power);
+						if (Robot.shooter.getVelocity() < 0.1 * configPower) {
+							Robot.shooter.setVelocity(configPower);
+						} else {
+							Robot.shooter.setVelocity(0);
+						}
+						log("Power set to:" + Robot.shooter.getVelocity());
 						light.setColor("Maroon"); //color when we aren't ready to shoot
 						startShoot = false;
-					} 
-
-					if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)) {
-						if (index % 2 == 0){
-							new StartIntake().run(context);
-						}else{
-							new StopIntake().run(context);
-						}
-						index++;
-
 					} 
 					
 					if (m_rightJoystick.getButtonPressed(InputConstants.JOYSTICK_TRIGGER)) {
@@ -256,16 +238,8 @@ public class OI extends Procedure {
 					} else if (m_rightJoystick.getButtonReleased(InputConstants.JOYSTICK_TRIGGER)){
 						new StopBelts().run(context);
 					}
-					
-					if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_SPITBALL_BUTTON)){
-						new SpitBall().run(context);
-					} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_SPITBALL_BUTTON)) {
-						new StopBelts().run(context);
-						new StopIntake().run(context);
-						new StopArms().run(context);
-					}
 
-					if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_AUTO_SHOOT) && m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH) == false) {
+					if (m_controller.getButtonPressed(InputConstants.CONTROLLER_AUTO_SHOOT)) {
 						light.setColor("Maroon");
 						double distance = Robot.limelight.limelightFilter(context);
 						log("Autoshooting starting.");
