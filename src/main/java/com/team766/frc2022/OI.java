@@ -50,6 +50,8 @@ public class OI extends Procedure {
 
 		//LaunchedContext climbingContext = null;
 		while (true) {
+
+			log("Controller POV: " + m_leftJoystick.getPOV());
 			// TODO: tweak all of this based on actual revB controls
 			Robot.drive.setArcadeDrivePower(
 				-m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)*12, 
@@ -122,7 +124,7 @@ public class OI extends Procedure {
 				index++;
 
 			} 
-
+			
 			if (m_rightJoystick.getButtonPressed(InputConstants.JOYSTICK_TRIGGER)) {
 				new StartBelts().run(context);
 			} else if (m_rightJoystick.getButtonReleased(InputConstants.JOYSTICK_TRIGGER)){

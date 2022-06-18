@@ -41,4 +41,23 @@ public final class InputConstants {
 	public static final int JOYSTICK_CLIMB_RUNG_BUTTON = 4; //Joystick 2, left
 	public static final int JOYSTICK_CLIMB_FIRST_RUNG_BUTTON = 5; //joystick 2, left
 
+	// single-controller inputs (Make sure controller is on X Mode, not D mode)
+
+	public static final int CONTROLLER = 0;
+
+	public static final int CONTROLLER_AXIS_LEFT_HORIZONTAL = 0;
+	public static final int CONTROLLER_AXIS_LEFT_VERTICAL = 1;
+	public static final int CONTROLLER_AXIS_LEFT_HORIZONTAL = 4;
+	public static final int CONTROLLER_AXIS_LEFT_VERTICAL = 5;
+
+	public static final int CONTROLLER_SHOOTER_POWER_TOGGLE = 6;
+	public static final int CONTROLLER_ARMS_SWITCH = 4;
+	public static final int CONTROLLER_AUTO_SHOOT = 1;
+	public static final int CONTROLLER_E_STOP = 8;
+	public static final int CONTROLLER_ELEVATOR_RESET_BUTTON = 7;
+
+	public static final int CONTROLLER_AXIS_BELT_BACKWARDS = 2;
+	public static final int CONTROLLER_AXIS_BELT_FORWARDS = 3;
+
+
 }
