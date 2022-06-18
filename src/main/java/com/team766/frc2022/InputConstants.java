@@ -47,8 +47,8 @@ public final class InputConstants {
 
 	public static final int CONTROLLER_AXIS_LEFT_HORIZONTAL = 0;
 	public static final int CONTROLLER_AXIS_LEFT_VERTICAL = 1;
-	public static final int CONTROLLER_AXIS_LEFT_HORIZONTAL = 4;
-	public static final int CONTROLLER_AXIS_LEFT_VERTICAL = 5;
+	public static final int CONTROLLER_AXIS_RIGHT_HORIZONTAL = 4;
+	public static final int CONTROLLER_AXIS_RIGHT_VERTICAL = 5;
 
 	public static final int CONTROLLER_SHOOTER_POWER_TOGGLE = 6;
 	public static final int CONTROLLER_ARMS_SWITCH = 4;
@@ -58,6 +58,4 @@ public final class InputConstants {
 
 	public static final int CONTROLLER_AXIS_BELT_BACKWARDS = 2;
 	public static final int CONTROLLER_AXIS_BELT_FORWARDS = 3;
-
-
 }
