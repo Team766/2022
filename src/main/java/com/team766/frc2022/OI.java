@@ -16,8 +16,14 @@ import com.team766.logging.Category;
 public class OI extends Procedure {
 	private JoystickReader m_leftJoystick;
 	private JoystickReader m_rightJoystick;
-	private double lastX = 0;
-	private double lastY = 0;
+	private double RightJoystick_X = 0;
+	private double RightJoystick_Y = 0;
+	private double RightJoystick_Z = 0;
+	private double RightJoystick_Theta = 0;
+	private double LeftJoystick_X = 0;
+	private double LeftJoystick_Y = 0;
+	private double LeftJoystick_Z = 0;
+	private double LeftJoystick_Theta = 0;
 	double turningValue = 0;
 	public OI() {
 		loggerCategory = Category.OPERATOR_INTERFACE;
@@ -40,11 +46,42 @@ public class OI extends Procedure {
 			//log(getAngle(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT) ,m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)));
 			if(m_rightJoystick.getButton(7)){
 				Robot.drive.setGyro(0);
-
 			}else{
 				Robot.drive.setGyro(Robot.gyro.getGyroYaw());
-
 			}		
+			if(Math.abs(m_rightJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)) > 0.05){
+				RightJoystick_Y = m_rightJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD);
+			} else {
+				RightJoystick_Y = 0;
+			}
+			if(Math.abs(m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT)) > 0.05){
+				RightJoystick_X = m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT)/2;
+				if(m_rightJoystick.getButton(3)){
+					RightJoystick_X *= 2;
+				}	
+			} else {
+				RightJoystick_X = 0;	
+			}
+			if(Math.abs(m_rightJoystick.getAxis(InputConstants.AXIS_TWIST)) > 0.05){
+				RightJoystick_Theta = m_rightJoystick.getAxis(InputConstants.AXIS_TWIST);
+			} else {
+				RightJoystick_Theta = 0;
+			}
+			if(Math.abs(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)) > 0.05){
+				LeftJoystick_Y = m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD);
+			} else {
+				LeftJoystick_Y = 0;
+			}
+			if(Math.abs(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT)) > 0.05){
+				LeftJoystick_X = m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT);
+			} else {
+				LeftJoystick_X = 0;
+			}
+			if(Math.abs(m_leftJoystick.getAxis(InputConstants.AXIS_TWIST)) > 0.05){
+				LeftJoystick_Theta = m_leftJoystick.getAxis(InputConstants.AXIS_TWIST);
+			} else {
+				LeftJoystick_Theta = 0;
+			}
 			//log(Robot.gyro.getGyroYaw());			
 			//TODO: fix defense: the robot basically locks up if there is defense
 			// if(m_leftJoystick.getButton(InputConstants.CROSS_DEFENSE)){
@@ -73,17 +110,17 @@ public class OI extends Procedure {
 				Robot.drive.setBackRightEncoders();
 				Robot.drive.setBackLeftEncoders();
 			}
-			if(m_rightJoystick.getButton(1)){
-				turningValue = m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT); 
-			} else {
-				turningValue = 0;
-			}
-			if(Math.abs(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT))+
-			Math.abs(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)) > 0.05){
+			// if(m_rightJoystick.getButton(1)){
+			// 	turningValue = m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT); 
+			// } else {
+			// 	turningValue = 0;
+			// }
+			if(Math.abs(LeftJoystick_X)+
+			Math.abs(LeftJoystick_Y)+  Math.abs(RightJoystick_X) > 0){
 			Robot.drive.swerveDrive( 
-				(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT)),
-			 	(m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)),
-			 	(turningValue)
+				(LeftJoystick_X),
+			 	(LeftJoystick_Y),
+			 	(RightJoystick_X)
 			);} else{
 				Robot.drive.stopDriveMotors();
 				Robot.drive.stopSteerMotors();				
