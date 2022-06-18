@@ -1,5 +1,13 @@
 {
 	"logFilePath": "sim_robot_logs",
+	"climber": {
+		"elevator": {
+			"deviceId": 10
+		},
+		"arms": {"port": 0},
+		"slowMode": 10
+	},
+	"controlScheme": 0,
 	"drive": {
 		"leftMotor": {
 			"deviceId": 6,
@@ -21,13 +29,6 @@
 	},
 	"launch": {
 		"port": 1
-	},
-	"climber": {
-		"elevator": {
-			"deviceId": 10
-		},
-		"arms": {"port": 0},
-		"slowMode": 10
 	},
 	"lineSensorLeft": {
 		"port": 2
