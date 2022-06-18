@@ -48,8 +48,8 @@ public class Gyro extends Mechanism {
 
 	@Override
 	public void run() {
-		 //if (m_loggingRate.next()) {
-		 	//log("Gyro angle: " + getGyroYaw() + "Is connected: " + m_gyro.isConnected());
-		 //}
+		 if (m_loggingRate.next()) {
+		 	log("Gyro angle: " + getGyroYaw() + "Is connected: " + m_gyro.isConnected());
+		 }
 	}
 }
