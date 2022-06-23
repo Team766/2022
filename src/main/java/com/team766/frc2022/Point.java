@@ -52,6 +52,12 @@ public class Point extends Loggable {
 		return s;
 	}
 
+	//Gets a unit vector between the point and another point. Used for swerve drive method input.
+	public Point getUnitVector(Point inputPoint) {
+		double d = distance(inputPoint);
+		return new Point((inputPoint.getX() - getX()) / d, (inputPoint.getY() - getY()) / d);
+	}
+
 	public String toString() {
 		return "X: " + getX() + " Y: " + getY();
 	}

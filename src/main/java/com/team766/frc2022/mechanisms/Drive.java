@@ -15,6 +15,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.team766.frc2022.Point;
+import com.team766.frc2022.PointDir;
 
 
 public class Drive extends Mechanism {
@@ -169,6 +171,11 @@ public class Drive extends Mechanism {
 		setBackRightAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackRight.getSensorPosition()));
 		setBackLeftAngle(newAngle(angle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackLeft.getSensorPosition()));
 	}
+
+	public void drive2D(Point joystick) {
+		drive2D(joystick.getX(), joystick.getY());
+	}
+
     public void stopDriveMotors() {
 		checkContextOwnership();
 		m_DriveFrontRight.stopMotor();
@@ -234,7 +241,9 @@ public class Drive extends Mechanism {
 		setBackLeftAngle(newAngle(blAngle, Math.pow((2048.0/360.0 * (150.0/7.0)), -1) * m_SteerBackLeft.getSensorPosition()));
 	}
 
-	 
+	public void swerveDrive(PointDir joystick) {
+		swerveDrive(joystick.getX(), joystick.getY(), joystick.getHeading());
+	}
 	    
 public void turning(double Joystick){
 	checkContextOwnership();

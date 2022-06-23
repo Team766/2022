@@ -14,11 +14,12 @@ import com.team766.logging.Category;
 public class FollowPoints extends Procedure {
 	private PointDir currentPos = new PointDir(0.0, 0.0, 0.0);
 	private Point[] pointList;
-	private double radius = ConfigFileReader.getInstance().getDouble("trajectory.radius").get();
-	private double leniency = ConfigFileReader.getInstance().getDouble("trajectory.leniency").get();
-	private double straightVelocity = ConfigFileReader.getInstance().getDouble("trajectory.straightVelocity").get();
-	private double theBrettConstant = ConfigFileReader.getInstance().getDouble("trajectory.theBrettConstant").get();
+	private static double radius = ConfigFileReader.getInstance().getDouble("trajectory.radius").get();
+	private static double leniency = ConfigFileReader.getInstance().getDouble("trajectory.leniency").get();
+	private static double straightVelocity = ConfigFileReader.getInstance().getDouble("trajectory.straightVelocity").get();
+	private static double theBrettConstant = ConfigFileReader.getInstance().getDouble("trajectory.theBrettConstant").get();
 	private PositionReader currentPosition = RobotProvider.instance.getPositionSensor();
+	private double finalHeader;
 	
 
 	public FollowPoints() {
@@ -28,6 +29,13 @@ public class FollowPoints extends Procedure {
 
 	public FollowPoints(Point[] points) {
 		pointList = points;
+		finalHeader = 0;
+		loggerCategory = Category.AUTONOMOUS;
+	}
+
+	public FollowPoints(Point[] points, double header) {
+		pointList = points;
+		finalHeader = header;
 		loggerCategory = Category.AUTONOMOUS;
 	}
 
@@ -45,6 +53,11 @@ public class FollowPoints extends Procedure {
 				pointList[i / 2] = new Point(pointX, pointY);
 			}
 		}
+		if (pointDoubles.length % 2 == 1) {
+			finalHeader = pointDoubles[pointDoubles.length - 1];
+		} else {
+			finalHeader = 0;
+		}
 	}
 
 	public void run(Context context) {
@@ -61,11 +74,13 @@ public class FollowPoints extends Procedure {
 					log("Going to Next Point!");
 				}
 				targetPoint = selectTargetPoint(targetNum, currentPos, pointList, radius);
-				double diff = currentPos.getAngleDifference(targetPoint);
-				Robot.drive.setDrivePower(straightVelocity + Math.signum(diff) * Math.min(Math.abs(diff) * theBrettConstant, 1 - straightVelocity), straightVelocity - Math.signum(diff) * Math.min(Math.abs(diff) * theBrettConstant, 1 - straightVelocity));
+				//double diff = currentPos.getAngleDifference(targetPoint);
+				//Robot.drive.setDrivePower(straightVelocity + Math.signum(diff) * Math.min(Math.abs(diff) * theBrettConstant, 1 - straightVelocity), straightVelocity - Math.signum(diff) * Math.min(Math.abs(diff) * theBrettConstant, 1 - straightVelocity));
+				Robot.drive.drive2D(currentPos.getUnitVector(targetPoint));
+
 				context.yield();
 			}
-			Robot.drive.setDrivePower(0.0, 0.0);
+			Robot.drive.drive2D(0, 0);
 			log("Finished method!");
 		} else {
 			log("No points!");
