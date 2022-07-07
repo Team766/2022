@@ -41,6 +41,19 @@ public class Drive extends Mechanism {
 	private ValueProvider<Double> drivePower;
 
 	private double gyroValue;
+
+	private static PointDir currentPosition;
+	private static double wheelDistance;
+
+	private static double prevBackLeft;
+	private static double prevBackRight;
+	private static double prevFrontLeft;
+	private static double prevFrontRight;
+
+	private static double currBackLeft;
+	private static double currBackRight;
+	private static double currFrontLeft;
+	private static double currFrontRight;
 	
 	public Drive() {
 		
@@ -100,6 +113,9 @@ public class Drive extends Mechanism {
 		m_SteerBackRight.setSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);	
 		m_SteerBackLeft.setSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 		configPID();
+
+		wheelDistance = ConfigFileReader.getInstance().getDouble("drive.wheelDistance").get();
+		currentPosition = new PointDir(0, 0, 0);
 	}
 	//If you want me to repeat code, then no.
 	public double pythagrian(double x, double y) {
@@ -359,6 +375,48 @@ public void turning(double Joystick){
 	}
 	public double getBackLeft(){
 		return e_BackLeft.getAbsolutePosition();
+	}
+
+	public PointDir getCurrentPosition() {
+		return currentPosition;
+	}
+
+	public void resetCurrentPosition() {
+		currentPosition.set(0.0, 0.0);
+	}
+
+	public void resetDriveEncoders() {
+		m_DriveBackLeft.setPosition(0);
+		m_DriveBackRight.setPosition(0);
+		m_DriveFrontLeft.setPosition(0);
+		m_DriveFrontRight.setPosition(0);
+	}
+
+	public void setCurrentWheelPositions() {
+		prevBackLeft = currBackLeft;
+		prevBackRight = currBackRight;
+		prevFrontLeft = currFrontLeft;
+		prevFrontRight = currFrontRight;
+
+		currBackLeft = m_DriveBackLeft.getSensorPosition();
+		currBackRight = m_DriveBackRight.getSensorPosition();
+		currFrontLeft = m_DriveFrontLeft.getSensorPosition();
+		currFrontRight = m_DriveFrontRight.getSensorPosition();
+	}
+
+	public void run() {
+		prevBackLeft = m_DriveBackLeft.getSensorPosition();
+		prevBackRight = m_DriveBackRight.getSensorPosition();
+		prevFrontLeft = m_DriveFrontLeft.getSensorPosition();
+		prevFrontRight = m_DriveFrontRight.getSensorPosition();
+		double avgX;
+		double avgY;
+		while (true) {
+			setCurrentWheelPositions();
+			avgX = ((currBackLeft - prevBackLeft) * Math.cos(Math.toRadians(getBackLeft())) + (currBackRight - prevBackRight) * Math.cos(Math.toRadians(getBackRight())) + (currFrontLeft - prevFrontLeft) * Math.cos(Math.toRadians(getFrontLeft())) + (currFrontRight - prevFrontRight) * Math.cos(Math.toRadians(getFrontRight()))) / 4;
+			avgY = ((currBackLeft - prevBackLeft) * Math.sin(Math.toRadians(getBackLeft())) + (currBackRight - prevBackRight) * Math.sin(Math.toRadians(getBackRight())) + (currFrontLeft - prevFrontLeft) * Math.sin(Math.toRadians(getFrontLeft())) + (currFrontRight - prevFrontRight) * Math.sin(Math.toRadians(getFrontRight()))) / 4;
+			currentPosition.set(currentPosition.getX() + avgX, currentPosition.getY() + avgY, gyroValue);
+		}
 	}
 }
 
