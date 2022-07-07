@@ -413,8 +413,8 @@ public void turning(double Joystick){
 		double avgY;
 		while (true) {
 			setCurrentWheelPositions();
-			avgX = ((currBackLeft - prevBackLeft) * Math.cos(Math.toRadians(getBackLeft())) + (currBackRight - prevBackRight) * Math.cos(Math.toRadians(getBackRight())) + (currFrontLeft - prevFrontLeft) * Math.cos(Math.toRadians(getFrontLeft())) + (currFrontRight - prevFrontRight) * Math.cos(Math.toRadians(getFrontRight()))) / 4;
-			avgY = ((currBackLeft - prevBackLeft) * Math.sin(Math.toRadians(getBackLeft())) + (currBackRight - prevBackRight) * Math.sin(Math.toRadians(getBackRight())) + (currFrontLeft - prevFrontLeft) * Math.sin(Math.toRadians(getFrontLeft())) + (currFrontRight - prevFrontRight) * Math.sin(Math.toRadians(getFrontRight()))) / 4;
+			avgX = ((currBackLeft - prevBackLeft) * Math.cos(Math.toRadians(getBackLeft())) + (currBackRight - prevBackRight) * Math.cos(Math.toRadians(getBackRight())) + (currFrontLeft - prevFrontLeft) * Math.cos(Math.toRadians(getFrontLeft())) + (currFrontRight - prevFrontRight) * Math.cos(Math.toRadians(getFrontRight()))) / (4 * wheelDistance);
+			avgY = ((currBackLeft - prevBackLeft) * Math.sin(Math.toRadians(getBackLeft())) + (currBackRight - prevBackRight) * Math.sin(Math.toRadians(getBackRight())) + (currFrontLeft - prevFrontLeft) * Math.sin(Math.toRadians(getFrontLeft())) + (currFrontRight - prevFrontRight) * Math.sin(Math.toRadians(getFrontRight()))) / (4 * wheelDistance);
 			currentPosition.set(currentPosition.getX() + avgX, currentPosition.getY() + avgY, gyroValue);
 		}
 	}
