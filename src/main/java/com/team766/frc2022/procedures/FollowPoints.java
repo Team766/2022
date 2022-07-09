@@ -2,6 +2,7 @@ package com.team766.frc2022.procedures;
 
 import com.team766.framework.Procedure;
 import com.team766.framework.Context;
+import com.team766.framework.LaunchedContext;
 import com.team766.frc2022.Robot;
 import com.team766.library.ValueProvider;
 import com.team766.hal.RobotProvider;
@@ -15,6 +16,7 @@ import com.team766.controllers.PIDController;
 public class FollowPoints extends Procedure {
 	private PointDir currentPos = new PointDir(0.0, 0.0, 0.0);
 	private Point[] pointList;
+	private Procedure[] proceduresAtPoints;
 	private static double radius = ConfigFileReader.getInstance().getDouble("trajectory.radius").get();
 	private static double leniency = ConfigFileReader.getInstance().getDouble("trajectory.leniency").get();
 	private static double straightVelocity = ConfigFileReader.getInstance().getDouble("trajectory.straightVelocity").get();
@@ -23,22 +25,53 @@ public class FollowPoints extends Procedure {
 	private double turning;
 	
 	private PIDController p_turningController = new PIDController(0, 0, 0, -1, 1, 5);
-	
 
 	public FollowPoints() {
 		parsePointList();
+		proceduresAtPoints = new Procedure[pointList.length];
+		for (int i = 0; i < proceduresAtPoints.length; i++) {
+			proceduresAtPoints[i] = new DoNothing();
+		}
+		loggerCategory = Category.AUTONOMOUS;
+	}
+
+	public FollowPoints(Procedure[] procedureList) {
+		parsePointList();
+		proceduresAtPoints = procedureList;
 		loggerCategory = Category.AUTONOMOUS;
 	}
 
 	public FollowPoints(Point[] points) {
 		pointList = points;
-		finalHeader = 0;
+		finalHeader = Robot.drive.getCurrentPosition().getHeading();
+		proceduresAtPoints = new Procedure[pointList.length];
+		for (int i = 0; i < proceduresAtPoints.length; i++) {
+			proceduresAtPoints[i] = new DoNothing();
+		}
+		loggerCategory = Category.AUTONOMOUS;
+	}
+
+	public FollowPoints(Point[] points, Procedure[] procedureList) {
+		pointList = points;
+		finalHeader = Robot.drive.getCurrentPosition().getHeading();
+		proceduresAtPoints = procedureList;
 		loggerCategory = Category.AUTONOMOUS;
 	}
 
 	public FollowPoints(Point[] points, double header) {
 		pointList = points;
 		finalHeader = header;
+		proceduresAtPoints = new Procedure[pointList.length];
+		for (int i = 0; i < proceduresAtPoints.length; i++) {
+			proceduresAtPoints[i] = new DoNothing();
+		}
+		loggerCategory = Category.AUTONOMOUS;
+	}
+
+	public FollowPoints(Point[] points, double header, Procedure[] procedureList) {
+		pointList = points;
+		finalHeader = header;
+		proceduresAtPoints = procedureList;
 		loggerCategory = Category.AUTONOMOUS;
 	}
 
@@ -46,7 +79,7 @@ public class FollowPoints extends Procedure {
 	private void parsePointList() {
 		Double[] pointDoubles = ConfigFileReader.getInstance().getDoubles("trajectory.points").get();
 		pointList = new Point[pointDoubles.length / 2];
-		double pointX = 0;;
+		double pointX = 0;
 		double pointY = 0;
 		for (int i = 0; i < pointDoubles.length / 2 * 2; i++) {
 			if (i % 2 == 0)
@@ -88,6 +121,9 @@ public class FollowPoints extends Procedure {
 			while (currentPos.distance(pointList[pointList.length - 1]) > leniency || targetNum != pointList.length - 1) {
 				currentPos.set(Robot.drive.getCurrentPosition().getX(), Robot.drive.getCurrentPosition().getY(), Robot.drive.getCurrentPosition().getHeading());
 				if (currentPos.distance(pointList[targetNum]) <= radius && checkIntersection(targetNum, currentPos, pointList, radius)) {
+					if (proceduresAtPoints.length < targetNum) {
+						context.startAsync(proceduresAtPoints[targetNum]);
+					}
 					targetNum++;
 					log("Going to Next Point!");
 				}
@@ -104,6 +140,11 @@ public class FollowPoints extends Procedure {
 				}
 				Robot.drive.swerveDrive(new PointDir(currentPos.getUnitVector(targetPoint), turning));
 
+				context.yield();
+			}
+			while (!p_turningController.isDone()) {
+				turning = p_turningController.getOutput();
+				Robot.drive.turning(turning);
 				context.yield();
 			}
 			Robot.drive.drive2D(0, 0);
