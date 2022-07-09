@@ -10,6 +10,7 @@ import com.team766.frc2022.Point;
 import com.team766.hal.PositionReader;
 import com.team766.config.ConfigFileReader;
 import com.team766.logging.Category;
+import com.team766.controllers.PIDController;
  
 public class FollowPoints extends Procedure {
 	private PointDir currentPos = new PointDir(0.0, 0.0, 0.0);
@@ -18,8 +19,10 @@ public class FollowPoints extends Procedure {
 	private static double leniency = ConfigFileReader.getInstance().getDouble("trajectory.leniency").get();
 	private static double straightVelocity = ConfigFileReader.getInstance().getDouble("trajectory.straightVelocity").get();
 	private static double theBrettConstant = ConfigFileReader.getInstance().getDouble("trajectory.theBrettConstant").get();
-	private PositionReader currentPosition = RobotProvider.instance.getPositionSensor();
 	private double finalHeader;
+	private double turning;
+	
+	private PIDController p_turningController = new PIDController(0, 0, 0, -1, 1, 5);
 	
 
 	public FollowPoints() {
@@ -56,8 +59,23 @@ public class FollowPoints extends Procedure {
 		if (pointDoubles.length % 2 == 1) {
 			finalHeader = pointDoubles[pointDoubles.length - 1];
 		} else {
-			finalHeader = 0;
+			finalHeader = Robot.drive.getCurrentPosition().getHeading();
 		}
+
+		while (finalHeader > Math.round(Robot.drive.getCurrentPosition().getHeading() / 360) * 360 + 180) {
+			finalHeader -= 360;
+		}
+		while (finalHeader <= Math.round(Robot.drive.getCurrentPosition().getHeading() / 360) * 360 - 180) {
+			finalHeader += 360;
+		}
+		if (finalHeader - Robot.drive.getCurrentPosition().getHeading() >= 180) {
+			finalHeader -= 360;
+		}
+		if (finalHeader - Robot.drive.getCurrentPosition().getHeading() < -180) {
+			finalHeader += 360;
+		}
+
+		p_turningController.setSetpoint(finalHeader);
 	}
 
 	public void run(Context context) {
@@ -66,9 +84,9 @@ public class FollowPoints extends Procedure {
 			int targetNum = 0;
 			Point targetPoint = new Point(0.0, 0.0);
 			
-			currentPos.set(currentPosition.getX(), currentPosition.getY(), currentPosition.getHeading() + 90);
+			currentPos.set(Robot.drive.getCurrentPosition().getX(), Robot.drive.getCurrentPosition().getY(), Robot.drive.getCurrentPosition().getHeading());
 			while (currentPos.distance(pointList[pointList.length - 1]) > leniency || targetNum != pointList.length - 1) {
-				currentPos.set(currentPosition.getX(), currentPosition.getY(), currentPosition.getHeading() + 90);
+				currentPos.set(Robot.drive.getCurrentPosition().getX(), Robot.drive.getCurrentPosition().getY(), Robot.drive.getCurrentPosition().getHeading());
 				if (currentPos.distance(pointList[targetNum]) <= radius && checkIntersection(targetNum, currentPos, pointList, radius)) {
 					targetNum++;
 					log("Going to Next Point!");
@@ -76,7 +94,15 @@ public class FollowPoints extends Procedure {
 				targetPoint = selectTargetPoint(targetNum, currentPos, pointList, radius);
 				//double diff = currentPos.getAngleDifference(targetPoint);
 				//Robot.drive.setDrivePower(straightVelocity + Math.signum(diff) * Math.min(Math.abs(diff) * theBrettConstant, 1 - straightVelocity), straightVelocity - Math.signum(diff) * Math.min(Math.abs(diff) * theBrettConstant, 1 - straightVelocity));
-				Robot.drive.drive2D(currentPos.getUnitVector(targetPoint));
+				
+				p_turningController.calculate(currentPos.getHeading(), true);
+				
+				if(p_turningController.isDone()){
+					turning = 0;
+				} else {
+					turning = p_turningController.getOutput();
+				}
+				Robot.drive.swerveDrive(new PointDir(currentPos.getUnitVector(targetPoint), turning));
 
 				context.yield();
 			}

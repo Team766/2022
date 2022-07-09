@@ -12,6 +12,12 @@ public class PointDir extends Point {
 		loggerCategory = Category.DRIVE;
 	}
 
+	public PointDir(Point P, double h) {
+		super(P.getX(), P.getY());
+		heading = h;
+		loggerCategory = Category.DRIVE;
+	}
+
 	public double getHeading() {
 		return heading;
 	}
