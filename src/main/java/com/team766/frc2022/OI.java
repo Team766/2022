@@ -44,7 +44,7 @@ public class OI extends Procedure {
 		
 		while (true) {
 			//log(getAngle(m_leftJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT) ,m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)));
-			if(m_rightJoystick.getButton(7)){
+			if(m_rightJoystick.getButton(2)){
 				Robot.drive.setGyro(0);
 			}else{
 				Robot.drive.setGyro(Robot.gyro.getGyroYaw());
