@@ -126,6 +126,10 @@ public class OI extends Procedure {
 				Robot.drive.stopSteerMotors();				
 			}
 
+			if (m_leftJoystick.getButtonPressed(11)) {
+				Robot.drive.resetCurrentPosition();
+			}
+
 			double cur_time = RobotProvider.instance.getClock().getTime();
 				context.waitFor(() -> RobotProvider.instance.hasNewDriverStationData());
 		}

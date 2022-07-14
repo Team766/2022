@@ -54,6 +54,9 @@ public class Drive extends Mechanism {
 	private static double currBackRight;
 	private static double currFrontLeft;
 	private static double currFrontRight;
+
+	public static double avgX;
+	public static double avgY;
 	
 	public Drive() {
 		
@@ -114,7 +117,8 @@ public class Drive extends Mechanism {
 		m_SteerBackLeft.setSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 		configPID();
 
-		wheelDistance = ConfigFileReader.getInstance().getDouble("drive.wheelDistance").get();
+		//Circumference of each wheel, in centimeters
+		wheelDistance = 11.0446616728 * 2.54; 
 		currentPosition = new PointDir(0, 0, 0);
 	}
 	//If you want me to repeat code, then no.
@@ -383,6 +387,10 @@ public void turning(double Joystick){
 
 	public void resetCurrentPosition() {
 		currentPosition.set(0.0, 0.0);
+		prevBackLeft = 0;
+		prevBackRight = 0;
+		prevFrontLeft = 0;
+		prevFrontRight = 0;
 	}
 
 	public void resetDriveEncoders() {
@@ -404,19 +412,19 @@ public void turning(double Joystick){
 		currFrontRight = m_DriveFrontRight.getSensorPosition();
 	}
 
+	//Odometry: Uses centimeters
+	@Override
 	public void run() {
 		prevBackLeft = m_DriveBackLeft.getSensorPosition();
 		prevBackRight = m_DriveBackRight.getSensorPosition();
 		prevFrontLeft = m_DriveFrontLeft.getSensorPosition();
 		prevFrontRight = m_DriveFrontRight.getSensorPosition();
-		double avgX;
-		double avgY;
-		while (true) {
-			setCurrentWheelPositions();
-			avgX = ((currBackLeft - prevBackLeft) * Math.cos(Math.toRadians(getBackLeft())) + (currBackRight - prevBackRight) * Math.cos(Math.toRadians(getBackRight())) + (currFrontLeft - prevFrontLeft) * Math.cos(Math.toRadians(getFrontLeft())) + (currFrontRight - prevFrontRight) * Math.cos(Math.toRadians(getFrontRight()))) / (4 * wheelDistance);
-			avgY = ((currBackLeft - prevBackLeft) * Math.sin(Math.toRadians(getBackLeft())) + (currBackRight - prevBackRight) * Math.sin(Math.toRadians(getBackRight())) + (currFrontLeft - prevFrontLeft) * Math.sin(Math.toRadians(getFrontLeft())) + (currFrontRight - prevFrontRight) * Math.sin(Math.toRadians(getFrontRight()))) / (4 * wheelDistance);
-			currentPosition.set(currentPosition.getX() + avgX, currentPosition.getY() + avgY, gyroValue);
-		}
+		
+		setCurrentWheelPositions();
+		avgX = ((currBackLeft - prevBackLeft) * Math.cos(Math.toRadians(getBackLeft() + gyroValue)) + (currBackRight - prevBackRight) * Math.cos(Math.toRadians(getBackRight() + gyroValue)) + (currFrontLeft - prevFrontLeft) * Math.cos(Math.toRadians(getFrontLeft() + gyroValue)) + (currFrontRight - prevFrontRight) * Math.cos(Math.toRadians(getFrontRight() + gyroValue))) / (4 * 6.75 * 2048 * wheelDistance);
+		avgY = ((currBackLeft - prevBackLeft) * Math.sin(Math.toRadians(getBackLeft() + gyroValue)) + (currBackRight - prevBackRight) * Math.sin(Math.toRadians(getBackRight() + gyroValue)) + (currFrontLeft - prevFrontLeft) * Math.sin(Math.toRadians(getFrontLeft() + gyroValue)) + (currFrontRight - prevFrontRight) * Math.sin(Math.toRadians(getFrontRight() + gyroValue))) / (4 * 6.75 * 2048 * wheelDistance);
+		currentPosition.set(currentPosition.getX() + avgX, currentPosition.getY() + avgY, gyroValue);
+		log("Current Position: " + currentPosition.toString() + " " + getBackLeft() + " " + getBackRight() + " " + getFrontLeft() + " " + getFrontRight());
 	}
 }
 

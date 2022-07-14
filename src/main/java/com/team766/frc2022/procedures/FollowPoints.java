@@ -19,8 +19,6 @@ public class FollowPoints extends Procedure {
 	private Procedure[] proceduresAtPoints;
 	private static double radius = ConfigFileReader.getInstance().getDouble("trajectory.radius").get();
 	private static double leniency = ConfigFileReader.getInstance().getDouble("trajectory.leniency").get();
-	private static double straightVelocity = ConfigFileReader.getInstance().getDouble("trajectory.straightVelocity").get();
-	private static double theBrettConstant = ConfigFileReader.getInstance().getDouble("trajectory.theBrettConstant").get();
 	private double finalHeader;
 	private double turning;
 	
