@@ -32,7 +32,7 @@ public class Gyro extends Mechanism {
 	}
 
 	public double getGyroYaw() {
-		double angle = g_gyro.getYaw();
+		double angle = -1* g_gyro.getYaw();
 		return angle;
 	}
 
@@ -48,7 +48,7 @@ public class Gyro extends Mechanism {
 			 gyroArray[1] = getGyroPitch();
 			 gyroArray[2] = getGyroRoll();
 			 g_gyro.getYawPitchRoll(gyroArray);
-		 	log("Yaw: " + gyroArray[0] + " || Pitch: " + gyroArray[1] + " || Roll: " + gyroArray[2]);
+		 	log("Yaw: " + gyroArray[0] + "// Real yaw: " + getGyroYaw() + " || Pitch: " + gyroArray[1] + " || Roll: " + gyroArray[2]);
 		 }
 	}
 
