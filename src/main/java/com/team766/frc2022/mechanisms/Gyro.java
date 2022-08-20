@@ -47,8 +47,8 @@ public class Gyro extends Mechanism {
 
 	@Override
 	public void run() {
-		if (m_loggingRate.next()) {
-			log("" + getGyroPitch());
-		}
+		// if (m_loggingRate.next()) {
+		// 	log("" + getGyroPitch());
+		// }
 	}
 }

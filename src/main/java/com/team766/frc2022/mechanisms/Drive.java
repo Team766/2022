@@ -117,12 +117,44 @@ public class Drive extends Mechanism {
 	public void setDrivePower(double leftPower, double rightPower, boolean voltage) {
 		if (voltage){
 			checkContextOwnership();
-			m_leftTalon1.set(ControlMode.Voltage,leftPower);
-			m_leftTalon2.set(ControlMode.Voltage,leftPower);
-			m_leftTalon3.set(ControlMode.Voltage,leftPower);
-			m_rightTalon1.set(ControlMode.Voltage,rightPower);
-			m_rightTalon2.set(ControlMode.Voltage,rightPower);
-			m_rightTalon3.set(ControlMode.Voltage,rightPower);
+			if (Math.abs(leftPower)<1){
+				m_leftTalon1.set(ControlMode.Voltage,0);
+				m_leftTalon2.set(ControlMode.Voltage,0);
+				m_leftTalon3.set(ControlMode.Voltage,0);
+				log("Doesn't drive left");
+			} else if (Math.abs(leftPower)<4){
+				int power = 1;
+				if (leftPower<0){
+					power = -1;
+				}
+				m_leftTalon1.set(ControlMode.Voltage,power*minpower_turn);
+				m_leftTalon2.set(ControlMode.Voltage,power*minpower_turn);
+				m_leftTalon3.set(ControlMode.Voltage,power*minpower_turn);
+				log(""+power*minpower_turn);
+			} else {
+				m_leftTalon1.set(ControlMode.Voltage,Math.pow(leftPower,5));
+				m_leftTalon2.set(ControlMode.Voltage,Math.pow(leftPower,5));
+				m_leftTalon3.set(ControlMode.Voltage,Math.pow(leftPower,5));
+			}
+			if (Math.abs(rightPower)<1){
+				m_rightTalon1.set(ControlMode.Voltage,0);
+				m_rightTalon2.set(ControlMode.Voltage,0);
+				m_rightTalon3.set(ControlMode.Voltage,0);
+				log("Doesn't drive right");
+			} else if (Math.abs(rightPower)<4){
+				int power = 1;
+				if (rightPower<0){
+					power = -1;
+				}
+				m_rightTalon1.set(ControlMode.Voltage,power*minpower_turn);
+				m_rightTalon2.set(ControlMode.Voltage,power*minpower_turn);
+				m_rightTalon3.set(ControlMode.Voltage,power*minpower_turn);
+				log(""+power*minpower_turn);
+			} else {
+				m_rightTalon1.set(ControlMode.Voltage,Math.pow(rightPower,5));
+				m_rightTalon2.set(ControlMode.Voltage,Math.pow(rightPower,5));
+				m_rightTalon3.set(ControlMode.Voltage,Math.pow(rightPower,5));
+			}
 		}
 	}
 

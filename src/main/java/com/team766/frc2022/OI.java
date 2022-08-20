@@ -12,6 +12,7 @@ import com.team766.hal.JoystickReader;
 import com.team766.hal.RobotProvider;
 import com.team766.logging.Category;
 // 1 min 18s to fill air
+import com.team766.web.dashboard.StatusLight;
 
 // TODO: extract joysticks, buttons into constants class or config file
 
@@ -24,6 +25,7 @@ public class OI extends Procedure {
 	private JoystickReader m_rightJoystick;
 	private JoystickReader m_ControlPanel;
 	private boolean b = true;
+	private StatusLight light;
 
 	public OI() {
 		loggerCategory = Category.OPERATOR_INTERFACE;
@@ -31,10 +33,14 @@ public class OI extends Procedure {
 		m_leftJoystick = RobotProvider.instance.getJoystick(InputConstants.LEFT_JOYSTICK);
 		m_rightJoystick = RobotProvider.instance.getJoystick(InputConstants.RIGHT_JOYSTICK);
 		m_ControlPanel = RobotProvider.instance.getJoystick(InputConstants.CONTROL_PANEL);
+		light = new StatusLight("Ready to fire");
+		light.setColor("Maroon");
 	}
 
 	public void run(Context context) {
-		int index = 0;
+		int index = 0; // index counter for the intake
+		double autopower = 0; // power given during auto shooting
+		boolean startShoot = false; //is it staring to shoot
 		double prev_time = RobotProvider.instance.getClock().getTime();
 
 		context.takeOwnership(Robot.drive);
@@ -46,8 +52,8 @@ public class OI extends Procedure {
 		while (true) {
 			// TODO: tweak all of this based on actual revB controls
 			Robot.drive.setArcadeDrivePower(
-				-m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD), 
-				m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT));
+				-m_leftJoystick.getAxis(InputConstants.AXIS_FORWARD_BACKWARD)*12, 
+				m_rightJoystick.getAxis(InputConstants.AXIS_LEFT_RIGHT)*12,true);
 
 			double cur_time = RobotProvider.instance.getClock().getTime();
 			// if (cur_time-prev_time >= 0.5){
@@ -135,6 +141,8 @@ public class OI extends Procedure {
 				double power = ((dialPower - 0.6456)*3.734)*configPower;
 				Robot.shooter.setVelocity(power);
 				log("Power set to:" + power);
+				light.setColor("Maroon"); //color when we aren't ready to shoot
+				startShoot = false;
 			} 
 
 			//log(""+m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL));
@@ -183,24 +191,32 @@ public class OI extends Procedure {
 				if (distance != 0){
 					//context.takeOwnership(Robot.shooter);
 					log("Auto Shooting");
-					double power = ShooterVelociltyUtil.computeVelocityForDistance(distance);
-					Robot.shooter.setVelocity(power);
-					if(power == 0.0) {
+					autopower = ShooterVelociltyUtil.computeVelocityForDistance(distance);
+					Robot.shooter.setVelocity(autopower);
+					if(autopower == 0.0) {
 						log("out of range");
 					} else {
-						log("Velocity set to:" + power);
+						log("Velocity set to:" + autopower);
 					}
+					startShoot = true;
 				}
 			} 
+
+			if (startShoot){
+				if (Math.abs(Robot.shooter.getVelocity()-autopower) <= 30.0){
+					startShoot = false;
+					light.setColor("LimeGreen"); //color when we're ready to shoot
+				}
+			}
 			// else if (m_leftJoystick.getButtonReleased(InputConstants.CONTROL_PANEL_AUTO_SHOOT)){
 			// 	Robot.shooter.stopShoot();
 			// }
 
-			if (m_leftJoystick.getButtonPressed(1)){
-				Robot.shooter.basicShoot();
-			} else if (m_leftJoystick.getButtonReleased(1)){
-				Robot.shooter.stopShoot();
-			}
+			// if (m_leftJoystick.getButtonPressed(1)){
+			// 	Robot.shooter.basicShoot();
+			// } else if (m_leftJoystick.getButtonReleased(1)){
+			// 	Robot.shooter.stopShoot();
+			// }
 
 			// log("Velocity: "+Robot.shooter.getVelocity());
 			// log("Distance: "+Robot.limelight.distanceFromTarget());

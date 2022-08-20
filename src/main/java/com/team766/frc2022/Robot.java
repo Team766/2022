@@ -103,8 +103,10 @@ public class Robot extends MyRobot {
 	@Override
 	public void autonomousInit() {
 		if (m_oiContext != null) {
+			Logger.get(Category.PROCEDURES).logRaw(Severity.INFO, "Stopping OI");
 			m_oiContext.stop();
 			m_oiContext = null;
+			Logger.get(Category.PROCEDURES).logRaw(Severity.INFO, "Stopped OI");
 		}
 		
 		if (m_autonomous == null) {
