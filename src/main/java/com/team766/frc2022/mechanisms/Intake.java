@@ -11,20 +11,20 @@ public class Intake extends Mechanism {
 	private SolenoidController m_intakeArm1;
 	private SolenoidController m_intakeArm2;
 	private CANSpeedController m_frontIntakeWheel;
-	private CANSpeedController m_middleIntakeWheel;
-	private DigitalInput m_sensor;
+	//private CANSpeedController m_middleIntakeWheel;
+	//private DigitalInput m_sensor;
 	
 	public Intake() {
 		m_frontIntakeWheel = RobotProvider.instance.getCANMotor("Intake.frontWheel");
-		m_middleIntakeWheel = RobotProvider.instance.getCANMotor("Intake.topWheel");
+		//m_middleIntakeWheel = RobotProvider.instance.getCANMotor("Intake.topWheel");
 		m_intakeArm1 = RobotProvider.instance.getSolenoid("Intake.intakeArm1");
 		m_intakeArm2 = RobotProvider.instance.getSolenoid("Intake.intakeArm2");
-		m_sensor = new DigitalInput(ConfigFileReader.getInstance().getInt("intake.channel").valueOr(0));
+		//m_sensor = new DigitalInput(ConfigFileReader.getInstance().getInt("intake.channel").valueOr(0));
 	}
 
-	public boolean getSensor(){
-		return m_sensor.get();
-	}
+	//public boolean getSensor(){
+	//	return m_sensor.get();
+	//}
 	
 	public void startIntake() {
 		checkContextOwnership();
@@ -32,13 +32,13 @@ public class Intake extends Mechanism {
 		
 		startArms();
 		m_frontIntakeWheel.set(power);
-		m_middleIntakeWheel.set(power);
+		//m_middleIntakeWheel.set(power);
 	}
 
 	public void stopIntake() {
 		checkContextOwnership();
 		
-		m_middleIntakeWheel.set(0.0);
+		//m_middleIntakeWheel.set(0.0);
 		m_frontIntakeWheel.set(0.0);
 		stopArms();
 	}
@@ -47,14 +47,14 @@ public class Intake extends Mechanism {
 		checkContextOwnership();
 
 		m_intakeArm1.set(true);
-		m_intakeArm2.set(false);
+		m_intakeArm2.set(true);
 	}
 
 	public void stopArms(){
 		checkContextOwnership();
 
 		m_intakeArm1.set(false);
-		m_intakeArm2.set(true);
+		m_intakeArm2.set(false);
 	}
 
 	public void reverseIntake(){
@@ -62,7 +62,7 @@ public class Intake extends Mechanism {
 		double power = ConfigFileReader.getInstance().getDouble("Intake.intakePower").get();
 
 		m_frontIntakeWheel.set(-power);
-		m_middleIntakeWheel.set(-power);
+		//m_middleIntakeWheel.set(-power);
 
 		startArms();
 	}
