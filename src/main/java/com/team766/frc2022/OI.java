@@ -213,11 +213,11 @@ public class OI extends Procedure {
 			// 	Robot.shooter.stopShoot();
 			// }
 
-			// if (m_leftJoystick.getButtonPressed(1)){
-			// 	Robot.shooter.basicShoot();
-			// } else if (m_leftJoystick.getButtonReleased(1)){
-			// 	Robot.shooter.stopShoot();
-			// }
+			if (m_leftJoystick.getButtonPressed(1)){
+				Robot.shooter.basicShoot();
+			} else if (m_leftJoystick.getButtonReleased(1)){
+				Robot.shooter.stopShoot();
+			}
 
 			// log("Velocity: "+Robot.shooter.getVelocity());
 			// log("Distance: "+Robot.limelight.distanceFromTarget());
