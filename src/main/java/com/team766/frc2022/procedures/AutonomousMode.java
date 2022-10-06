@@ -22,9 +22,9 @@ public class AutonomousMode extends Procedure{
 		Robot.drive.setArcadeDrivePower(0,0);
 		log("Drive done");
 		context.waitForSeconds(2);
-		double distance = Robot.limelight.limelightFilter(context);
-		log(""+distance);
-		double power = ShooterVelociltyUtil.computeVelocityForDistance(distance);
+		// double distance = Robot.limelight.limelightFilter(context);
+		// log(""+distance);
+		double power = ShooterVelociltyUtil.computeVelocityForDistance(3.141592);
 		log(""+power);
 		Robot.shooter.setVelocity(power);
 		context.waitForSeconds(5);
