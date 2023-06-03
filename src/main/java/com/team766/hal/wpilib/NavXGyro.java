@@ -12,11 +12,11 @@ public class NavXGyro implements GyroReader {
 
 	public NavXGyro(I2C.Port port) {
 		m_gyro = new AHRS(port);
-		if (!m_gyro.isConnected()) {
+		/*if (!m_gyro.isConnected()) {
 			Logger.get(Category.HAL).logData(Severity.ERROR, "NavX Gyro is not connected!");
 		} else {
 			Logger.get(Category.HAL).logData(Severity.INFO, "NavX Gyro is connected");
-		}
+		}*/
 	}
 
 	@Override
