@@ -8,6 +8,7 @@ import com.team766.hal.DigitalInputReader;
 import com.team766.hal.DoubleSolenoid;
 import com.team766.library.ValueProvider;
 import com.team766.logging.Category;
+import edu.wpi.first.wpilibj.PneumaticsControlModule;
 
 public class Elevator extends Mechanism {
     // Declaration of Mechanisms
@@ -22,6 +23,7 @@ public class Elevator extends Mechanism {
     private ValueProvider<Integer> elevatorLeniency;
     private ValueProvider<Double> elevatorPower;
     private ValueProvider<Integer> slowMode;
+    private PneumaticsControlModule pcm = new PneumaticsControlModule();
     
 
     public Elevator() {
@@ -137,8 +139,9 @@ public class Elevator extends Mechanism {
         return slowMode.get();
     }
 
-    /*@Override
+    @Override
     public void run() {
         //log("Elevator Encoder: " + getElevatorPosition());
-    }*/
+        log("pcm: " + pcm.getPressureSwitch());
+    }
 }

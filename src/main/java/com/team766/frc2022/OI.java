@@ -24,7 +24,8 @@ public class OI extends Procedure {
 	private JoystickReader m_leftJoystick;
 	private JoystickReader m_rightJoystick;
 	private JoystickReader m_ControlPanel;
-	private boolean b = true;
+	private boolean shooterToggle = false;
+	private boolean armsToggle = false;
 	private StatusLight light;
 
 	public OI() {
@@ -66,8 +67,8 @@ public class OI extends Procedure {
 			// 	prev_time = cur_time;
 			// }
 		
-			log("Distance: "+Robot.limelight.distanceFromTarget());
-			log("Velocity: "+Robot.shooter.getVelocity());
+			//log("Distance: "+Robot.limelight.distanceFromTarget());
+			//log("Velocity: "+Robot.shooter.getVelocity());
 
 			if (m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_ELEVATOR_UP_BUTTON)) {
 				context.takeOwnership(Robot.elevator);
@@ -105,15 +106,18 @@ public class OI extends Procedure {
 			//1 pushes the arms forward, -1 pushes the arms backwards
 			
 			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_ARMS_SWITCH)) {
+				armsToggle = !armsToggle;
+			}
+			if (armsToggle) {
 				context.takeOwnership(Robot.elevator);				
 				Robot.elevator.setArmsPower(1);
 				context.releaseOwnership(Robot.elevator);
-			} else if (m_ControlPanel.getButtonReleased(InputConstants.CONTROL_PANEL_ARMS_SWITCH)) {
+			} else {
 				context.takeOwnership(Robot.elevator);				
 				Robot.elevator.setArmsPower(-1);
 				context.releaseOwnership(Robot.elevator);
 			}
-
+			
 			// if(m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_AUTOCLIMB_BUTTON)){
 			// 	context.startAsync(new Climb());
 			// }
@@ -134,27 +138,33 @@ public class OI extends Procedure {
 			// 
 			//log(""+Robot.elevator.getElevatorPosition());
 
-			double dialPower = m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL);
-			if (m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)){
-				log("Manual shooting starting.");
+			double triggerPower = m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL);
+			if (shooterToggle) {
 				double configPower = ConfigFileReader.getInstance().getDouble("shooter.velocity").get();
-				double power = ((dialPower - 0.6456)*3.734)*configPower;
+				double power = triggerPower*configPower;
 				Robot.shooter.setVelocity(power);
 				log("Power set to:" + power);
-				light.setColor("Maroon"); //color when we aren't ready to shoot
 				startShoot = false;
+			} else {
+				Robot.shooter.stopShoot();
+			}
+
+			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH)){
+				shooterToggle = !shooterToggle;
 			} 
+
+			log("st: " + shooterToggle);
 
 			//log(""+m_ControlPanel.getAxis(InputConstants.AXIS_SHOOTER_DIAL));
-			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)) {
-				if (index % 2 == 0){
-					new StartIntake().run(context);
-				}else{
-					new StopIntake().run(context);
-				}
-				index++;
+			// if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_INTAKE_BUTTON)) {
+			// 	if (index % 2 == 0){
+			// 		new StartIntake().run(context);
+			// 	}else{
+			// 		new StopIntake().run(context);
+			// 	}
+			// 	index++;
 
-			} 
+			// } 
 
 			/*if (m_joystick0.getButtonPressed(5)) {
 				context.takeOwnership(Robot.gyro);
@@ -184,31 +194,31 @@ public class OI extends Procedure {
 				new StopArms().run(context);
 			}
 
-			if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_AUTO_SHOOT) && m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH) == false) {
-				light.setColor("Maroon");
-				double distance = Robot.limelight.limelightFilter(context);
-				log("Autoshooting starting.");
-				log("Calculated distance");
-				if (distance >= 2.5 && distance <= 5){
-					//context.takeOwnership(Robot.shooter);
-					log("Auto Shooting");
-					autopower = ShooterVelociltyUtil.computeVelocityForDistance(distance);
-					Robot.shooter.setVelocity(autopower);
-					if(autopower == 0.0) {
-						log("out of range");
-					} else {
-						log("Velocity set to:" + autopower);
-						startShoot = true;
-					}
-				}
-			} 
+			// if (m_ControlPanel.getButtonPressed(InputConstants.CONTROL_PANEL_AUTO_SHOOT) && m_ControlPanel.getButton(InputConstants.CONTROL_PANEL_SHOOTER_SWITCH) == false) {
+			// 	light.setColor("Maroon");
+			// 	double distance = Robot.limelight.limelightFilter(context);
+			// 	log("Autoshooting starting.");
+			// 	log("Calculated distance");
+			// 	if (distance >= 2.5 && distance <= 5){
+			// 		//context.takeOwnership(Robot.shooter);
+			// 		log("Auto Shooting");
+			// 		autopower = ShooterVelociltyUtil.computeVelocityForDistance(distance);
+			// 		Robot.shooter.setVelocity(autopower);
+			// 		if(autopower == 0.0) {
+			// 			log("out of range");
+			// 		} else {
+			// 			log("Velocity set to:" + autopower);
+			// 			startShoot = true;
+			// 		}
+			// 	}
+			// } 
 
-			if (startShoot){
-				if (Math.abs(Robot.shooter.getVelocity()-autopower) <= 30.0){
-					startShoot = false;
-					light.setColor("LimeGreen"); //color when we're ready to shoot
-				}
-			}
+			// if (startShoot){
+			// 	if (Math.abs(Robot.shooter.getVelocity()-autopower) <= 30.0){
+			// 		startShoot = false;
+			// 		light.setColor("LimeGreen"); //color when we're ready to shoot
+			// 	}
+			// }
 			// else if (m_leftJoystick.getButtonReleased(InputConstants.CONTROL_PANEL_AUTO_SHOOT)){
 			// 	Robot.shooter.stopShoot();
 			// }

@@ -24,6 +24,7 @@ import com.team766.logging.Severity;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.SPI;
 
 public class WPIRobotProvider extends RobotProvider {
@@ -32,6 +33,7 @@ public class WPIRobotProvider extends RobotProvider {
 	private CANSpeedController[] victorCanMotors = new CANSpeedController[64];
 	private CANSpeedController[] sparkMaxMotors = new CANSpeedController[64];
 	private CANSpeedController[] talonFxCanMotors = new CANSpeedController[64];
+	
 
 	@Override
 	public SpeedController getMotor(int index) {

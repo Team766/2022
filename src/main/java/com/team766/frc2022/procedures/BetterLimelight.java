@@ -13,7 +13,7 @@ import com.team766.logging.Category;
 import com.team766.controllers.PIDController;
 import java.util.*;
 
-public class BetterLimelight extends Procedure{
+public class BetterLimelight extends Procedure {
     PIDController controller;
     double stopdist = ConfigFileReader.getInstance().getDouble("limelight.dist").valueOr(0.0); //distance in front of reflective tape we want to be; this is actually the distance from robot to the center of the hub at 5000 power
 

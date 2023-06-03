@@ -17,12 +17,10 @@ import com.team766.config.ConfigFileReader;
 public class Drive extends Mechanism {
 
     // Declaration of Mechanisms
-    private CANSpeedController m_leftTalon1;
-    private CANSpeedController m_leftTalon2;
-	private CANSpeedController m_leftTalon3;
-    private CANSpeedController m_rightTalon1;
-    private CANSpeedController m_rightTalon2;
-    private CANSpeedController m_rightTalon3;
+    private CANSpeedController m_leftVictor1;
+    private CANSpeedController m_leftVictor2;
+    private CANSpeedController m_rightVictor1;
+    private CANSpeedController m_rightVictor2;
     private ValueProvider<Double> drivePower;
 
     //	private GyroReader m_gyro;
@@ -54,23 +52,18 @@ public class Drive extends Mechanism {
     public Drive() {
 		loggerCategory = Category.DRIVE;
         // Initializations
-        m_leftTalon1 = RobotProvider.instance.getCANMotor("drive.leftTalon1"); 
-		m_leftTalon2 = RobotProvider.instance.getCANMotor("drive.leftTalon2"); 
-		m_leftTalon3 = RobotProvider.instance.getCANMotor("drive.leftTalon3"); 
-		m_rightTalon1 = RobotProvider.instance.getCANMotor("drive.rightTalon1"); 
-		m_rightTalon2 = RobotProvider.instance.getCANMotor("drive.rightTalon2"); 
-		m_rightTalon3 = RobotProvider.instance.getCANMotor("drive.rightTalon3"); 
+        m_leftVictor1 = RobotProvider.instance.getCANMotor("drive.leftVictor1"); 
+		m_leftVictor2 = RobotProvider.instance.getCANMotor("drive.leftVictor2"); 
+		m_rightVictor1 = RobotProvider.instance.getCANMotor("drive.rightVictor1"); 
+		m_rightVictor2 = RobotProvider.instance.getCANMotor("drive.rightVictor2"); 
 
-		m_rightTalon1.setInverted(true);
-        m_rightTalon2.setInverted(true);
-		m_rightTalon3.setInverted(true);
+		m_rightVictor1.setInverted(true);
+        m_rightVictor2.setInverted(true);
 
-		m_leftTalon1.setCurrentLimit(20);
-		m_leftTalon2.setCurrentLimit(20);
-		m_leftTalon3.setCurrentLimit(20);
-		m_rightTalon1.setCurrentLimit(20);
-		m_rightTalon2.setCurrentLimit(20);
-		m_rightTalon3.setCurrentLimit(20);
+		//m_leftVictor1.setCurrentLimit(20);
+		//m_leftVictor2.setCurrentLimit(20);
+		//m_rightVictor1.setCurrentLimit(20);
+		//m_rightVictor2.setCurrentLimit(20);
         //m_rightVictor1.follow(m_rightTalon);
         //m_rightVictor2.follow(m_rightTalon);
         //m_leftVictor1.follow(m_leftTalon);
@@ -79,8 +72,8 @@ public class Drive extends Mechanism {
 
     public double getEncoderDistance() {
         // TODO: check if this should be reading from a Talon or from a Victor
-		double leftValue = m_leftTalon1.getSensorPosition();
-		double rightValue = m_rightTalon1.getSensorPosition();
+		double leftValue = m_leftVictor1.getSensorPosition();
+		double rightValue = m_rightVictor1.getSensorPosition();
 		log("Encoder Distance: " + Double.toString(0.5 * (leftValue + rightValue)));
 		double rev = 0.5 * (leftValue + rightValue)/ppr;
 		double distance = rev*2*Math.PI*radius;
@@ -90,8 +83,8 @@ public class Drive extends Mechanism {
 	public void resetEncoders() {
 		checkContextOwnership();
 
-		m_leftTalon1.setPosition(0);;
-		m_rightTalon1.setPosition(0);
+		m_leftVictor1.setPosition(0);;
+		m_rightVictor1.setPosition(0);
 	}
 
 	public void resetGyro() {
@@ -106,52 +99,44 @@ public class Drive extends Mechanism {
     public void setDrivePower(double leftPower, double rightPower) {
 		checkContextOwnership();
 
-        m_leftTalon1.set(leftPower);
-        m_leftTalon2.set(leftPower);
-        m_leftTalon3.set(leftPower);
-        m_rightTalon1.set(rightPower);
-        m_rightTalon2.set(rightPower);
-        m_rightTalon3.set(rightPower);
+        m_leftVictor1.set(leftPower);
+        m_leftVictor2.set(leftPower);
+        m_rightVictor1.set(rightPower);
+        m_rightVictor2.set(rightPower);
     }
 
 	public void setDrivePower(double leftPower, double rightPower, boolean voltage) {
 		if (voltage){
 			checkContextOwnership();
 			if (Math.abs(leftPower)<1){
-				m_leftTalon1.set(ControlMode.Voltage,0);
-				m_leftTalon2.set(ControlMode.Voltage,0);
-				m_leftTalon3.set(ControlMode.Voltage,0);
+				m_leftVictor1.set(ControlMode.Voltage,0);
+				m_leftVictor2.set(ControlMode.Voltage,0);
 			} else if (Math.abs(leftPower)<4){
 				int power = 1;
 				if (leftPower<0){
 					power = -1;
 				}
-				m_leftTalon1.set(ControlMode.Voltage,power*minpower_turn);
-				m_leftTalon2.set(ControlMode.Voltage,power*minpower_turn);
-				m_leftTalon3.set(ControlMode.Voltage,power*minpower_turn);
+				m_leftVictor1.set(ControlMode.Voltage,power*minpower_turn);
+				m_leftVictor2.set(ControlMode.Voltage,power*minpower_turn);
 			} else {
 				double power = Math.signum(leftPower) * Math.pow(Math.abs(leftPower),2)/12.0;
-				m_leftTalon1.set(ControlMode.Voltage,power);
-				m_leftTalon2.set(ControlMode.Voltage,power);
-				m_leftTalon3.set(ControlMode.Voltage,power);
+				m_leftVictor1.set(ControlMode.Voltage,power);
+				m_leftVictor2.set(ControlMode.Voltage,power);
 			}
 			if (Math.abs(rightPower)<1){
-				m_rightTalon1.set(ControlMode.Voltage,0);
-				m_rightTalon2.set(ControlMode.Voltage,0);
-				m_rightTalon3.set(ControlMode.Voltage,0);
+				m_rightVictor1.set(ControlMode.Voltage,0);
+				m_rightVictor2.set(ControlMode.Voltage,0);
 			} else if (Math.abs(rightPower)<4){
 				int power = 1;
 				if (rightPower<0){
 					power = -1;
 				}
-				m_rightTalon1.set(ControlMode.Voltage,power*minpower_turn);
-				m_rightTalon2.set(ControlMode.Voltage,power*minpower_turn);
-				m_rightTalon3.set(ControlMode.Voltage,power*minpower_turn);
+				m_rightVictor1.set(ControlMode.Voltage,power*minpower_turn);
+				m_rightVictor2.set(ControlMode.Voltage,power*minpower_turn);
 			} else {
 				double power = Math.signum(rightPower) * Math.pow(Math.abs(rightPower),2)/12.0;
-				m_rightTalon1.set(ControlMode.Voltage,power);
-				m_rightTalon2.set(ControlMode.Voltage,power);
-				m_rightTalon3.set(ControlMode.Voltage,power);
+				m_rightVictor1.set(ControlMode.Voltage,power);
+				m_rightVictor2.set(ControlMode.Voltage,power);
 			}
 		}
 	}

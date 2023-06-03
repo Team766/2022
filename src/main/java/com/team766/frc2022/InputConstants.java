@@ -25,13 +25,13 @@ public final class InputConstants {
 	
 	public static final int CONTROL_PANEL_BELTS_BUTTON = 3;
 
-	public static final int CONTROL_PANEL_SPITBALL_BUTTON = 14;
+	public static final int CONTROL_PANEL_SPITBALL_BUTTON = 4;
 
 	// TODO: update these
 	public static final int CONTROL_PANEL_AUTOCLIMB_BUTTON = 9;
-	public static final int CONTROL_PANEL_ARMS_SWITCH = 13;
-	public static final int CONTROL_PANEL_ELEVATOR_UP_BUTTON = 7;
-	public static final int CONTROL_PANEL_ELEVATOR_DOWN_BUTTON = 8;
+	public static final int CONTROL_PANEL_ARMS_SWITCH = 2;
+	public static final int CONTROL_PANEL_ELEVATOR_UP_BUTTON = 6;
+	public static final int CONTROL_PANEL_ELEVATOR_DOWN_BUTTON = 5;
 	public static final int CONTROL_PANEL_ELEVATOR_TOP_BUTTON = 5;
 	public static final int CONTROL_PANEL_ELEVATOR_BOTTOM_BUTTON = 6;
 	public static final int CONTROL_PANEL_AUTO_SHOOT = 10;
